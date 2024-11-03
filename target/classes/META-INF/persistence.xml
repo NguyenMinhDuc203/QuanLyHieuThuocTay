@@ -12,7 +12,7 @@
 				value="jdbc:mariadb://localhost:3306/thuoc" />
 			<property name="hibernate.connection.username" value="root" />
 			<property name="hibernate.connection.password" value="root" />
-			<property name="hibernate.hbm2ddl.auto" value="create" /> <!-- create,
+			<property name="hibernate.hbm2ddl.auto" value="update" /> <!-- create,
 			create-drop, update, validate -->
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />

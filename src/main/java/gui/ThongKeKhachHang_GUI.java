@@ -23,12 +23,18 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 
 public class ThongKeKhachHang_GUI extends JFrame {
+	
+	
+	// vấn đề : 
+	// khi chọn ngày ở JDateChooser, ngày không được chọn
+	// khi chọn JRadioButton, nhóm không hoạt động
+	
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField textField;
     private JTextField textField_1;
     private JTable table;
+   
 
     /**
      * Launch the application.
@@ -55,8 +61,10 @@ public class ThongKeKhachHang_GUI extends JFrame {
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
+
+
         
-        JLabel lblNewLabel = new JLabel("THỐNG KÊ DOANH SỐ");
+        JLabel lblNewLabel = new JLabel("THỐNG KÊ KHÁCH HÀNG");
         lblNewLabel.setForeground(new Color(0, 0, 255));
         lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 28));
         
@@ -74,26 +82,14 @@ public class ThongKeKhachHang_GUI extends JFrame {
 
         // Thêm JDateChooser để chọn ngày
         JDateChooser dateChooser = new JDateChooser();
-        dateChooser.setDateFormatString("26-09-2024");
+        dateChooser.setDateFormatString("");
         
-        JRadioButton rdbtnNewRadioButton = new JRadioButton("Thống kê theo ngày");
+        JRadioButton rdbtnNewRadioButton = new JRadioButton("Khách hàng mới (0-3)");
         rdbtnNewRadioButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
         rdbtnNewRadioButton.setSelected(true);
         
-        JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Thống kê theo tháng");
-        rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        
-        JLabel lblNewLabel_3 = new JLabel("Tổng số tiền");
-        lblNewLabel_3.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        
         JLabel lblNewLabel_4 = new JLabel("Tổng hóa đơn");
         lblNewLabel_4.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        
-        textField = new JTextField();
-        textField.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        textField.setText("355000\r\n");
-        textField.setEditable(false);
-        textField.setColumns(10);
         
         textField_1 = new JTextField();
         textField_1.setText("2");
@@ -109,11 +105,11 @@ public class ThongKeKhachHang_GUI extends JFrame {
         table.setCellSelectionEnabled(true);
         table.setModel(new DefaultTableModel(
             new Object[][] {
-                {"HD0001", "NV0001", "KH0001", "26/09/2024", "255000"},
-                {"HD0002", "NV0002", "KH0002", "26/09/2024", "100000"},
+                {"KH0001", "Nguyễn Minh Đức", "1",  "255000"},
+                {"KH0002", "Trần Minh Đức", "2",  "350000"},
             },
             new String[] {
-                "Mã hóa đơn", "Mã nhân viên", "Mã khách hàng", "Ngày mua", "Tổng tiền"
+                "Mã khách hàng", "Tên khách hàng", "Số lần mua", "Tổng tiền"
             }
         ));
 
@@ -121,6 +117,12 @@ public class ThongKeKhachHang_GUI extends JFrame {
 
         // Tạo JScrollPane và thêm JTable vào nó
         JScrollPane scrollPane = new JScrollPane(table);
+        
+        JRadioButton rdbtnNewRadioButton_1_1 = new JRadioButton("Khách hàng quen (4-10)");
+        rdbtnNewRadioButton_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        
+        JRadioButton rdbtnNewRadioButton_1_1_1 = new JRadioButton("Khách hàng quen (4-10)");
+        rdbtnNewRadioButton_1_1_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
         // Thiết lập GroupLayout cho contentPane
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -142,26 +144,25 @@ public class ThongKeKhachHang_GUI extends JFrame {
         					.addGap(122)
         					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
         						.addComponent(rdbtnNewRadioButton)
-        						.addComponent(rdbtnNewRadioButton_1))
-        					.addGap(320)
-        					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
-        						.addComponent(lblNewLabel_4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        						.addComponent(lblNewLabel_3, GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
-        					.addPreferredGap(ComponentPlacement.RELATED)
-        					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-        						.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)
-        						.addComponent(textField, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)))
+        						.addGroup(gl_contentPane.createSequentialGroup()
+        							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+        								.addComponent(rdbtnNewRadioButton_1_1_1, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE)
+        								.addComponent(rdbtnNewRadioButton_1_1, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE))
+        							.addGap(320)
+        							.addComponent(lblNewLabel_4)
+        							.addGap(4)
+        							.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE))))
         				.addGroup(gl_contentPane.createSequentialGroup()
         					.addContainerGap()
         					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 1450, GroupLayout.PREFERRED_SIZE)))
-        			.addContainerGap(12, Short.MAX_VALUE))
+        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         gl_contentPane.setVerticalGroup(
         	gl_contentPane.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_contentPane.createSequentialGroup()
-        			.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+        			.addGap(40)
+        			.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
         				.addGroup(gl_contentPane.createSequentialGroup()
-        					.addGap(40)
         					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
         						.addComponent(lblNewLabel_1, GroupLayout.PREFERRED_SIZE, 90, GroupLayout.PREFERRED_SIZE)
         						.addGroup(gl_contentPane.createSequentialGroup()
@@ -169,24 +170,17 @@ public class ThongKeKhachHang_GUI extends JFrame {
         							.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 39, GroupLayout.PREFERRED_SIZE)))
         					.addGap(45)
         					.addComponent(lblNewLabel_2, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
-        				.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-        					.addContainerGap()
-        					.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
-        			.addPreferredGap(ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
+        				.addComponent(dateChooser, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+        			.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        			.addComponent(rdbtnNewRadioButton)
+        			.addGap(2)
+        			.addComponent(rdbtnNewRadioButton_1_1_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+        			.addPreferredGap(ComponentPlacement.UNRELATED)
         			.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-        				.addComponent(rdbtnNewRadioButton)
-        				.addComponent(lblNewLabel_3)
-        				.addComponent(textField, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-        			.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-        				.addGroup(gl_contentPane.createSequentialGroup()
-        					.addGap(28)
-        					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-        						.addComponent(rdbtnNewRadioButton_1)
-        						.addComponent(lblNewLabel_4)))
-        				.addGroup(gl_contentPane.createSequentialGroup()
-        					.addGap(18)
-        					.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)))
-        			.addGap(42)
+        				.addComponent(rdbtnNewRadioButton_1_1, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblNewLabel_4)
+        				.addComponent(textField_1, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
+        			.addGap(34)
         			.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 433, GroupLayout.PREFERRED_SIZE)
         			.addContainerGap())
         );
