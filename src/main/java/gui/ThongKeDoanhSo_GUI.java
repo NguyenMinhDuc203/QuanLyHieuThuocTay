@@ -5,6 +5,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
+
+import dao.HoaDonXuat_DAO;
+
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -39,17 +42,12 @@ import javax.swing.ListSelectionModel;
 public class ThongKeDoanhSo_GUI extends JFrame {
 	
 	
-	// vấn đề : 
-	// khi chọn ngày ở JDateChooser, ngày không được chọn
-	// khi chọn JRadioButton, nhóm không hoạt động
-	
-
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField textField;
     private JTextField textField_1;
     private JTable table;
-   
+    private HoaDonXuat_DAO dao;
 
     /**
      * Launch the application.
@@ -58,7 +56,7 @@ public class ThongKeDoanhSo_GUI extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    ThongKeKhachHang_GUI frame = new ThongKeKhachHang_GUI();
+                    ThongKeDoanhSo_GUI frame = new ThongKeDoanhSo_GUI();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -72,23 +70,8 @@ public class ThongKeDoanhSo_GUI extends JFrame {
      */
     public ThongKeDoanhSo_GUI() {
     	
-    	
-//    	
-//    	
-//    	
-//    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setBounds(0, 0, 1920, 1080); 
-//        setSize(1920,1080);
-//        contentPane = new JPanel();
-//        contentPane.setBackground(new Color(26, 133, 94));
-//        contentPane.setForeground(SystemColor.window);
-//        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//        setLocationRelativeTo(null);
-//		setContentPane(contentPane);
-//		contentPane.setLayout(null);
-//        
-    	
-    	
+ 
+    	dao = new HoaDonXuat_DAO();
     	
     	
     	
@@ -300,10 +283,10 @@ public class ThongKeDoanhSo_GUI extends JFrame {
 	    ButtonGroup radioGroup = new ButtonGroup();
 	    radioGroup.add(rdbtnOption1);
 	    radioGroup.add(rdbtnOption2);
-
 	    // Đặt vị trí và thêm các radio button vào panel_1
 	    rdbtnOption1.setBounds(226, 72, 244, 30);  // Tùy chỉnh vị trí và kích thước
 	    rdbtnOption2.setBounds(226, 139, 244, 30);
+	    rdbtnOption1.setSelected(true);  // Đặt mặc định radio button 1 được chọn
 
 	    panel_1.setLayout(null);  // Sử dụng layout null để dễ kiểm soát vị trí
 	    panel_1.add(rdbtnOption1);
@@ -315,6 +298,7 @@ public class ThongKeDoanhSo_GUI extends JFrame {
 	    panel_1.add(lblNewLabel_1_1);
 	    
 	    JDateChooser dateChooser = new JDateChooser();
+	    dateChooser.setDateFormatString("dd/MM/yyyy");
 	    dateChooser.getCalendarButton().setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 	    dateChooser.setBounds(1026, 10, 307, 37);
 	    panel_1.add(dateChooser);
@@ -356,8 +340,7 @@ public class ThongKeDoanhSo_GUI extends JFrame {
 	    btnThongKe.setBackground(new Color(46, 139, 87));
 	    btnThongKe.setBounds(615, 218, 152, 45);
 	    panel_1.add(btnThongKe);
-
-		
+	    
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
 		scrollPane.setBounds(0, 372, 1604, 461);
