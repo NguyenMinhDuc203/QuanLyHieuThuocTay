@@ -1,22 +1,110 @@
 package dao;
 
-import java.util.List;
-
-
 import entity.KhachHang;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
+import java.util.List;
 
 public class KhachHang_DAO {
     private EntityManagerFactory emf;
 
     public KhachHang_DAO() {
-        emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
+        emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
     }
 
-   
+    // Phương thức tìm kiếm khách hàng theo mã khách hàng
+    public KhachHang findKhachHangById(String maKhachHang) {
+        EntityManager em = emf.createEntityManager();
+        KhachHang khachHang = null;
+
+        try {
+            khachHang = em.find(KhachHang.class, maKhachHang);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return khachHang;
+    }
+
+    // Phương thức tìm kiếm khách hàng theo tên (có thể có nhiều khách hàng trùng tên)
+    public List<KhachHang> findKhachHangByName(String tenKhachHang) {
+        EntityManager em = emf.createEntityManager();
+        List<KhachHang> result = null;
+
+        try {
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.tenKhachHang LIKE :ten";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("ten", "%" + tenKhachHang + "%");
+            result = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result;
+    }
+
+    // Phương thức tìm kiếm khách hàng theo số điện thoại
+    public List<KhachHang> findKhachHangByPhoneNumber(String soDienThoai) {
+        EntityManager em = emf.createEntityManager();
+        List<KhachHang> result = null;
+
+        try {
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.soDienThoai = :phone";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("phone", soDienThoai);
+            result = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result;
+    }
+
+    // Phương thức tìm kiếm khách hàng theo giới tính
+    public List<KhachHang> findKhachHangByGender(String gioiTinh) {
+        EntityManager em = emf.createEntityManager();
+        List<KhachHang> result = null;
+
+        try {
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.gioiTinh = :gender";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("gender", gioiTinh);
+            result = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result;
+    }
+
+    // Phương thức lấy tất cả khách hàng
+    public List<KhachHang> getAllKhachHangs() {
+        EntityManager em = emf.createEntityManager();
+        List<KhachHang> khachHangs = null;
+
+        try {
+            TypedQuery<KhachHang> query = em.createQuery("SELECT kh FROM KhachHang kh", KhachHang.class);
+            khachHangs = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return khachHangs;
+    }
+
+    // Phương thức lấy tổng tiền và số lần mua hàng cho từng khách hàng
     public List<Object[]> danhSachTongTienVaSoLanMuaHangCuaTatCaKhachHang(int thang, int nam) {
         EntityManager em = emf.createEntityManager();
         List<Object[]> result = null;
@@ -29,20 +117,13 @@ public class KhachHang_DAO {
                           "JOIN cthd.hoaDonXuat hd " +
                           "JOIN hd.khachHang kh " +
                           "JOIN cthd.sanPham sp " +
-                          "WHERE MONTH(hd.ngayTao) = :thang AND YEAR(hd.ngayTao) = :nam " + // Thêm điều kiện theo tháng và năm
+                          "WHERE MONTH(hd.ngayTao) = :thang AND YEAR(hd.ngayTao) = :nam " +
                           "GROUP BY kh.maKhachHang, kh.tenKhachHang";
 
             TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
-            query.setParameter("thang", thang); // Thiết lập tham số tháng
-            query.setParameter("nam", nam); // Thiết lập tham số năm
+            query.setParameter("thang", thang);
+            query.setParameter("nam", nam);
             result = query.getResultList();
-
-            if (result.isEmpty()) {
-                System.out.println("Không có kết quả nào trả về từ truy vấn.");
-            } else {
-                System.out.println("Truy vấn thành công, số lượng kết quả: " + result.size());
-            }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -52,33 +133,8 @@ public class KhachHang_DAO {
         return result;
     }
 
-
-
-    
-    public static void main(String[] args) {
-        KhachHang_DAO dao = new KhachHang_DAO();
-        
-        int thang = 10; // Ví dụ tháng 11
-        int nam = 2024; // Ví dụ năm 2024
-        List<Object[]> danhSachKhachHang = dao.danhSachTongTienVaSoLanMuaHangCuaTatCaKhachHang(thang, nam);
-
-        if (danhSachKhachHang == null || danhSachKhachHang.isEmpty()) {
-            System.out.println("Không có dữ liệu khách hàng nào.");
-            return;
-        }
-
-        System.out.println("Mã khách hàng\tTên khách hàng\tSố lần mua\tTổng tiền");
-        System.out.println("---------------------------------------------------------------");
-
-        for (Object[] khachHang : danhSachKhachHang) {
-            String maKhachHang = (String) khachHang[0];
-            String tenKhachHang = (String) khachHang[1];
-            Long soLanMua = (Long) khachHang[2];
-            Double tongTien = (Double) khachHang[3];
-
-            System.out.printf("%s\t%s\t\t%d\t\t%.2f\n", maKhachHang, tenKhachHang, soLanMua, tongTien);
-        }
+    // Đóng EntityManagerFactory
+    public void close() {
+        if (emf != null) emf.close();
     }
-
-
 }
