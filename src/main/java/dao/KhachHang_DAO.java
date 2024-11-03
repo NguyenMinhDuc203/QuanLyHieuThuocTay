@@ -9,10 +9,10 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
-public class ThongKeKhachHang_DAO {
+public class KhachHang_DAO {
     private EntityManagerFactory emf;
 
-    public ThongKeKhachHang_DAO() {
+    public KhachHang_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
     }
 
@@ -56,7 +56,7 @@ public class ThongKeKhachHang_DAO {
 
     
     public static void main(String[] args) {
-        ThongKeKhachHang_DAO dao = new ThongKeKhachHang_DAO();
+        KhachHang_DAO dao = new KhachHang_DAO();
         
         int thang = 10; // Ví dụ tháng 11
         int nam = 2024; // Ví dụ năm 2024
