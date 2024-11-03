@@ -1,412 +1,235 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
-
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.UIManager;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JEditorPane;
-
-
 
 public class TraCuuSanPham_GUI extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JTextField textField_5;
-	private JTable table;
+    private static final long serialVersionUID = 1L;
+    private JPanel contentPane;
+    private JTextField textField_3;
+    private JTextField textField_4;
+    private JTextField textField_5;
+    private JTable table;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TraCuuSanPham_GUI frame = new TraCuuSanPham_GUI();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+    public static void main(String[] args) {
+        EventQueue.invokeLater(() -> {
+            try {
+                TraCuuSanPham_GUI frame = new TraCuuSanPham_GUI();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
-	/**
-	 * Create the frame.
-	 */
-	public TraCuuSanPham_GUI() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1440, 912); 
+    public TraCuuSanPham_GUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 1440, 912);
         contentPane = new JPanel();
         contentPane.setBackground(Color.LIGHT_GRAY);
-        contentPane.setForeground(SystemColor.window);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		//Menu
-				JMenuBar menuBar = new JMenuBar();
-				menuBar.setOpaque(true);
-				menuBar.setBackground(new Color(219, 244, 247));
-				menuBar.setBounds(0, 0, 1445, 70);
-				contentPane.add(menuBar);
-				
-				JMenu mnNewMenu = new JMenu(" Trang Chủ");
-				mnNewMenu.setOpaque(true);
-				mnNewMenu.setBackground(SystemColor.activeCaption);
-				mnNewMenu.setForeground(Color.BLACK);
-				mnNewMenu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-				ImageIcon icon = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/house-solid.png"));
-				Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				mnNewMenu.setIcon(new ImageIcon(scaledImage));
-				menuBar.add(mnNewMenu);
+        setContentPane(contentPane);
+        contentPane.setLayout(null);
 
-				
-				JMenu mnNewMenu_1 = new JMenu(" Quản Lý");
-				mnNewMenu_1.setOpaque(true);
-				mnNewMenu_1.setBackground(new Color(118, 209, 228));
-				mnNewMenu_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-				mnNewMenu_1.setForeground(Color.BLACK);
-ImageIcon icon1 = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/list-check-solid.png"));
-				Image scaledImage1 = icon1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				mnNewMenu_1.setIcon(new ImageIcon(scaledImage1));
-				menuBar.add(Box.createHorizontalStrut(30));
-				menuBar.add(mnNewMenu_1);
-						
-				JMenuItem mntmNewMenuItem = new JMenuItem("Sản Phẩm");
-				mntmNewMenuItem.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_1.add(mntmNewMenuItem);
-				
-				JMenuItem mntmNhnVin = new JMenuItem("Nhân Viên");
-				mntmNhnVin.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_1.add(mntmNhnVin);
-				
-				JMenuItem mntmKhchHng = new JMenuItem("Khách Hàng");
-				mntmKhchHng.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_1.add(mntmKhchHng);
-				
-				JMenu mnNewMenu_2_1 = new JMenu(" Bán Hàng");
-				mnNewMenu_2_1.setBackground(new Color(118, 209, 228));
-				mnNewMenu_2_1.setOpaque(true);
-				mnNewMenu_2_1.setForeground(Color.BLACK);
-				mnNewMenu_2_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-				ImageIcon icon2_1 = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/cart-shopping-solid.png"));
-				Image scaledImage2_1 = icon2_1.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				mnNewMenu_2_1.setIcon(new ImageIcon(scaledImage2_1));
-				menuBar.add(Box.createHorizontalStrut(30));
-				menuBar.add(mnNewMenu_2_1);
-				
-				JMenu mnNewMenu_2 = new JMenu(" Thống Kê");
-				mnNewMenu_2.setBackground(new Color(118, 209, 228));
-				mnNewMenu_2.setOpaque(true);
-				mnNewMenu_2.setForeground(Color.BLACK);
-				mnNewMenu_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-				ImageIcon icon2 = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/clipboard-solid.png"));
-				Image scaledImage2 = icon2.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				mnNewMenu_2.setIcon(new ImageIcon(scaledImage2));
-				menuBar.add(Box.createHorizontalStrut(30));
-				menuBar.add(mnNewMenu_2);
-				
-				JMenuItem mntmNewMenuItem_1 = new JMenuItem("Doanh Số");
-				mntmNewMenuItem_1.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2.add(mntmNewMenuItem_1);
-				
-				JMenuItem mntmNewMenuItem_1_3 = new JMenuItem("Nhân Viên");
-				mntmNewMenuItem_1_3.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2.add(mntmNewMenuItem_1_3);
-				
-				JMenuItem mntmNewMenuItem_1_2 = new JMenuItem("Khách Hàng");
-				mntmNewMenuItem_1_2.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2.add(mntmNewMenuItem_1_2);
-				
-				JMenuItem mntmNewMenuItem_1_1 = new JMenuItem("Sản Phẩm");
-				mntmNewMenuItem_1_1.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2.add(mntmNewMenuItem_1_1);
-				
-				JMenu mnNewMenu_2_2 = new JMenu(" Tra Cứu");
-				mnNewMenu_2_2.setBackground(new Color(118, 209, 228));
-				mnNewMenu_2_2.setOpaque(true);
-				mnNewMenu_2_2.setForeground(Color.BLACK);
-				mnNewMenu_2_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-ImageIcon icon2_2 = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/circle-question-solid.png"));
-				Image scaledImage2_2 = icon2_2.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				mnNewMenu_2_2.setIcon(new ImageIcon(scaledImage2_2));
-				menuBar.add(Box.createHorizontalStrut(30));
-				menuBar.add(mnNewMenu_2_2);
-				
-				JMenuItem mntmNewMenuItem_2 = new JMenuItem("Sản Phẩm");
-				mntmNewMenuItem_2.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2_2.add(mntmNewMenuItem_2);
-				
-				JMenuItem mntmNewMenuItem_2_2 = new JMenuItem("Nhân Viên");
-				mntmNewMenuItem_2_2.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2_2.add(mntmNewMenuItem_2_2);
-				
-				JMenuItem mntmNewMenuItem_2_1 = new JMenuItem("Khách Hàng");
-				mntmNewMenuItem_2_1.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2_2.add(mntmNewMenuItem_2_1);
-				mnNewMenu_2_2.setOpaque(true);
-				ImageIcon iconBt = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/arrow-from-bracket-solid.png"));
-				Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				
-				JPanel panel = new JPanel();
-				panel.setBackground(new Color(226, 250, 252));
-				panel.setBounds(0, 69, 1445, 833);
-				contentPane.add(panel);
-				panel.setLayout(null);
-				
-				JLabel lblNewLabel = new JLabel("TRA CỨU SẢN PHẨM\r\n");
-				lblNewLabel.setForeground(Color.BLUE);
-				lblNewLabel.setFont(new Font("Leelawadee UI", Font.BOLD, 46));
-				lblNewLabel.setBounds(97, 22, 703, 70);
-				ImageIcon poster = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/poster.png"));
-				Image scaledPoster = poster.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-				JLabel imageLabel = new JLabel(new ImageIcon(scaledPoster));
-				imageLabel.setBounds(10, 11, 77, 81);
-				panel.add(imageLabel);
-				panel.add(lblNewLabel);
-				
-				JPanel panel_1 = new JPanel();
-				panel_1.setBackground(new Color(169, 204, 193)); // Thiết lập màu nền để khớp với ảnh
-				panel_1.setBounds(79, 102, 1265, 420); // Tăng chiều cao panel để có khoảng cách rộng hơn giữa các hàng
-				panel.add(panel_1);
-				panel_1.setLayout(null);
+        // Create Menu
+        createMenuBar();
 
-				// Thiết lập cỡ chữ lớn hơn
-				Font font = new Font("Tahoma", Font.PLAIN, 18);
+        // Create the main content
+        createMainContent();
+    }
 
-				// mãSảnPhẩm
-				JLabel lblMaSanPham = new JLabel("Mã Sản Phẩm");
-				lblMaSanPham.setFont(font);
-				lblMaSanPham.setBounds(65, 34, 150, 30);
-				panel_1.add(lblMaSanPham);
+    private void createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        menuBar.setBorderPainted(false);
+        menuBar.setOpaque(true);
+        menuBar.setBackground(new Color(26, 133, 94));
+        menuBar.setBounds(0, 0, 1426, 70);
+        contentPane.add(menuBar);
 
-				JTextField textField_MaSanPham = new JTextField();
-				textField_MaSanPham.setBounds(220, 34, 200, 30);
-				panel_1.add(textField_MaSanPham);
+        // Trang Chủ
+        JMenu mnNewMenu = new JMenu(" Trang Chủ");
+        mnNewMenu.setOpaque(true);
+        mnNewMenu.setBackground(new Color(26, 133, 94));
+        mnNewMenu.setForeground(Color.WHITE);
+        mnNewMenu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+        mnNewMenu.setIcon(loadIcon("/gui/house-solid.png"));
+        mnNewMenu.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        menuBar.add(mnNewMenu);
 
-				// tênSảnPhẩm
-				JLabel lblTenSanPham = new JLabel("Tên Sản Phẩm");
-				lblTenSanPham.setFont(font);
-				lblTenSanPham.setBounds(65, 84, 150, 30);
-				panel_1.add(lblTenSanPham);
+        // Quản Lý
+        JMenu mnNewMenu_1 = new JMenu(" Quản Lý");
+        mnNewMenu_1.setOpaque(true);
+        mnNewMenu_1.setBackground(new Color(26, 133, 94));
+        mnNewMenu_1.setForeground(Color.WHITE);
+        mnNewMenu_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+        mnNewMenu_1.setIcon(loadIcon("/gui/list-check-solid.png"));
+        mnNewMenu_1.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        menuBar.add(mnNewMenu_1);
 
-				JTextField textField_TenSanPham = new JTextField();
-				textField_TenSanPham.setBounds(220, 84, 200, 30);
-				panel_1.add(textField_TenSanPham);
+        // Các mục con của Quản Lý
+        addMenuItem(mnNewMenu_1, "Sản Phẩm");
+        addMenuItem(mnNewMenu_1, "Nhân Viên");
+        addMenuItem(mnNewMenu_1, "Khách Hàng");
 
-				// giáBán
-				JLabel lblGiaBan = new JLabel("Giá Bán");
-				lblGiaBan.setFont(font);
-				lblGiaBan.setBounds(65, 134, 150, 30);
-				panel_1.add(lblGiaBan);
+        // Bán Hàng
+        JMenu mnNewMenu_2_1 = new JMenu(" Bán Hàng");
+        mnNewMenu_2_1.setBackground(new Color(26, 133, 94));
+        mnNewMenu_2_1.setOpaque(true);
+        mnNewMenu_2_1.setForeground(Color.WHITE);
+        mnNewMenu_2_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+        mnNewMenu_2_1.setIcon(loadIcon("/gui/cart-shopping-solid.png"));
+        mnNewMenu_2_1.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        menuBar.add(mnNewMenu_2_1);
 
-				JTextField textField_GiaBan = new JTextField();
-				textField_GiaBan.setBounds(220, 134, 200, 30);
-				panel_1.add(textField_GiaBan);
+        // Thống Kê
+        JMenu mnNewMenu_2 = new JMenu(" Thống Kê");
+        mnNewMenu_2.setBackground(new Color(26, 133, 94));
+        mnNewMenu_2.setOpaque(true);
+        mnNewMenu_2.setForeground(Color.WHITE);
+        mnNewMenu_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+        mnNewMenu_2.setIcon(loadIcon("/gui/clipboard-solid.png"));
+        mnNewMenu_2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        menuBar.add(mnNewMenu_2);
 
-				// côngDụng
-				JLabel lblCongDung = new JLabel("Công Dụng");
-				lblCongDung.setFont(font);
-				lblCongDung.setBounds(65, 184, 150, 30);
-				panel_1.add(lblCongDung);
+        // Các mục con của Thống Kê
+        addMenuItem(mnNewMenu_2, "Doanh Số");
+        addMenuItem(mnNewMenu_2, "Nhân Viên");
+        addMenuItem(mnNewMenu_2, "Khách Hàng");
+        addMenuItem(mnNewMenu_2, "Sản Phẩm");
 
-				JTextField textField_CongDung = new JTextField();
-				textField_CongDung.setBounds(220, 184, 200, 30);
-				panel_1.add(textField_CongDung);
+        // Tra Cứu
+        JMenu mnNewMenu_2_2 = new JMenu(" Tra Cứu   ");
+        mnNewMenu_2_2.setBackground(new Color(26, 133, 94));
+        mnNewMenu_2_2.setOpaque(true);
+        mnNewMenu_2_2.setForeground(Color.WHITE);
+        mnNewMenu_2_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+        mnNewMenu_2_2.setIcon(loadIcon("/gui/circle-question-solid.png"));
+        mnNewMenu_2_2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        menuBar.add(mnNewMenu_2_2);
 
-				// hạnSửDụng
-				JLabel lblHanSuDung = new JLabel("Hạn Sử Dụng");
-				lblHanSuDung.setFont(font);
-				lblHanSuDung.setBounds(696, 34, 150, 30);
-				panel_1.add(lblHanSuDung);
+        // Các mục con của Tra Cứu
+        addMenuItem(mnNewMenu_2_2, "Sản Phẩm");
+        addMenuItem(mnNewMenu_2_2, "Nhân Viên");
+        addMenuItem(mnNewMenu_2_2, "Hóa Đơn");
+        addMenuItem(mnNewMenu_2_2, "Khách Hàng");
+    }
 
-				JTextField textField_HanSuDung = new JTextField();
-				textField_HanSuDung.setBounds(901, 38, 200, 30);
-				panel_1.add(textField_HanSuDung);
+    private void addMenuItem(JMenu menu, String title) {
+        JMenuItem menuItem = new JMenuItem(title);
+        menuItem.setForeground(Color.WHITE);
+        menuItem.setBackground(new Color(26, 133, 94));
+        menuItem.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        menu.add(menuItem);
+    }
 
-				// bảoQuản
-				JLabel lblBaoQuan = new JLabel("Bảo Quản");
-				lblBaoQuan.setFont(font);
-				lblBaoQuan.setBounds(696, 84, 150, 30);
-				panel_1.add(lblBaoQuan);
+    private ImageIcon loadIcon(String path) {
+        ImageIcon icon = new ImageIcon(BanHang_GUI.class.getResource(path));
+        Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaledImage);
+    }
 
-				JTextField textField_BaoQuan = new JTextField();
-				textField_BaoQuan.setBounds(901, 88, 200, 30);
-				panel_1.add(textField_BaoQuan);
 
-				// chốngChỉĐịnh
-				JLabel lblChongChiDinh = new JLabel("Chống Chỉ Định");
-				lblChongChiDinh.setFont(font);
-				lblChongChiDinh.setBounds(696, 134, 150, 30);
-				panel_1.add(lblChongChiDinh);
+    private void createMainContent() {
+        JPanel panel = new JPanel();
+        panel.setBackground(new Color(226, 250, 252));
+        panel.setBounds(0, 69, 1445, 833);
+        contentPane.add(panel);
+        panel.setLayout(null);
 
-				JTextField textField_ChongChiDinh = new JTextField();
-				textField_ChongChiDinh.setBounds(901, 138, 200, 30);
-				panel_1.add(textField_ChongChiDinh);
+        JLabel lblTitle = new JLabel("TRA CỨU SẢN PHẨM");
+        lblTitle.setForeground(Color.BLUE);
+        lblTitle.setFont(new Font("Leelawadee UI", Font.BOLD, 46));
+        lblTitle.setBounds(97, 22, 703, 70);
+        ImageIcon poster = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/gui/poster.png"));
+        Image scaledPoster = poster.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+        JLabel imageLabel = new JLabel(new ImageIcon(scaledPoster));
+        imageLabel.setBounds(10, 11, 77, 81);
+        panel.add(imageLabel);
+        panel.add(lblTitle);
 
-				// ngàySảnXuất
-				JLabel lblNgaySanXuat = new JLabel("Ngày Sản Xuất");
-				lblNgaySanXuat.setFont(font);
-				lblNgaySanXuat.setBounds(696, 188, 150, 30);
-				panel_1.add(lblNgaySanXuat);
+        JPanel panel_1 = new JPanel();
+        panel_1.setBackground(new Color(169, 204, 193));
+        panel_1.setBounds(79, 102, 1265, 420);
+        panel.add(panel_1);
+        panel_1.setLayout(null);
 
-				JTextField textField_NgaySanXuat = new JTextField();
-				textField_NgaySanXuat.setBounds(901, 188, 200, 30);
-				panel_1.add(textField_NgaySanXuat);
+        // Create product information section
+        createProductInfoSection(panel_1);
 
-				// thànhPhần
-				JLabel lblThanhPhan = new JLabel("Thành Phần");
-				lblThanhPhan.setFont(font);
-				lblThanhPhan.setBounds(65, 234, 150, 30);
-				panel_1.add(lblThanhPhan);
+        textField_5 = new JTextField();
+        textField_5.setColumns(10);
+        textField_5.setBounds(214, 533, 972, 32);
+        panel.add(textField_5);
 
-				JTextField textField_ThanhPhan = new JTextField();
-				textField_ThanhPhan.setBounds(220, 234, 200, 30);
-				panel_1.add(textField_ThanhPhan);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(36, 585, 1386, 179);
+        panel.add(scrollPane);
 
-				// sốLượngTồnKho
-				JLabel lblSoLuongTonKho = new JLabel("Số Lượng Tồn Kho");
-				lblSoLuongTonKho.setFont(font);
-				lblSoLuongTonKho.setBounds(696, 234, 150, 30);
-				panel_1.add(lblSoLuongTonKho);
+        table = new JTable();
+        table.setForeground(Color.WHITE);
+        table.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        table.setBackground(Color.LIGHT_GRAY);
+        table.setRowHeight(40);
+        table.setModel(new DefaultTableModel(
+                new Object[][] {
+                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                    {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
+                },
+                new String[] {
+                    "STT", "Mã Sản Phẩm", "Tên Sản Phẩm", "Giá Bán", "Công Dụng", "Hạn Sử Dụng", "Bảo Quản",
+                    "Chống Chỉ Định", "Ngày Sản Xuất", "Thành Phần", "Số Lượng Tồn Kho", "Ghi Chú",
+                    "Nhà Sản Xuất", "Đơn Vị Tính", "Thuế GTGT", "Giá Nhập"
+                }
+        ));
+        scrollPane.setViewportView(table);
 
-				JTextField textField_SoLuongTonKho = new JTextField();
-				textField_SoLuongTonKho.setBounds(901, 238, 200, 30);
-				panel_1.add(textField_SoLuongTonKho);
+        JComboBox<String> comboBox = new JComboBox<>();
+        comboBox.setBounds(36, 532, 152, 32);
+        panel.add(comboBox);
 
-				// ghiChú
-				JLabel lblGhiChu = new JLabel("Ghi Chú");
-				lblGhiChu.setFont(font);
-				lblGhiChu.setBounds(65, 284, 150, 30);
-				panel_1.add(lblGhiChu);
+        JButton btnSearch = new JButton("Tìm Kiếm");
+        btnSearch.setBounds(1228, 532, 152, 32);
+        panel.add(btnSearch);
+    }
 
-				JTextField textField_GhiChu = new JTextField();
-				textField_GhiChu.setBounds(220, 274, 438, 44);
-				panel_1.add(textField_GhiChu);
+    private void createProductInfoSection(JPanel panel) {
+        Font font = new Font("Tahoma", Font.PLAIN, 18);
 
-				// nhàSảnXuất
-				JLabel lblNhaSanXuat = new JLabel("Nhà Sản Xuất");
-				lblNhaSanXuat.setFont(font);
-				lblNhaSanXuat.setBounds(65, 334, 150, 30);
-				panel_1.add(lblNhaSanXuat);
+        // Product information fields
+        createLabeledTextField(panel, "Mã Sản Phẩm", font, 65, 34, 220, 34);
+        createLabeledTextField(panel, "Tên Sản Phẩm", font, 65, 84, 220, 84);
+        createLabeledTextField(panel, "Giá Bán", font, 65, 134, 220, 134);
+        createLabeledTextField(panel, "Công Dụng", font, 65, 184, 220, 184);
+        createLabeledTextField(panel, "Hạn Sử Dụng", font, 696, 34, 901, 38);
+        createLabeledTextField(panel, "Bảo Quản", font, 696, 84, 901, 88);
+        createLabeledTextField(panel, "Chống Chỉ Định", font, 696, 134, 901, 138);
+        createLabeledTextField(panel, "Ngày Sản Xuất", font, 696, 188, 901, 188);
+        createLabeledTextField(panel, "Thành Phần", font, 65, 234, 220, 234);
+        createLabeledTextField(panel, "Số Lượng Tồn Kho", font, 696, 234, 901, 238);
+        createLabeledTextField(panel, "Ghi Chú", font, 65, 284, 220, 274);
+        createLabeledTextField(panel, "Nhà Sản Xuất", font, 65, 334, 220, 334);
+        createLabeledTextField(panel, "Đơn Vị Tính", font, 696, 284, 901, 288);
+        createLabeledTextField(panel, "Thuế GTGT", font, 65, 384, 220, 384);
+        createLabeledTextField(panel, "Giá Nhập", font, 696, 334, 901, 338);
+    }
 
-				JTextField textField_NhaSanXuat = new JTextField();
-				textField_NhaSanXuat.setBounds(220, 334, 200, 30);
-				panel_1.add(textField_NhaSanXuat);
+    private void createLabeledTextField(JPanel panel, String labelText, Font font, int labelX, int labelY, int fieldX, int fieldY) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(font);
+        label.setBounds(labelX, labelY, 150, 30);
+        panel.add(label);
 
-				// đơnVịTính
-				JLabel lblDonViTinh = new JLabel("Đơn Vị Tính");
-				lblDonViTinh.setFont(font);
-				lblDonViTinh.setBounds(696, 284, 150, 30);
-				panel_1.add(lblDonViTinh);
-
-				JTextField textField_DonViTinh = new JTextField();
-				textField_DonViTinh.setBounds(901, 288, 200, 30);
-				panel_1.add(textField_DonViTinh);
-
-				// thuếGTGT
-				JLabel lblThueGTGT = new JLabel("Thuế GTGT");
-				lblThueGTGT.setFont(font);
-				lblThueGTGT.setBounds(65, 384, 150, 30);
-				panel_1.add(lblThueGTGT);
-
-				JTextField textField_ThueGTGT = new JTextField();
-				textField_ThueGTGT.setBounds(220, 384, 200, 30);
-				panel_1.add(textField_ThueGTGT);
-
-				// giáNhập
-				JLabel lblGiaNhap = new JLabel("Giá Nhập");
-				lblGiaNhap.setFont(font);
-				lblGiaNhap.setBounds(696, 334, 150, 30);
-				panel_1.add(lblGiaNhap);
-
-				JTextField textField_GiaNhap = new JTextField();
-				textField_GiaNhap.setBounds(901, 338, 200, 30);
-				panel_1.add(textField_GiaNhap);
-
-				ImageIcon iconThem = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/GUI/4993253681582956831-128.png"));
-				Image scaledImageThem = iconThem.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				ImageIcon iconXoa = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/GUI/320632131667326703-128.png"));
-				Image scaledImageXoa = iconXoa.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				ImageIcon iconSua = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/GUI/setting-icon.png"));
-				Image scaledImageSua = iconSua.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				ImageIcon iconXT = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/GUI/calendar-remove-icon.png"));
-				Image scaledImageXT = iconXT.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				ImageIcon iconLuu = new ImageIcon(TraCuuSanPham_GUI.class.getResource("/GUI/calendar-remove-icon.png"));
-				Image scaledImageLuu = iconLuu.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				
-				textField_5 = new JTextField();
-				textField_5.setColumns(10);
-				textField_5.setBounds(214, 533, 972, 32);
-				panel.add(textField_5);
-				
-				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setBounds(36, 585, 1386, 179);
-				panel.add(scrollPane);
-				
-				JTable table = new JTable();
-				table.setForeground(Color.WHITE);
-				table.setFont(new Font("Tahoma", Font.PLAIN, 13));
-				table.setBackground(Color.LIGHT_GRAY);
-				table.setRowHeight(40);
-				table.setModel(new DefaultTableModel(
-					new Object[][] {
-						{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
-					},
-					new String[] {
-						"STT", "Mã Sản Phẩm", "Tên Sản Phẩm", "Giá Bán", "Công Dụng", "Hạn Sử Dụng", "Bảo Quản",
-						"Chống Chỉ Định", "Ngày Sản Xuất", "Thành Phần", "Số Lượng Tồn Kho", "Ghi Chú",
-						"Nhà Sản Xuất", "Đơn Vị Tính", "Thuế GTGT", "Giá Nhập"
-					}
-				) {
-					Class[] columnTypes = new Class[] {
-						Integer.class, String.class, String.class, Double.class, String.class, String.class,
-						String.class, String.class, String.class, String.class, Integer.class,
-						String.class, String.class, String.class, Double.class, Double.class
-					};
-					public Class getColumnClass(int columnIndex) {
-						return columnTypes[columnIndex];
-					}
-				});
-				table.getColumnModel().getColumn(1).setPreferredWidth(100); // Cột "Mã Sản Phẩm"
-				table.getColumnModel().getColumn(2).setPreferredWidth(100); // Cột "Tên Sản Phẩm"
-				table.getColumnModel().getColumn(3).setPreferredWidth(100); // Cột "Giá Bán"
-				scrollPane.setViewportView(table);
-
-				JComboBox comboBox = new JComboBox();
-				comboBox.setBounds(36, 532, 152, 32);
-				panel.add(comboBox);
-				
-				JButton btnNewButton = new JButton("Tìm Kiếm\r\n");
-				btnNewButton.setBounds(1228, 532, 152, 32);
-				panel.add(btnNewButton);
-	}
+        JTextField textField = new JTextField();
+        textField.setBounds(fieldX, fieldY, 200, 30);
+        panel.add(textField);
+    }
 }
