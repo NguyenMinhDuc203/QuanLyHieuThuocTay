@@ -49,17 +49,6 @@ public class DangNhap_GUI extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JButton btnLogIn = new JButton("Đăng Nhập");
-		btnLogIn.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnLogIn.setForeground(new Color(248, 248, 255));
-		btnLogIn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnLogIn.setBackground(new Color(100, 149, 237));
-		btnLogIn.setBounds(409, 83, 120, 37);
-		contentPane.add(btnLogIn);
-		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(245, 245, 245));
 		panel.setBounds(300, 148, 349, 260);
