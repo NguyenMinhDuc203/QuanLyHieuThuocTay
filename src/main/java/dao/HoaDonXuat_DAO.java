@@ -275,7 +275,7 @@ public class HoaDonXuat_DAO {
             }
         } else {
             System.out.println("Không có dữ liệu doanh số nào.");
-<<<<<<< HEAD
+
             return;
         }
 
@@ -289,8 +289,7 @@ public class HoaDonXuat_DAO {
             Double tongTien = (Double) doanhSo[4];
 
             System.out.printf("%s\t%s\t%s\t%s\t%.2f%n", maHoaDon, maNhanVien, maKhachHang, ngayMua, tongTien);
-=======
->>>>>>> f3c5c0747487620f26ce178cafa5a44769abb16e
+
         }
     }
 
