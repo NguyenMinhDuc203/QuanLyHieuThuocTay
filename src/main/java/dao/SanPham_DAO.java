@@ -3,6 +3,7 @@ package dao;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
@@ -128,33 +129,13 @@ public class SanPham_DAO {
         List<SanPham> result = new ArrayList<>();
 
         try {
-            String jpql = """
-                SELECT sp 
-                FROM SanPham sp 
-                WHERE sp.loaiSanPham.maLoai = :maLoai
-            """;
+        	String jpql = "SELECT sp FROM SanPham sp JOIN FETCH sp.loaiSanPham WHERE sp.loaiSanPham.maLoai = :maLoai";
 
             TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
             query.setParameter("maLoai", maLoai);
             result = query.getResultList();
 
-            if (result.isEmpty()) {
-                System.out.println("Không có sản phẩm nào thuộc loại mã: " + maLoai);
-            } else {
-                System.out.println("Truy vấn thành công, số lượng sản phẩm thuộc loại mã " + maLoai + ": " + result.size());
-                System.out.printf("%-10s %-20s %-15s %-15s %-20s %-15s%n", "Mã", "Tên", "Loại", "Hạn sử dụng", "Số lượng đã bán", "Số lượng tồn kho");
-                System.out.println("-----------------------------------------------------------------------");
-                for (SanPham sp : result) {
-                    int soLuongDaBan = tinhSoLuongDaBan(sp); // Gọi phương thức để tính số lượng đã bán
-                    System.out.printf("%-10s %-20s %-15s %-15s %-20d %-15d%n", 
-                        sp.getMaSanPham(), 
-                        sp.getTenSanPham(), 
-                        sp.getLoaiSanPham().getTenLoai(),
-                        sp.getHanSuDung(),
-                        soLuongDaBan,
-                        sp.getSoLuongTonkho());
-                }
-            }
+            // Xử lý kết quả nếu cần
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -164,8 +145,9 @@ public class SanPham_DAO {
         return result;
     }
 
+
     // Tính số lượng đã bán cho sản phẩm
-    private int tinhSoLuongDaBan(SanPham sp) {
+    public int tinhSoLuongDaBan(String maSanPham) {
         EntityManager em = emf.createEntityManager();
         int totalSold = 0;
 
@@ -173,13 +155,19 @@ public class SanPham_DAO {
             String jpql = """
                 SELECT SUM(cth.soLuong) 
                 FROM ChiTietHoaDon cth 
-                WHERE cth.sanPham = :sanPham
+                WHERE cth.sanPham.maSanPham = :maSanPham
             """;
 
-            TypedQuery<Integer> query = em.createQuery(jpql, Integer.class);
-            query.setParameter("sanPham", sp);
-            Integer result = query.getSingleResult();
-            totalSold = (result != null) ? result : 0; // Nếu không có kết quả, thì số lượng đã bán là 0
+            // Sử dụng TypedQuery<Long> để nhận kết quả đúng kiểu
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("maSanPham", maSanPham);
+
+            // Lấy kết quả và chuyển đổi
+            Long result = query.getSingleResult();
+            totalSold = (result != null) ? result.intValue() : 0; // Chuyển Long thành int
+        } catch (NoResultException e) {
+            // Nếu không có kết quả, số lượng bán ra là 0
+            totalSold = 0;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -188,6 +176,7 @@ public class SanPham_DAO {
 
         return totalSold;
     }
+
 
  // Thống kê sản phẩm theo số lượng bán ra
     public List<Object[]> thongKeSanPhamTheoSoLuongBan() {
@@ -263,26 +252,5 @@ public class SanPham_DAO {
         return result;
     }
 
-
-    public static void main(String[] args) {
-
-        // Tạo đối tượng cho lớp chứa phương thức thống kê
-        SanPham_DAO dao = new SanPham_DAO();
-
-        // Thay thế "maLoai" bằng mã loại bạn muốn kiểm tra
-        String maLoai = "L0001"; // ví dụ: "loai1"
-        
-        // Gọi phương thức thống kê và in ra kết quả
-        dao.thongKeSanPhamTheoLoaiMa(maLoai);
-
-        // Kiểm tra thống kê theo số lượng bán ra
-        System.out.println("--- Thống kê sản phẩm theo số lượng bán ra ---");
-        dao.thongKeSanPhamTheoSoLuongBan();
-        
-        // Kiểm tra thống kê theo quá hạn sử dụng
-        System.out.println("--- Thống kê sản phẩm theo quá hạn sử dụng ---");
-        dao.thongKeSanPhamDaQuaHan();
-
-    }
     
 }

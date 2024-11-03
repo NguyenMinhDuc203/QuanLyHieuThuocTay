@@ -17,8 +17,17 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
@@ -38,6 +47,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
+import dao.SanPham_DAO;
+import entity.SanPham;
+
 public class ThongKeSanPham_GUI extends JFrame {
 	
 	
@@ -52,7 +64,7 @@ public class ThongKeSanPham_GUI extends JFrame {
     private JTextField textField;
     private JTextField textField_1;
     private JTextField textField_2;
-   
+    SanPham_DAO sanPhamDao;
 
     /**
      * Launch the application.
@@ -74,22 +86,7 @@ public class ThongKeSanPham_GUI extends JFrame {
      * Create the frame.
      */
     public ThongKeSanPham_GUI() {
-    	
-    	
-//    	
-//    	
-//    	
-//    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setBounds(0, 0, 1920, 1080); 
-//        setSize(1920,1080);
-//        contentPane = new JPanel();
-//        contentPane.setBackground(new Color(26, 133, 94));
-//        contentPane.setForeground(SystemColor.window);
-//        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//        setLocationRelativeTo(null);
-//		setContentPane(contentPane);
-//		contentPane.setLayout(null);
-//        
+    	sanPhamDao = new SanPham_DAO();
     	
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(0, 0, 1920, 1080); 
@@ -292,15 +289,6 @@ public class ThongKeSanPham_GUI extends JFrame {
 	    panel_1.add(lblNewLabel_1_2_1);
 	    
 	    
-	    JMenu btnThongKe = new JMenu("Thống Kê");
-	    btnThongKe.setMnemonic('.');
-	    btnThongKe.setIcon(null);
-	    btnThongKe.setOpaque(true);
-	    btnThongKe.setForeground(Color.WHITE);
-	    btnThongKe.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    btnThongKe.setBackground(new Color(26, 133, 94));
-	    btnThongKe.setBounds(520, 149, 204, 47);
-	    panel_1.add(btnThongKe);
 	    
 	    JComboBox comboBox = new JComboBox();
 	    comboBox.setBackground(new Color(26, 133, 94));
@@ -309,35 +297,50 @@ public class ThongKeSanPham_GUI extends JFrame {
 	    comboBox.setBounds(175, 53, 204, 37);
 	    panel_1.add(comboBox);
 	    
+	 // Tạo một ButtonGroup để nhóm các JRadioButton lại với nhau
+	    ButtonGroup buttonGroup = new ButtonGroup();
+
 	    JRadioButton rdbtnNewRadioButton = new JRadioButton("0-20");
 	    rdbtnNewRadioButton.setBackground(new Color(26, 133, 94));
 	    rdbtnNewRadioButton.setFont(new Font("Leelawadee UI", Font.PLAIN, 15));
 	    rdbtnNewRadioButton.setBounds(176, 149, 109, 37);
 	    panel_1.add(rdbtnNewRadioButton);
-	    
+
+	    // Thêm vào ButtonGroup
+	    buttonGroup.add(rdbtnNewRadioButton);
+
 	    JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("21-50");
 	    rdbtnNewRadioButton_1.setBackground(new Color(26, 133, 94));
 	    rdbtnNewRadioButton_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    rdbtnNewRadioButton_1.setBounds(310, 149, 109, 34);
 	    panel_1.add(rdbtnNewRadioButton_1);
-	    
+
+	    // Thêm vào ButtonGroup
+	    buttonGroup.add(rdbtnNewRadioButton_1);
+
 	    JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("51-100");
 	    rdbtnNewRadioButton_2.setBackground(new Color(26, 133, 94));
 	    rdbtnNewRadioButton_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    rdbtnNewRadioButton_2.setBounds(176, 206, 109, 37);
 	    panel_1.add(rdbtnNewRadioButton_2);
-	    
+
+	    // Thêm vào ButtonGroup
+	    buttonGroup.add(rdbtnNewRadioButton_2);
+
 	    JRadioButton rdbtnNewRadioButton_3 = new JRadioButton("> 100");
 	    rdbtnNewRadioButton_3.setBackground(new Color(26, 133, 94));
 	    rdbtnNewRadioButton_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
 	    rdbtnNewRadioButton_3.setBounds(310, 206, 109, 37);
 	    panel_1.add(rdbtnNewRadioButton_3);
-	    
+
+	    // Thêm vào ButtonGroup
+	    buttonGroup.add(rdbtnNewRadioButton_3);
+
 	    JLabel lblNewLabel_1_1 = new JLabel("Hạn sử dụng");
 	    lblNewLabel_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 	    lblNewLabel_1_1.setBounds(522, 11, 152, 37);
 	    panel_1.add(lblNewLabel_1_1);
-	    
+
 	    JComboBox comboBox_1 = new JComboBox();
 	    comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Đã hết hạn", "Còn ít hơn 3 tháng", "Còn từ 3 đến 6 tháng", "Còn hơn 6 tháng"}));
 	    comboBox_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
@@ -377,6 +380,13 @@ public class ThongKeSanPham_GUI extends JFrame {
 	    textField_2.setColumns(10);
 	    textField_2.setBounds(1276, 159, 152, 37);
 	    panel_1.add(textField_2);
+	    
+	    JButton btnThongKe = new JButton("Thống Kê");
+	    btnThongKe.setForeground(new Color(255, 255, 255));
+	    btnThongKe.setFont(new Font("Tahoma", Font.PLAIN, 22));
+	    btnThongKe.setBackground(new Color(26, 133, 94));
+	    btnThongKe.setBounds(526, 149, 198, 47);
+	    panel_1.add(btnThongKe);
 
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -391,27 +401,20 @@ public class ThongKeSanPham_GUI extends JFrame {
 		table.setBorder(null);
 		DefaultTableModel tableModel = new DefaultTableModel(
 				new Object[][] {
-					
-				},
-				new String[] {
-					"M\u00E3 NV", "T\u00EAn NV", "SDT", "Tr\u00ECnh \u0111\u1ED9", "CMDN", "Email"
-				}
+		    		{null, null, null, null, null, null},
+		    	},
+		    	new String[] {
+		    		"M\u00E3 S\u1EA3n Ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "Lo\u1EA1i S\u1EA3n ph\u1EA9m", "H\u1EA1n S\u1EED D\u1EE5ng", "S\u1ED1 L\u01B0\u1EE3ng \u0110\u00E3 B\u00E1n", "T\u1ED3n Kho"
+		    	}
 			) {
 				Class[] columnTypes = new Class[] {
-					String.class, String.class, String.class, String.class, String.class, String.class
+					String.class, String.class, String.class, String.class, Integer.class, Integer.class
 				};
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 			};
-	    table.setModel(new DefaultTableModel(
-	    	new Object[][] {
-	    		{null, null, null, null, null, null},
-	    	},
-	    	new String[] {
-	    		"M\u00E3 S\u1EA3n Ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "Lo\u1EA1i S\u1EA3n ph\u1EA9m", "H\u1EA1n S\u1EED D\u1EE5ng", "S\u1ED1 L\u01B0\u1EE3ng \u0110\u00E3 B\u00E1n", "T\u1ED3n Kho"
-	    	}
-	    ));
+	    table.setModel(tableModel);
 
 		// Thiết lập font cho table và header
 		Font headerFont = new Font("Leelawadee UI", Font.BOLD, 18); // Chữ to hơn cho header
@@ -485,6 +488,92 @@ public class ThongKeSanPham_GUI extends JFrame {
 
 
 		scrollPane.setViewportView(table);
+		btnThongKe.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        thongKe(); // Call thongKe when the button is pressed
+		    }
+		    
+		    private void thongKe() {
+		        int totalProducts = 0;
+		        int totalSold = 0;
+		        int totalValid = 0;
+		        
+		        // Clear old data in the table
+		        tableModel.setRowCount(0);
+		        
+		        // Default category code
+		        String maLoai = "L3"; 
+		        
+		        // Get the selected category name from JComboBox
+		        String tenLoai = (String) comboBox.getSelectedItem();
+		        
+		        // Validate tenLoai
+		        if (tenLoai == null) {
+		            System.out.println("Tên loại không hợp lệ.");
+		            return; // Do nothing if tenLoai is null
+		        }
+		        
+		        // Assign corresponding category code based on the selected name
+		        if ("Thuốc".equals(tenLoai)) {
+		            maLoai = "L1";
+		        } else if ("Khẩu Trang".equals(tenLoai)) {
+		            maLoai = "L2";
+		        }
 		
+		        // Get the list of products by category
+		        List<SanPham> products = sanPhamDao.thongKeSanPhamTheoLoaiMa(maLoai);
+		        
+		        // Check for null or empty list before updating the table
+		        if (products != null && !products.isEmpty()) {
+		            for (SanPham sp : products) {
+		                int soLuongDaBan = sanPhamDao.tinhSoLuongDaBan(sp.getMaSanPham());
+		                
+		                // Check the selected range and add product if it falls within the selected range
+		                if (rdbtnNewRadioButton.isSelected() && soLuongDaBan <= 20) {
+		                    addProductToTable(sp, soLuongDaBan);
+		                    totalSold += soLuongDaBan; // Count total sold
+		                    totalProducts++; // Count total products
+		                } else if (rdbtnNewRadioButton_1.isSelected() && soLuongDaBan > 20 && soLuongDaBan <= 50) {
+		                    addProductToTable(sp, soLuongDaBan);
+		                    totalSold += soLuongDaBan;
+		                    totalProducts++;
+		                } else if (rdbtnNewRadioButton_2.isSelected() && soLuongDaBan > 50 && soLuongDaBan <= 100) {
+		                    addProductToTable(sp, soLuongDaBan);
+		                    totalSold += soLuongDaBan;
+		                    totalProducts++;
+		                } else if (rdbtnNewRadioButton_3.isSelected() && soLuongDaBan > 100) {
+		                    addProductToTable(sp, soLuongDaBan);
+		                    totalSold += soLuongDaBan;
+		                    totalProducts++;
+		                }
+		                
+		            }
+		            
+		            // Update the text fields with calculated totals
+		            textField.setText(String.valueOf(totalProducts));
+		            textField_1.setText(String.valueOf(totalSold));
+		        } else {
+		            System.out.println("Không có sản phẩm nào thuộc loại: " + maLoai);
+		        }
+		    }
+		
+		    private void addProductToTable(SanPham sp, int soLuongDaBan) {
+		        tableModel.addRow(new Object[]{
+		            sp.getMaSanPham(),
+		            sp.getTenSanPham(),
+		            sp.getLoaiSanPham() != null ? sp.getLoaiSanPham().getTenLoai() : "N/A",
+		            sp.getHanSuDung(),
+		            soLuongDaBan,
+		            sp.getSoLuongTonkho()
+		        });
+		    }
+		
+
+
+   
+});
+
     }
+    
 }
