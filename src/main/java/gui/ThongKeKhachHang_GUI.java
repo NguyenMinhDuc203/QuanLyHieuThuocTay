@@ -46,7 +46,6 @@ public class ThongKeKhachHang_GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField textField;
     private JTextField textField_1;
     private JTable table;
    
@@ -72,25 +71,7 @@ public class ThongKeKhachHang_GUI extends JFrame {
      */
     public ThongKeKhachHang_GUI() {
     	
-    	
-//    	
-//    	
-//    	
-//    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setBounds(0, 0, 1920, 1080); 
-//        setSize(1920,1080);
-//        contentPane = new JPanel();
-//        contentPane.setBackground(new Color(26, 133, 94));
-//        contentPane.setForeground(SystemColor.window);
-//        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//        setLocationRelativeTo(null);
-//		setContentPane(contentPane);
-//		contentPane.setLayout(null);
-//        
-    	
-    	
-    	
-    	
+
     	
     	
     	
@@ -321,35 +302,25 @@ public class ThongKeKhachHang_GUI extends JFrame {
 	    panel_1.add(lblNewLabel_1_1);
 	    
 	    JDateChooser dateChooser = new JDateChooser();
+	    dateChooser.setDateFormatString("dd/MM/yyyy");
 	    dateChooser.getCalendarButton().setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 	    dateChooser.setBounds(1026, 10, 347, 37);
 	    panel_1.add(dateChooser);
 	    
 	    JLabel lblNewLabel_1_2 = new JLabel("Kết quả");
 	    lblNewLabel_1_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_2.setBounds(864, 53, 76, 37);
+	    lblNewLabel_1_2.setBounds(894, 79, 76, 37);
 	    panel_1.add(lblNewLabel_1_2);
 	    
 	    JLabel lblNewLabel_1_2_1 = new JLabel("Số lượng khách hàng");
 	    lblNewLabel_1_2_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_2_1.setBounds(904, 172, 215, 37);
+	    lblNewLabel_1_2_1.setBounds(918, 142, 215, 37);
 	    panel_1.add(lblNewLabel_1_2_1);
-	    
-	    JLabel lblNewLabel_1_2_1_1 = new JLabel("Tổng số tiền");
-	    lblNewLabel_1_2_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_2_1_1.setBounds(904, 112, 215, 37);
-	    panel_1.add(lblNewLabel_1_2_1_1);
-	    
-	    textField = new JTextField();
-	    textField.setEditable(false);
-	    textField.setBounds(1129, 117, 244, 37);
-	    panel_1.add(textField);
-	    textField.setColumns(10);
 	    
 	    textField_1 = new JTextField();
 	    textField_1.setEditable(false);
 	    textField_1.setColumns(10);
-	    textField_1.setBounds(1129, 177, 244, 37);
+	    textField_1.setBounds(1129, 147, 244, 37);
 	    panel_1.add(textField_1);
 	    
 	    
