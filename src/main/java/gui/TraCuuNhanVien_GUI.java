@@ -420,7 +420,7 @@ public class TraCuuNhanVien_GUI extends JFrame {
 					
 				},
 				new String[] {
-					"M\u00E3 NV", "T\u00EAn NV", "SDT", "Tr\u00ECnh \u0111\u1ED9", "CMDN", "Email"
+					"M\u00E3 NV", "T\u00EAn NV", "SDT", "Tr\u00ECnh \u0111\u1ED9", "Chức vụ", "Email"
 				}
 			) {
 				Class[] columnTypes = new Class[] {
@@ -524,15 +524,16 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		typeSearch.setForeground(new Color(255, 255, 255));
 		typeSearch.setBackground(new Color(26, 133, 94));
 		typeSearch.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
-		typeSearch.setModel(new DefaultComboBoxModel(new String[] {"Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Email", "Chức vụ", "CMND"}));
+		typeSearch.setModel(new DefaultComboBoxModel(new String[] {"Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Email"}));
 		typeSearch.setBounds(36, 492, 230, 60);
 		panel.add(typeSearch);
 		
 		searchBtn.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        String maNhanVien = search.getText(); // Get the input from search field
-		        ArrayList<Object[]> results = nhanVienDAO.danhSachNhanVienTheoMa(maNhanVien);
+		        String searchTerm = search.getText(); // Get the input from the search field
+		        String selectedType = (String) typeSearch.getSelectedItem(); // Get the selected type
+		        ArrayList<Object[]> results = nhanVienDAO.layDanhSachNhanVien(searchTerm, selectedType);
 
 		        // Clear the existing table data
 		        tableModel.setRowCount(0);
@@ -550,6 +551,8 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		    }
 		});
 
+
+
 		table.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
@@ -566,21 +569,20 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		            
 		            if (nhanVien != null) {
 		                // Cập nhật thông tin vào các JTextField
-		                textField_3.setText(nhanVien.getTenNhanVien()); // Tên nhân viên
+		                textField_1.setText(nhanVien.getTenNhanVien()); // Tên nhân viên
 		             // Chuyển đổi LocalDate sang String
 		                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Định dạng ngày
 		                textField.setText(nhanVien.getNgaySinh().format(formatter)); // Ngày sinh
 		                textField_4.setText(nhanVien.getNgayVaoLam().format(formatter)); // Ngày vào làm
-		                textField_1.setText(nhanVien.getMaNhanVien()); // Mã nhân viên
+		                textField_3.setText(nhanVien.getMaNhanVien()); // Mã nhân viên
 		                textField_2.setText(nhanVien.getSDT()); // Số điện thoại
-		                textField_7.setText(nhanVien.getTrinhDo()); // Trình độ
+		                textField_10.setText(nhanVien.getTrinhDo()); // Trình độ
 		                textField_9.setText(nhanVien.getCMND()); // CMND
-		                textField_10.setText(nhanVien.getEmail()); // Email
-		             // Chuyển đổi ChucVu thành chuỗi
+		                textField_12.setText(nhanVien.getEmail()); // Email
 		                ChucVu chucVu = nhanVien.getChucVu(); // Lấy đối tượng ChucVu
-		                textField_11.setText(chucVu != null ? chucVu.toString() : ""); // Đảm bảo không có NullPointerException
-		                textField_12.setText(nhanVien.getDiaChi()); // Địa chỉ
-		                textField_8.setText(String.valueOf(nhanVien.getLuongCanBan())); // Lương căn bản
+		                textField_8.setText(chucVu.toString() != "NhanVien" ? "Quán Lý" : "Nhân Viên Bán Hàng"); // Đảm bảo không có NullPointerException
+		                textField_11.setText(nhanVien.getDiaChi()); // Địa chỉ
+		                textField_7.setText(String.valueOf(nhanVien.getLuongCanBan())); // Lương căn bản
 
 		                // Cập nhật giới tính từ boolean
 		                if (nhanVien.isGioiTinh()) { // true là Nam

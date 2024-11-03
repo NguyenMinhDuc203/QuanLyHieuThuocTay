@@ -42,23 +42,19 @@ import javax.swing.DefaultComboBoxModel;
 import entity.ChucVu;
 import entity.NhanVien;
 import dao.NhanVien_DAO;
+import entity.ChiTietHoaDon;
+import entity.HoaDonXuat;
+import entity.HoaDonNhap;
+import dao.HoaDonNhap_DAO;
+import dao.HoaDonXuat_DAO;
 public class TraCuuHoaDon_GUI extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField_3;
 	private JTextField search;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField;
-	private JTextField textField_4;
-	private JTextField textField_7;
-	private JTextField textField_8;
-	private JTextField textField_9;
-	private JTextField textField_10;
-	private JTextField textField_11;
-	private JTextField textField_12;
 	private JTable table;
-	private NhanVien_DAO nhanVienDAO;
+	private HoaDonXuat_DAO hoaDonXuatDAO;
+	private HoaDonNhap_DAO hoaDonNhapDAO;
+	private JTable table_1;
 
 
 	/**
@@ -83,7 +79,8 @@ public class TraCuuHoaDon_GUI extends JFrame {
 	public TraCuuHoaDon_GUI() {
 		
 		//Khai báo DAO
-		nhanVienDAO = new NhanVien_DAO();
+		hoaDonXuatDAO = new HoaDonXuat_DAO();
+		hoaDonNhapDAO = new HoaDonNhap_DAO();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(0, 0, 1920, 1080); 
@@ -245,149 +242,6 @@ public class TraCuuHoaDon_GUI extends JFrame {
 		imageLabel.setBounds(477, 11, 86, 81);
 		panel.add(imageLabel);
 		panel.add(lblNewLabel);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(26, 133, 94, 94));
-		panel_1.setBounds(36, 103, 1533, 360);
-		panel.add(panel_1);
-		panel_1.setLayout(null);
-		
-		textField_3 = new JTextField();
-		textField_3.setToolTipText("");
-		textField_3.setEditable(false);
-		textField_3.setColumns(10);
-		textField_3.setBounds(100, 49, 370, 32);
-		panel_1.add(textField_3);
-		
-		JLabel lblTenNV = new JLabel("Ngày sinh");
-		lblTenNV.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblTenNV.setBounds(589, 11, 159, 41);
-		panel_1.add(lblTenNV);
-		
-		JLabel lblMKhchHng = new JLabel("Tên nhân viên\r\n");
-		lblMKhchHng.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblMKhchHng.setBounds(100, 92, 159, 41);
-		panel_1.add(lblMKhchHng);
-		
-		JLabel lblCmnd = new JLabel("CMND");
-		lblCmnd.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblCmnd.setBounds(1056, 11, 159, 41);
-		panel_1.add(lblCmnd);
-		
-		textField_1 = new JTextField();
-		textField_1.setEditable(false);
-		textField_1.setColumns(10);
-		textField_1.setBounds(100, 129, 370, 32);
-		panel_1.add(textField_1);
-		
-		textField_2 = new JTextField();
-		textField_2.setEditable(false);
-		textField_2.setColumns(10);
-		textField_2.setBounds(100, 219, 370, 32);
-		panel_1.add(textField_2);
-		
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setColumns(10);
-		textField.setBounds(589, 49, 370, 32);
-		panel_1.add(textField);
-		
-		textField_4 = new JTextField();
-		textField_4.setEditable(false);
-		textField_4.setColumns(10);
-		textField_4.setBounds(589, 129, 370, 32);
-		panel_1.add(textField_4);
-		
-		textField_7 = new JTextField();
-		textField_7.setEditable(false);
-		textField_7.setColumns(10);
-		textField_7.setBounds(589, 219, 370, 32);
-		panel_1.add(textField_7);
-		
-		textField_8 = new JTextField();
-		textField_8.setEditable(false);
-		textField_8.setColumns(10);
-		textField_8.setBounds(589, 301, 370, 32);
-		panel_1.add(textField_8);
-		
-		textField_9 = new JTextField();
-		textField_9.setEditable(false);
-		textField_9.setColumns(10);
-		textField_9.setBounds(1056, 49, 370, 32);
-		panel_1.add(textField_9);
-		
-		textField_10 = new JTextField();
-		textField_10.setEditable(false);
-		textField_10.setColumns(10);
-		textField_10.setBounds(1056, 129, 370, 32);
-		panel_1.add(textField_10);
-		
-		textField_11 = new JTextField();
-		textField_11.setEditable(false);
-		textField_11.setColumns(10);
-		textField_11.setBounds(1056, 219, 370, 32);
-		panel_1.add(textField_11);
-		
-		textField_12 = new JTextField();
-		textField_12.setEditable(false);
-		textField_12.setColumns(10);
-		textField_12.setBounds(1056, 301, 370, 32);
-		panel_1.add(textField_12);
-		
-		JLabel lblMKhchHng_1 = new JLabel("Mã nhân viên\n");
-		lblMKhchHng_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblMKhchHng_1.setBounds(100, 11, 159, 41);
-		panel_1.add(lblMKhchHng_1);
-		
-		JLabel lblMKhchHng_1_1 = new JLabel("Số điện thoại");
-		lblMKhchHng_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblMKhchHng_1_1.setBounds(100, 180, 159, 41);
-		panel_1.add(lblMKhchHng_1_1);
-		
-		JLabel lblMKhchHng_1_2 = new JLabel("Giới tính");
-		lblMKhchHng_1_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblMKhchHng_1_2.setBounds(100, 261, 159, 41);
-		panel_1.add(lblMKhchHng_1_2);
-		
-		JLabel lblTenNV_1 = new JLabel("Ngày vào làm");
-		lblTenNV_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblTenNV_1.setBounds(589, 92, 159, 41);
-		panel_1.add(lblTenNV_1);
-		
-		JLabel lblTenNV_1_1 = new JLabel("Lương căn bản");
-		lblTenNV_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblTenNV_1_1.setBounds(589, 180, 159, 41);
-		panel_1.add(lblTenNV_1_1);
-		
-		JLabel lblTenNV_1_2 = new JLabel("Chức vụ");
-		lblTenNV_1_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblTenNV_1_2.setBounds(589, 262, 159, 41);
-		panel_1.add(lblTenNV_1_2);
-		
-		JLabel lblTrnh = new JLabel("Trình độ");
-		lblTrnh.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblTrnh.setBounds(1056, 92, 159, 41);
-		panel_1.add(lblTrnh);
-		
-		JLabel lblaCh = new JLabel("Địa chỉ");
-		lblaCh.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblaCh.setBounds(1056, 180, 159, 41);
-		panel_1.add(lblaCh);
-		
-		JLabel lblEmail = new JLabel("Email");
-		lblEmail.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-		lblEmail.setBounds(1056, 261, 159, 41);
-		panel_1.add(lblEmail);
-		
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Nam");
-		rdbtnNewRadioButton.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-		rdbtnNewRadioButton.setBounds(100, 306, 137, 27);
-		panel_1.add(rdbtnNewRadioButton);
-		
-		JRadioButton rdbtnN = new JRadioButton("Nữ");
-		rdbtnN.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-		rdbtnN.setBounds(278, 304, 137, 27);
-		panel_1.add(rdbtnN);
 		ImageIcon iconThem = new ImageIcon(TraCuuKhachHang_GUI.class.getResource("/GUI/4993253681582956831-128.png"));
 		Image scaledImageThem = iconThem.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 		ImageIcon iconXoa = new ImageIcon(TraCuuKhachHang_GUI.class.getResource("/GUI/320632131667326703-128.png"));
@@ -401,36 +255,195 @@ public class TraCuuHoaDon_GUI extends JFrame {
 		
 		search = new JTextField();
 		search.setColumns(10);
-		search.setBounds(320, 492, 960, 61);
+		search.setBounds(556, 335, 742, 61);
 		panel.add(search);
 		
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
-		scrollPane.setBounds(36, 585, 1522, 220);
+		scrollPane.setBounds(36, 431, 1522, 302);
 		panel.add(scrollPane);
+		
+		
+		
+		JButton searchBtn = new JButton("Tìm Kiếm\r\n");
+		searchBtn.setForeground(new Color(255, 255, 255));
+		searchBtn.setBackground(new Color(26, 133, 94));
+		searchBtn.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
+		searchBtn.setBounds(1328, 336, 230, 60);
+		
+		panel.add(searchBtn);
+		
+		JComboBox typeSearch = new JComboBox();
+		typeSearch.setForeground(new Color(255, 255, 255));
+		typeSearch.setBackground(new Color(26, 133, 94));
+		typeSearch.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
+		typeSearch.setModel(new DefaultComboBoxModel(new String[] {"Hóa đơn nhập", "Hóa đơn xuất"}));
+		typeSearch.setBounds(36, 336, 230, 60);
+		panel.add(typeSearch);
+		
+		JComboBox typeSearch_1 = new JComboBox();
+		typeSearch_1.setModel(new DefaultComboBoxModel(new String[] {"Mã hóa đơn", "Mã nhà cung cấp"}));
+		typeSearch_1.setForeground(Color.WHITE);
+		typeSearch_1.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
+		typeSearch_1.setBackground(new Color(26, 133, 94));
+		typeSearch_1.setBounds(296, 336, 230, 60);
+		panel.add(typeSearch_1);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setViewportBorder(null);
+		scrollPane_1.setBounds(36, 111, 1522, 193);
+		panel.add(scrollPane_1);
+		
+		table_1 = new JTable();
+		table_1.setSurrendersFocusOnKeystroke(true);
+		table_1.setShowGrid(false);
+		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table_1.setRowHeight(30);
+		table_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+		table_1.setBorder(null);
+		DefaultTableModel tableModel_1 = new DefaultTableModel(
+				new Object[][] {
+					
+				},
+				new String[] {
+					"Mã HD", "Mã NV", "Mã KH", "Ngày Tạo", "Ma Giam Gia", "Tổng Tiền"
+				}
+			) {
+				Class[] columnTypes = new Class[] {
+					String.class, String.class, String.class, String.class, String.class, Double.class
+				};
+				public Class getColumnClass(int columnIndex) {
+					return columnTypes[columnIndex];
+				}
+			};
+			DefaultTableModel tableModel_1_2 = new DefaultTableModel(
+					new Object[][] {
+						
+					},
+					new String[] {
+						"Mã HD", "Ngày Tạo", "Ma NPP", "Tổng Tiền"
+					}
+				) {
+					Class[] columnTypes = new Class[] {
+						String.class, String.class, String.class, Double.class
+					};
+					public Class getColumnClass(int columnIndex) {
+						return columnTypes[columnIndex];
+					}
+				};
+	    table_1.setModel(tableModel_1_2);
+		table_1.setBackground(new Color(255, 255, 255));
+		// Thiết lập font cho table và header
+				Font headerFont = new Font("Leelawadee UI", Font.BOLD, 18); // Chữ to hơn cho header
+				table_1.getTableHeader().setFont(headerFont); // Áp dụng cho header
+				table_1.getTableHeader().setPreferredSize(new Dimension(0, 50));
+				// Thiết lập màu cho header
+				table_1.getTableHeader().setBackground(new Color(26, 133, 94, 196)); // Màu xanh cho header
+				table_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16)); // Font cho các dòng
+
+				// Thiết lập chiều cao của các dòng
+				table_1.setRowHeight(30); // Đặt chiều cao dòng lớn hơn
+				// Áp dụng màu xen kẽ cho các dòng
+				table_1.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+		            public Component getTableCellRendererComponent(JTable table, Object value,
+		                    boolean isSelected, boolean hasFocus, int row, int column) {
+		            	Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+		            	if (value instanceof Double) {
+		                    // Nếu giá trị là Double, không thay đổi màu nền
+		                    c.setBackground(Color.WHITE);
+		                } else {
+		                    // Áp dụng màu nền cho các dòng
+		                    if (row % 2 != 0) {
+		                        c.setBackground(new Color(26, 133, 94, 94)); // Màu cho dòng chẵn
+		                    } else {
+		                        c.setBackground(Color.WHITE); // Màu cho dòng lẻ
+		                    }
+		                }
+		                return c;
+		            }
+		        });
+		     // Ngăn di chuyển cột
+				table_1.getTableHeader().setReorderingAllowed(false);
+
+		        // Ngăn nhấn vào header
+				table_1.getTableHeader().addMouseListener(new MouseAdapter() {
+		            @Override
+		            public void mouseClicked(MouseEvent e) {
+		                
+		            }
+		        });
+				// Thêm MouseListener để chọn toàn bộ hàng khi nhấp vào ô
+				table_1.addMouseListener(new MouseAdapter() {
+		            @Override
+		            public void mouseClicked(MouseEvent e) {
+		                int row = table_1.rowAtPoint(e.getPoint());
+		                if (row >= 0) {
+		                	table_1.clearSelection(); // Dọn sạch lựa chọn hiện tại
+		                	table_1.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
+		                    for (int i = 0; i < table_1.getColumnCount(); i++) {
+		                    	table_1.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+		                            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		                                Component c = super.getTableCellRendererComponent(table_1, value, isSelected, hasFocus, row, column );
+		                                if (row == table_1.getSelectedRow()) {
+		                                    c.setBackground(new Color(10, 69, 23)); // Màu cho hàng được chọn
+		                                    c.setForeground(Color.WHITE);
+		                                } else {
+		                                	if (row % 2 != 0) {
+		                                        c.setBackground(new Color(26, 133, 94, 94)); // Màu cho dòng chẵn
+		                                        c.setForeground(Color.BLACK);
+		                                    } else {
+		                                        c.setBackground(Color.WHITE); // Màu cho dòng lẻ
+		                                        c.setForeground(Color.BLACK);
+		                                    }
+		                                }
+		                                return c;
+		                            }
+		                        });
+		                    } // Màu cho dòng lẻ
+		                }
+		            }
+		        });
+
+		scrollPane_1.setViewportView(table_1);
 		
 		table = new JTable();
 		table.setSurrendersFocusOnKeystroke(true);
 		table.setShowGrid(false);
-		table.setBackground(new Color(26, 133, 94, 196));
+		table.setBackground(new Color(255, 255, 255));
 		table.setBorder(null);
 		DefaultTableModel tableModel = new DefaultTableModel(
 				new Object[][] {
 					
 				},
 				new String[] {
-					"M\u00E3 NV", "T\u00EAn NV", "SDT", "Tr\u00ECnh \u0111\u1ED9", "CMDN", "Email"
+					"M\u00E3 Sản Phẩm", "T\u00EAn Sản Phẩm","Loại Sản Phẩm", "Số Lượng", "Giá Bán", "Thành Tiền"
 				}
 			) {
 				Class[] columnTypes = new Class[] {
-					String.class, String.class, String.class, String.class, String.class, String.class
+					String.class, String.class, String.class, Integer.class, Double.class, Double.class
 				};
 				public Class getColumnClass(int columnIndex) {
 					return columnTypes[columnIndex];
 				}
 			};
-	    table.setModel(tableModel);
+			DefaultTableModel tableModel2 = new DefaultTableModel(
+					new Object[][] {
+						
+					},
+					new String[] {
+						"M\u00E3 Sản Phẩm", "T\u00EAn Sản Phẩm","Loại Sản Phẩm", "Số Lượng", "Giá Nhập", "Thành Tiền"
+					}
+				) {
+					Class[] columnTypes = new Class[] {
+						String.class, String.class, String.class, String.class, Double.class, Double.class
+					};
+					public Class getColumnClass(int columnIndex) {
+						return columnTypes[columnIndex];
+					}
+				};
+		table.setModel(tableModel2);	
 		table.getColumnModel().getColumn(0).setPreferredWidth(100);
 		table.getColumnModel().getColumn(1).setPreferredWidth(99);
 		table.getColumnModel().getColumn(2).setPreferredWidth(65);
@@ -438,8 +451,6 @@ public class TraCuuHoaDon_GUI extends JFrame {
 		table.getColumnModel().getColumn(4).setPreferredWidth(90);
 		table.getColumnModel().getColumn(5).setPreferredWidth(100);
 
-		// Thiết lập font cho table và header
-		Font headerFont = new Font("Leelawadee UI", Font.BOLD, 18); // Chữ to hơn cho header
 		table.getTableHeader().setFont(headerFont); // Áp dụng cho header
 		table.getTableHeader().setPreferredSize(new Dimension(0, 50));
 		// Thiết lập màu cho header
@@ -472,131 +483,106 @@ public class TraCuuHoaDon_GUI extends JFrame {
                 
             }
         });
-
-        // Thiết lập chế độ chọn hàng
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        // Thêm MouseListener để chọn toàn bộ hàng khi nhấp vào ô
-        table.addMouseListener(new MouseAdapter() {
+        typeSearch.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = table.rowAtPoint(e.getPoint());
-                if (row >= 0) {
-                	table.clearSelection(); // Dọn sạch lựa chọn hiện tại
-                    table.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
-                    for (int i = 0; i < table.getColumnCount(); i++) {
-                        table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
-                            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column );
-                                if (row == table.getSelectedRow()) {
-                                    c.setBackground(new Color(10, 69, 23)); // Màu cho hàng được chọn
-                                    c.setForeground(Color.WHITE);
-                                } else {
-                                	if (row % 2 != 0) {
-                                        c.setBackground(new Color(26, 133, 94, 94)); // Màu cho dòng chẵn
-                                        c.setForeground(Color.BLACK);
-                                    } else {
-                                        c.setBackground(Color.WHITE); // Màu cho dòng lẻ
-                                        c.setForeground(Color.BLACK);
-                                    }
-                                }
-                                return c;
-                            }
-                        });
-                    } // Màu cho dòng lẻ
+            public void actionPerformed(ActionEvent e) {
+                String selectedType = (String) typeSearch.getSelectedItem();
+                if ("Hóa đơn xuất".equals(selectedType)) {
+                    table.setModel(tableModel); 
+                    table_1.setModel(tableModel_1);// Sử dụng tableModel cho hóa đơn xuất
+                    typeSearch_1.setModel(new DefaultComboBoxModel(new String[] {"Mã hóa đơn", "Mã khách hàng", "Mã nhân viên"}));
+                } else {
+                    table.setModel(tableModel2);
+                    table_1.setModel(tableModel_1_2);// Sử dụng tableModel2 cho hóa đơn nhập
+                    typeSearch_1.setModel(new DefaultComboBoxModel(new String[] {"Mã hóa đơn", "Mã nhà phân phối"}));
                 }
             }
         });
 
-
 		scrollPane.setViewportView(table);
-
 		
-		JButton searchBtn = new JButton("Tìm Kiếm\r\n");
-		searchBtn.setForeground(new Color(255, 255, 255));
-		searchBtn.setBackground(new Color(26, 133, 94));
-		searchBtn.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
-		searchBtn.setBounds(1335, 492, 230, 60);
-		
-		panel.add(searchBtn);
-		
-		JComboBox typeSearch = new JComboBox();
-		typeSearch.setForeground(new Color(255, 255, 255));
-		typeSearch.setBackground(new Color(26, 133, 94));
-		typeSearch.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
-		typeSearch.setModel(new DefaultComboBoxModel(new String[] {"Mã nhân viên", "Tên nhân viên", "Số điện thoại", "Email", "Chức vụ", "CMND"}));
-		typeSearch.setBounds(36, 492, 230, 60);
-		panel.add(typeSearch);
 		
 		searchBtn.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        String maNhanVien = search.getText(); // Get the input from search field
-		        ArrayList<Object[]> results = nhanVienDAO.danhSachNhanVienTheoMa(maNhanVien);
-
+		        String searchTerm = search.getText(); // Get the input from the search field
+		       
+		        String selectedType = (String) typeSearch_1.getSelectedItem(); // Get the selected type
+		        String selectedType2 = (String) typeSearch.getSelectedItem();
 		        // Clear the existing table data
-		        tableModel.setRowCount(0);
-
+		        tableModel_1.setRowCount(0);
+		        tableModel_1_2.setRowCount(0);
+		        ArrayList<Object[]> results;
+		        
+		        if ("Hóa đơn xuất".equals(selectedType2)) {
+		            results = hoaDonXuatDAO.layDanhSachHoaDon(searchTerm, selectedType);
+		            
+		        } else {
+		            results = hoaDonNhapDAO.layDanhSachHoaDon(searchTerm, selectedType);
+		            
+		        }
+		        
 		        // Check if results are empty
 		        if (results.isEmpty()) {
-		            // Show message when no employee is found
+		            // Show message when no results are found
 		            JOptionPane.showMessageDialog(panel, "Không tìm thấy", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
 		        } else {
+		        	if ("Hóa đơn xuất".equals(selectedType2)) {
+		        		for (Object[] row : results) {
+			                tableModel_1.addRow(row);
+			            }
+			            
+			        } else {
+			        	for (Object[] row : results) {
+			                tableModel_1_2.addRow(row);
+			            }
+			            
+			        }
 		            // Populate the table with the search results
-		            for (Object[] row : results) {
-		                tableModel.addRow(row);
-		            }
+		            
 		        }
 		    }
 		});
 
-		table.addMouseListener(new MouseAdapter() {
+//
+		table_1.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
-		        int row = table.rowAtPoint(e.getPoint());
-		        if (row >= 0) {
-		            table.clearSelection(); // Xóa lựa chọn hiện tại
-		            table.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
-
-		            // Lấy mã nhân viên từ cột đầu tiên của hàng đã chọn
-		            String maNhanVien = (String) table.getValueAt(row, 0); // Giả sử mã nhân viên ở cột đầu tiên
-		            
-		            // Fetch thông tin nhân viên bằng DAO
-		            NhanVien nhanVien = nhanVienDAO.layThongTinNhanVienTheoMa(maNhanVien);
-		            
-		            if (nhanVien != null) {
-		                // Cập nhật thông tin vào các JTextField
-		                textField_3.setText(nhanVien.getTenNhanVien()); // Tên nhân viên
-		             // Chuyển đổi LocalDate sang String
-		                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Định dạng ngày
-		                textField.setText(nhanVien.getNgaySinh().format(formatter)); // Ngày sinh
-		                textField_4.setText(nhanVien.getNgayVaoLam().format(formatter)); // Ngày vào làm
-		                textField_1.setText(nhanVien.getMaNhanVien()); // Mã nhân viên
-		                textField_2.setText(nhanVien.getSDT()); // Số điện thoại
-		                textField_7.setText(nhanVien.getTrinhDo()); // Trình độ
-		                textField_9.setText(nhanVien.getCMND()); // CMND
-		                textField_10.setText(nhanVien.getEmail()); // Email
-		             // Chuyển đổi ChucVu thành chuỗi
-		                ChucVu chucVu = nhanVien.getChucVu(); // Lấy đối tượng ChucVu
-		                textField_11.setText(chucVu != null ? chucVu.toString() : ""); // Đảm bảo không có NullPointerException
-		                textField_12.setText(nhanVien.getDiaChi()); // Địa chỉ
-		                textField_8.setText(String.valueOf(nhanVien.getLuongCanBan())); // Lương căn bản
-
-		                // Cập nhật giới tính từ boolean
-		                if (nhanVien.isGioiTinh()) { // true là Nam
-		                    rdbtnNewRadioButton.setSelected(true);
-		                    rdbtnN.setSelected(false);
-		                } else { // false là Nữ
-		                    rdbtnNewRadioButton.setSelected(false);
-		                    rdbtnN.setSelected(true);
-		                }
-		            } else {
-		                // Xử lý trường hợp không tìm thấy nhân viên
-		                JOptionPane.showMessageDialog(panel, "Không tìm thấy thông tin nhân viên", "Thông báo", JOptionPane.WARNING_MESSAGE);
+		        int row = table_1.rowAtPoint(e.getPoint());
+		        table_1.clearSelection(); // Xóa lựa chọn hiện tại
+		        table_1.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
+		        
+		        String selectedType = (String) typeSearch.getSelectedItem();
+		        // Lấy mã hóa đơn xuất từ cột đầu tiên của hàng đã chọn
+		        String maHoaDon = (String) table_1.getValueAt(row, 0); // Giả sử mã hóa đơn xuất ở cột đầu tiên
+		        tableModel.setRowCount(0);
+		        tableModel2.setRowCount(0);
+		        
+		        ArrayList<Object[]> chiTietSanPham;
+		        
+		        // Xác định loại hóa đơn và gọi phương thức tương ứng
+		        if ("Hóa đơn xuất".equals(selectedType)) {
+		            chiTietSanPham = hoaDonXuatDAO.layDanhSachChiTietSanPhamTheoMaHoaDonXuat(maHoaDon);
+		            // Thêm dữ liệu vào tableModel cho hóa đơn xuất
+		            for (Object[] rowData : chiTietSanPham) {
+		                tableModel.addRow(rowData);
 		            }
+		        } else {
+		            chiTietSanPham = hoaDonNhapDAO.layDanhSachChiTietSanPhamTheoMaHoaDonNhap(maHoaDon);
+		            // Thêm dữ liệu vào tableModel2 cho hóa đơn nhập
+		            for (Object[] rowData : chiTietSanPham) {
+		                tableModel2.addRow(rowData);
+		            }
+		        }
+		        
+		        // Kiểm tra và in ra thông báo nếu không có sản phẩm nào
+		        if (chiTietSanPham == null || chiTietSanPham.isEmpty()) {
+		            System.out.println("Không tìm thấy sản phẩm cho mã hóa đơn: " + maHoaDon);
 		        }
 		    }
 		});
+
+
 
 		//Actions Menu
 				mnNewMenu.addActionListener(e -> openTrangChu());
