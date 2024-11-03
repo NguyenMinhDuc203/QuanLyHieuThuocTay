@@ -13,10 +13,10 @@ import jakarta.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ThongKeDoanhSo_DAO {
+public class HoaDonXuat_DAO {
     private EntityManagerFactory emf;
 
-    public ThongKeDoanhSo_DAO() {
+    public HoaDonXuat_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
     }
 
@@ -57,7 +57,7 @@ public class ThongKeDoanhSo_DAO {
     }
 
     public static void main(String[] args) {
-        ThongKeDoanhSo_DAO dao = new ThongKeDoanhSo_DAO();
+        HoaDonXuat_DAO dao = new HoaDonXuat_DAO();
         List<Object[]> danhSachDoanhSo = dao.thongKeDoanhSo();
 
         if (danhSachDoanhSo == null || danhSachDoanhSo.isEmpty()) {
