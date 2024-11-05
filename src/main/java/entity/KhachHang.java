@@ -19,4 +19,5 @@ public class KhachHang {
 	private String maKhachHang;
 	private String tenKhachHang;
 	private String sDT;
+	private int diemTichLuy;
 }
