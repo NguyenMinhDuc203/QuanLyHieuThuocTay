@@ -600,17 +600,17 @@ lblTrinhDo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				btnTim.setBackground(new Color(46, 139, 87));
 				btnTim.setBounds(962, 429, 105, 45);
 
-				ImageIcon iconTim = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/search.png"));
-				Image imgTim = iconTim.getImage();
-				BufferedImage bImageTim = new BufferedImage(imgTim.getWidth(null), imgTim.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g2dTim = bImageTim.createGraphics();
-				g2dTim.drawImage(imgTim, 0, 0, null);
-				g2dTim.setComposite(AlphaComposite.SrcIn);
-				g2dTim.setColor(Color.WHITE);
-				g2dTim.fillRect(0, 0, bImageTim.getWidth(), bImageTim.getHeight());
-				g2dTim.dispose();
-				Image scaledImageTim = bImageTim.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnTim.setIcon(new ImageIcon(scaledImageTim));
+//				ImageIcon iconTim = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/search.png"));
+//				Image imgTim = iconTim.getImage();
+//				BufferedImage bImageTim = new BufferedImage(imgTim.getWidth(null), imgTim.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+//				Graphics2D g2dTim = bImageTim.createGraphics();
+//				g2dTim.drawImage(imgTim, 0, 0, null);
+//				g2dTim.setComposite(AlphaComposite.SrcIn);
+//				g2dTim.setColor(Color.WHITE);
+//				g2dTim.fillRect(0, 0, bImageTim.getWidth(), bImageTim.getHeight());
+//				g2dTim.dispose();
+//				Image scaledImageTim = bImageTim.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+//				btnTim.setIcon(new ImageIcon(scaledImageTim));
 				panel.add(btnTim);
 	}
 }

@@ -38,7 +38,7 @@ import java.awt.Dimension;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 
-
+import gui.TrangChu_GUI;
 
 public class QuanLySanPham_GUI extends JFrame {
 
@@ -61,7 +61,7 @@ public class QuanLySanPham_GUI extends JFrame {
 	private JTextField txtCongDung;
 	private JTextField txtBaoQuan;
 	private JTextField txtChongChiDinh;
-
+	private TrangChu_GUI trangChuGUI;
 	/**
 	 * Launch the application.
 	 */
@@ -93,166 +93,15 @@ public class QuanLySanPham_GUI extends JFrame {
 		contentPane.setLayout(null);
 		
 		 // Menu Bar
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setOpaque(true);
-        menuBar.setBackground(new Color(46, 139, 87));
-        menuBar.setBounds(0, 0, 1407, 70);
-        contentPane.add(menuBar);
+		trangChuGUI = new TrangChu_GUI();
+		JMenuBar menuBar = trangChuGUI.createMenuBar();
+		menuBar.setBorderPainted(false);
+		menuBar.setOpaque(true);
+		menuBar.setBackground(new Color(26, 133, 94));
+		menuBar.setBounds(0, 0, 1395, 70);
+		contentPane.add(menuBar);
 
-        // Menu "Trang Chủ"
-        JMenu mnTrangChu = new JMenu(" Trang Chủ");
-        mnTrangChu.setOpaque(true);
-        mnTrangChu.setBackground(new Color(46, 139, 87));
-        mnTrangChu.setForeground(Color.WHITE);
-        mnTrangChu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
         
-        // Tạo icon trắng cho "Trang Chủ"
-        ImageIcon icon = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/house-solid.png"));
-        Image img = icon.getImage();
-        BufferedImage bImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = bImage.createGraphics();
-        g2d.drawImage(img, 0, 0, null);
-        g2d.setComposite(AlphaComposite.SrcIn);
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, bImage.getWidth(), bImage.getHeight());
-        g2d.dispose();
-        Image scaledImage = bImage.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnTrangChu.setIcon(new ImageIcon(scaledImage));
-        menuBar.add(mnTrangChu);
-
-      
-     // Menu "Quản Lý"
-        JMenu mnQuanLy = new JMenu(" Quản Lý");
-        mnQuanLy.setOpaque(true);
-        mnQuanLy.setBackground(new Color(46, 139, 87));
-        mnQuanLy.setForeground(new Color(255, 255, 255));
-        mnQuanLy.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        ImageIcon icon1 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/list-check-solid.png"));
-        Image img1 = icon1.getImage();
-        BufferedImage bImage1 = new BufferedImage(img1.getWidth(null), img1.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d1 = bImage1.createGraphics();
-        g2d1.drawImage(img1, 0, 0, null);
-        g2d1.setComposite(AlphaComposite.SrcIn);
-        g2d1.setColor(Color.WHITE);
-        g2d1.fillRect(0, 0, bImage1.getWidth(), bImage1.getHeight());
-        g2d1.dispose();
-        Image scaledImage1 = bImage1.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnQuanLy.setIcon(new ImageIcon(scaledImage1));
-        mnQuanLy.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Thay đổi giá trị 20 để điều chỉnh khoảng cách
-        menuBar.add(mnQuanLy);
-
-        // Thêm các menu item cho "Quản Lý"
-        JMenuItem mntmSP = new JMenuItem("Sản Phẩm");
-        mntmSP.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmSP);
-
-        JMenuItem mntmNV = new JMenuItem("Nhân Viên");
-        mntmNV.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmNV);
-
-        JMenuItem mntmKH = new JMenuItem("Khách Hàng");
-        mntmKH.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmKH);
-
-        // Menu "Bán Hàng"
-        JMenu mnBanHang = new JMenu(" Bán Hàng");
-        mnBanHang.setOpaque(true);
-        mnBanHang.setBackground(new Color(46, 139, 87));
-        mnBanHang.setForeground(new Color(255, 255, 255));
-        mnBanHang.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        ImageIcon icon2 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/cart-shopping-solid.png"));
-        Image img2 = icon2.getImage();
-        BufferedImage bImage2 = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d2 = bImage2.createGraphics();
-        g2d2.drawImage(img2, 0, 0, null); // Sử dụng img2 thay vì img1
-        g2d2.setComposite(AlphaComposite.SrcIn);
-        g2d2.setColor(Color.WHITE);
-        g2d2.fillRect(0, 0, bImage2.getWidth(), bImage2.getHeight());
-        g2d2.dispose();
-        Image scaledImage2 = bImage2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnBanHang.setIcon(new ImageIcon(scaledImage2));
-        mnBanHang.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Thay đổi giá trị 20 để điều chỉnh khoảng cách
-        menuBar.add(mnBanHang);
-
-     // Menu "Thống Kê"
-        JMenu mnthongke = new JMenu(" Thống Kê");
-        mnthongke.setBackground(new Color(46, 139, 87));
-        mnthongke.setOpaque(true);
-        mnthongke.setForeground(new Color(255, 255, 255));
-        mnthongke.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-
-        ImageIcon icon3 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/clipboard-solid.png"));
-        Image img3 = icon3.getImage();
-        BufferedImage bImage3 = new BufferedImage(img3.getWidth(null), img3.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d3 = bImage3.createGraphics();
-        g2d3.drawImage(img3, 0, 0, null);
-        g2d3.setComposite(AlphaComposite.SrcIn);
-        g2d3.setColor(Color.WHITE);
-        g2d3.fillRect(0, 0, bImage3.getWidth(), bImage3.getHeight());
-        g2d3.dispose();
-        Image scaledImage3 = bImage3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnthongke.setIcon(new ImageIcon(scaledImage3)); // Sử dụng icon đã được chuyển thành màu trắng
-
-        menuBar.add(Box.createHorizontalStrut(30)); // Thêm khoảng cách
-        menuBar.add(mnthongke);
-
-        // Thêm các menu item cho "Thống Kê"
-        JMenuItem mntmDoanhSo = new JMenuItem("Doanh Số");
-        mntmDoanhSo.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnthongke.add(mntmDoanhSo);
-
-        JMenuItem mntmNhanVien = new JMenuItem("Nhân Viên");
-        mntmNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnthongke.add(mntmNhanVien);
-
-        JMenuItem mntmKhachHang = new JMenuItem("Khách Hàng");
-        mntmKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnthongke.add(mntmKhachHang);
-
-        JMenuItem mntmSanPham = new JMenuItem("Sản Phẩm");
-        mntmSanPham.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnthongke.add(mntmSanPham);
-
-        // Menu "Tra Cứu"
-        JMenu mnTraCuu = new JMenu(" Tra Cứu");
-        mnTraCuu.setBackground(new Color(46, 139, 87));
-        mnTraCuu.setOpaque(true);
-        mnTraCuu.setForeground(new Color(255, 255, 255));
-        mnTraCuu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-
-        ImageIcon icon2_2 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/circle-question-solid.png"));
-        Image img2_2 = icon2_2.getImage();
-        BufferedImage bImage2_2 = new BufferedImage(img2_2.getWidth(null), img2_2.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d2_2 = bImage2_2.createGraphics();
-        g2d2_2.drawImage(img2_2, 0, 0, null);
-        g2d2_2.setComposite(AlphaComposite.SrcIn);
-        g2d2_2.setColor(Color.WHITE);
-        g2d2_2.fillRect(0, 0, bImage2_2.getWidth(), bImage2_2.getHeight());
-        g2d2_2.dispose();
-        Image scaledImage2_2 = bImage2_2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnTraCuu.setIcon(new ImageIcon(scaledImage2_2)); // Sử dụng icon đã được chuyển thành màu trắng
-
-        Component horizontalStrut2 = Box.createHorizontalStrut(30); // Thêm khoảng cách
-        horizontalStrut2.setBackground(new Color(46, 139, 87));
-        menuBar.add(horizontalStrut2);
-        menuBar.add(mnTraCuu);
-
-        // Thêm các menu item cho "Tra Cứu"
-        JMenuItem mntmTCSP = new JMenuItem("Sản Phẩm");
-        mntmTCSP.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnTraCuu.add(mntmTCSP);
-
-        JMenuItem mntmTCNV = new JMenuItem("Nhân Viên");
-        mntmTCNV.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnTraCuu.add(mntmTCNV);
-
-				
-				JMenuItem mntmTCKH = new JMenuItem("Khách Hàng");
-				mntmTCKH.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnTraCuu.add(mntmTCKH);
-				mnTraCuu.setOpaque(true);
-				ImageIcon iconBt = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/arrow-from-bracket-solid.png"));
-				Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 				
 				JPanel panel = new JPanel();
 				panel.setBackground(new Color(226, 250, 252));
@@ -650,17 +499,17 @@ lblTrinhDo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 				btnTim.setBackground(new Color(46, 139, 87));
 				btnTim.setBounds(962, 450, 105, 45);
 
-				ImageIcon iconTim = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/search.png"));
-				Image imgTim = iconTim.getImage();
-				BufferedImage bImageTim = new BufferedImage(imgTim.getWidth(null), imgTim.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g2dTim = bImageTim.createGraphics();
-				g2dTim.drawImage(imgTim, 0, 0, null);
-				g2dTim.setComposite(AlphaComposite.SrcIn);
-				g2dTim.setColor(Color.WHITE);
-				g2dTim.fillRect(0, 0, bImageTim.getWidth(), bImageTim.getHeight());
-				g2dTim.dispose();
-				Image scaledImageTim = bImageTim.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnTim.setIcon(new ImageIcon(scaledImageTim));
+				//ImageIcon iconTim = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/search.png"));
+//				Image imgTim = iconTim.getImage();
+//				BufferedImage bImageTim = new BufferedImage(imgTim.getWidth(null), imgTim.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+//				Graphics2D g2dTim = bImageTim.createGraphics();
+//				g2dTim.drawImage(imgTim, 0, 0, null);
+//				g2dTim.setComposite(AlphaComposite.SrcIn);
+//				g2dTim.setColor(Color.WHITE);
+//				g2dTim.fillRect(0, 0, bImageTim.getWidth(), bImageTim.getHeight());
+//				g2dTim.dispose();
+//				Image scaledImageTim = bImageTim.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+//				btnTim.setIcon(new ImageIcon(scaledImageTim));
 				panel.add(btnTim);
 	}
 }

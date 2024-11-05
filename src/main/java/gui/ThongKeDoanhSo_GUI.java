@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
 
 import dao.HoaDonXuat_DAO;
+import entity.SanPham;
 
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -20,8 +21,11 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
@@ -408,7 +412,21 @@ public class ThongKeDoanhSo_GUI extends JFrame {
                 
             }
         });
-
+        
+        mnNewMenu.addActionListener(e -> openTrangChu());
+		mntmNewMenuItem.addActionListener(e -> openQuanLySanPham());
+		mntmNhnVin.addActionListener(e -> openQuanLyNhanVien());
+		mntmKhchHng.addActionListener(e -> openQuanLyKhachHang());
+		mnNewMenu_2_1.addActionListener(e -> openBanHang());
+		//mntmNewMenuItem_1.addActionListener(e -> openThongKeDoanhSo());
+		mntmNewMenuItem_1_3.addActionListener(e -> openThongKeNhanVien());
+		mntmNewMenuItem_1_2.addActionListener(e -> openThongKeKhachHang());
+		mntmNewMenuItem_1_1.addActionListener(e -> openThongKeSanPham());
+		mntmNewMenuItem_2.addActionListener(e -> openTraCuuSanPham());
+		mntmNewMenuItem_2_2.addActionListener(e -> openTraCuuNhanVien());
+		mntmNewMenuItem_2_1.addActionListener(e -> openTraCuuKhachHang());
+		mntmNewMenuItem_2_1_1.addActionListener(e -> openTraCuuHoaDon());
+		
         // Thiết lập chế độ chọn hàng
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -443,9 +461,142 @@ public class ThongKeDoanhSo_GUI extends JFrame {
                 }
             }
         });
+        
+//		
+//		btnThongKe.addActionListener(new ActionListener() {
+//		    @Override
+//		    public void actionPerformed(ActionEvent e) {
+//		        thongKe(); // Call thongKe when the button is pressed
+//		    }
+//		    
+//		    private void thongKe() {
+//		       
+//		        // Clear old data in the table
+//		        tableModel.setRowCount(0);
+//		        
+//		
+//		        // Get the list of products by category
+//		        List<SanPham> products = hoaDon.thongKeSanPhamTheoLoaiMa(maLoai);
+//		        
+//		        // Check for null or empty list before updating the table
+//		        if (products != null && !products.isEmpty()) {
+//		            for (SanPham sp : products) {
+//		                int soLuongDaBan = sanPhamDao.tinhSoLuongDaBan(sp.getMaSanPham());
+//		                
+//		                // Check the selected range and add product if it falls within the selected range
+//		                if (rdbtnNewRadioButton.isSelected() && soLuongDaBan <= 20) {
+//		                    addProductToTable(sp, soLuongDaBan);
+//		                    totalSold += soLuongDaBan; // Count total sold
+//		                    totalProducts++; // Count total products
+//		                } else if (rdbtnNewRadioButton_1.isSelected() && soLuongDaBan > 20 && soLuongDaBan <= 50) {
+//		                    addProductToTable(sp, soLuongDaBan);
+//		                    totalSold += soLuongDaBan;
+//		                    totalProducts++;
+//		                } else if (rdbtnNewRadioButton_2.isSelected() && soLuongDaBan > 50 && soLuongDaBan <= 100) {
+//		                    addProductToTable(sp, soLuongDaBan);
+//		                    totalSold += soLuongDaBan;
+//		                    totalProducts++;
+//		                } else if (rdbtnNewRadioButton_3.isSelected() && soLuongDaBan > 100) {
+//		                    addProductToTable(sp, soLuongDaBan);
+//		                    totalSold += soLuongDaBan;
+//		                    totalProducts++;
+//		                }
+//		                
+//		            }
+//		            
+//		            // Update the text fields with calculated totals
+//		            textField.setText(String.valueOf(totalProducts));
+//		            textField_1.setText(String.valueOf(totalSold));
+//		        } else {
+//		            System.out.println("Không có sản phẩm nào thuộc loại: " + maLoai);
+//		        }
+//		    }
+//		
+//		    private void addProductToTable(SanPham sp, int soLuongDaBan) {
+//		        tableModel.addRow(new Object[]{
+//		            sp.getMaSanPham(),
+//		            sp.getTenSanPham(),
+//		            sp.getLoaiSanPham() != null ? sp.getLoaiSanPham().getTenLoai() : "N/A",
+//		            sp.getHanSuDung(),
+//		            soLuongDaBan,
+//		            sp.getSoLuongTonkho()
+//		        });
+//		    }
+//		});
+//
 
-
+   
 		scrollPane.setViewportView(table);
 		
+    }
+    public void openTrangChu() {
+        TrangChu_GUI trangChu = new TrangChu_GUI();
+        trangChu.setVisible(true);
+    }
+	
+	public void openQuanLySanPham() {
+        QuanLySanPham_GUI quanLySanPham = new QuanLySanPham_GUI();
+        quanLySanPham.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openQuanLyNhanVien() {
+        QuanLyNhanVien_GUI quanLyNhanVien = new QuanLyNhanVien_GUI();
+        quanLyNhanVien.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openQuanLyKhachHang() {
+        QuanLyKhachHang_GUI quanLyKhachHang = new QuanLyKhachHang_GUI();
+        quanLyKhachHang.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openBanHang() {
+        BanHang_GUI banHang = new BanHang_GUI();
+        banHang.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeDoanhSo() {
+        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
+        thongKeDoanhSo.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeNhanVien() {
+        ThongKeNhanVien_GUI thongKeNhanVien = new ThongKeNhanVien_GUI();
+        thongKeNhanVien.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeKhachHang() {
+        ThongKeKhachHang_GUI e = new ThongKeKhachHang_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeSanPham() {
+        ThongKeSanPham_GUI e = new ThongKeSanPham_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuSanPham() {
+        TraCuuSanPham_GUI e = new TraCuuSanPham_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuNhanVien() {
+        TraCuuNhanVien_GUI e = new TraCuuNhanVien_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuKhachHang() {
+        TraCuuKhachHang_GUI e = new TraCuuKhachHang_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuHoaDon() {
+		TraCuuHoaDon_GUI e = new TraCuuHoaDon_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openDangNhap() {
+        DangNhap_GUI e = new DangNhap_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
     }
 }
