@@ -8,7 +8,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -33,9 +39,10 @@ import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Dimension;
 
+import dao.KhachHang_DAO;
+import entity.KhachHang;
 
-
-public class QuanLyKhachHang_GUI extends JFrame {
+public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -46,6 +53,15 @@ public class QuanLyKhachHang_GUI extends JFrame {
 	private JTextField txtNVL;
 	private JTextField txtNhap;
 	private JTable table;
+	private JButton btnThem;
+	private JButton btnXoaTrang;
+	private KhachHang_DAO dao_kh = new KhachHang_DAO();
+	private DefaultTableModel tbm;
+	private JButton btnXoa;
+	private JButton btnSua;
+	private JButton btnTim;
+	private JButton btThoat;
+	private JButton btnLuu;
 
 	/**
 	 * Launch the application.
@@ -263,15 +279,6 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				panel_1.setBackground(new Color(154, 202, 189));
 				panel_1.setLayout(null);
 				
-				txtNgaySinh = new JTextField();
-				txtNgaySinh.setColumns(10);
-				txtNgaySinh.setBounds(505, 31, 352, 30);
-				panel_1.add(txtNgaySinh);
-				
-				txtCMND = new JTextField();
-				txtCMND.setColumns(10);
-				txtCMND.setBounds(973, 31, 352, 30);
-				panel_1.add(txtCMND);
 				
 				txtTenNV = new JTextField();
 				txtTenNV.setColumns(10);
@@ -283,10 +290,7 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				txtSDT.setBounds(23, 98, 352, 30);
 				panel_1.add(txtSDT);
 				
-				txtNVL = new JTextField();
-				txtNVL.setColumns(10);
-				txtNVL.setBounds(505, 98, 352, 30);
-				panel_1.add(txtNVL);
+				
 				
 				JLabel lblTenNV = new JLabel("Tên Khách Hàng");
 				lblTenNV.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -298,48 +302,16 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				lblSDT.setBounds(23, 82, 126, 14);
 				panel_1.add(lblSDT);
 				
-				JLabel lblSDT_1 = new JLabel("Giới Tính");
-				lblSDT_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblSDT_1.setBounds(973, 82, 126, 14);
-				panel_1.add(lblSDT_1);
-				
-				JRadioButton rdbtnNam = new JRadioButton("Nam");
-				rdbtnNam.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				
-				rdbtnNam.setBounds(973, 105, 53, 23);
-				rdbtnNam.setBackground(new Color(154, 202, 189));
-				panel_1.add(rdbtnNam);
-				
-				JRadioButton rdbNư = new JRadioButton("Nữ");
-				rdbNư.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				rdbNư.setBackground(new Color(154, 202, 189));
-				rdbNư.setBounds(1068, 105, 109, 23);
-				panel_1.add(rdbNư);
-				
-				JLabel lblNgaysinh = new JLabel("Ngày Sinh");
-				lblNgaysinh.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblNgaysinh.setBounds(505, 11, 126, 16);
-				panel_1.add(lblNgaysinh);
-				
-				JLabel lblNgayVaolam = new JLabel("Bệnh Nền ");
-				lblNgayVaolam.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblNgayVaolam.setBounds(505, 77, 126, 24);
-				panel_1.add(lblNgayVaolam);
-				
-				JLabel lblCmnd = new JLabel("Email");
-				lblCmnd.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblCmnd.setBounds(974, 13, 126, 16);
-				panel_1.add(lblCmnd);
 				
 				// Nút "Thêm"
-				JMenu btnThem = new JMenu("Thêm");
+				 btnThem = new JButton("Thêm");
 				btnThem.setOpaque(true);
 				btnThem.setForeground(new Color(255, 255, 255));
 				btnThem.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 				btnThem.setBackground(new Color(46, 139, 87));
 				btnThem.setBounds(10, 291, 120, 45);
 
-				ImageIcon iconThem = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/4993253681582956831-128.png"));
+				ImageIcon iconThem = new ImageIcon(QuanLyKhachHang_GUI.class.getResource("/gui/4993253681582956831-128.png"));
 				Image imgThem = iconThem.getImage();
 				BufferedImage bImageThem = new BufferedImage(imgThem.getWidth(null), imgThem.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2dThem = bImageThem.createGraphics();
@@ -352,8 +324,9 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				btnThem.setIcon(new ImageIcon(scaledImageThem));
 				panel.add(btnThem);
 
+
 				// Nút "Xóa"
-				JMenu btnXoa = new JMenu("Xóa");
+				 btnXoa = new JButton("Xóa");
 				btnXoa.setOpaque(true);
 				btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btnXoa.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
@@ -374,7 +347,7 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				panel.add(btnXoa);
 
 				// Nút "Sửa"
-				JMenu btnSua = new JMenu("Sửa");
+				 btnSua = new JButton("Sửa");
 				btnSua.setOpaque(true);
 				btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btnSua.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
@@ -394,15 +367,16 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				btnSua.setIcon(new ImageIcon(scaledImageSua));
 				panel.add(btnSua);
 
+
 				// Nút "Xóa Trắng"
-				JMenu btnXoaTrang = new JMenu("Xóa Trắng");
+			btnXoaTrang = new JButton("Xóa Trắng");
 				btnXoaTrang.setOpaque(true);
 				btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 				btnXoaTrang.setBackground(new Color(46, 139, 87));
 				btnXoaTrang.setBounds(414, 291, 152, 45);
 
-				ImageIcon iconXT = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/calendar-remove-icon.png"));
+				ImageIcon iconXT = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/calendar-remove-icon.png"));
 				Image imgXT = iconXT.getImage();
 				BufferedImage bImageXT = new BufferedImage(imgXT.getWidth(null), imgXT.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2dXT = bImageXT.createGraphics();
@@ -416,7 +390,7 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				panel.add(btnXoaTrang);
 
 				// Nút "Lưu"
-				JMenu btnLuu = new JMenu("Lưu");
+				 btnLuu = new JButton("Lưu");
 				btnLuu.setOpaque(true);
 				btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
@@ -449,26 +423,18 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				table.setFont(new Font("Tahoma", Font.BOLD, 13));
 				table.setBackground(new Color(220, 220, 220));
 				table.setRowHeight(40);
-				table.setModel(new DefaultTableModel(
+				table.setModel(tbm=new DefaultTableModel(
 					new Object[][] {
 						{"", "", "", "", "", null, ""},
 						{"", "", "", "", "", null, ""},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
-						{null, null, null, null, null, null, null},
+						
 					},
 					new String[] {
-						"M\u00E3 Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "S\u1ED1 \u0110i\u1EC7n Tho\u1EA1i", "Gi\u1EDBi T\u00EDnh", "B\u1EC7nh N\u1EC1n ", "Tu\u1ED5i", "Email"
+						"M\u00E3 Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "S\u1ED1 \u0110i\u1EC7n Tho\u1EA1i"
 					}
 				) {
 					Class[] columnTypes = new Class[] {
-						String.class, String.class, String.class, String.class, Object.class, Integer.class, String.class
+						String.class, String.class, String.class
 					};
 					public Class getColumnClass(int columnIndex) {
 						return columnTypes[columnIndex];
@@ -520,14 +486,14 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				lblNhpMNhn.setBounds(1070, 282, 126, 26);
 				panel.add(lblNhpMNhn);
 				
-				JMenu btThoat = new JMenu("Thoát");
+				 btThoat = new JButton("Thoát");
 				btThoat.setOpaque(true);
 				btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 				btThoat.setBackground(new Color(46, 139, 87));
 				btThoat.setBounds(718, 291, 120, 45);
 
-				ImageIcon iconThoat = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/exit-icon.png"));
+				ImageIcon iconThoat = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/exit-icon.png"));
 				Image imgThoat = iconThoat.getImage();
 				BufferedImage bImageThoat = new BufferedImage(imgThoat.getWidth(null), imgThoat.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2dThoat = bImageThoat.createGraphics();
@@ -541,24 +507,275 @@ public class QuanLyKhachHang_GUI extends JFrame {
 				panel.add(btThoat);
 				
 				// Nút "Tìm"
-				JMenu btnTim = new JMenu("Tìm");
+				 btnTim = new JButton("Tìm");
 				btnTim.setOpaque(true);
 				btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 				btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 				btnTim.setBackground(new Color(46, 139, 87));
 				btnTim.setBounds(955, 291, 105, 45);
 
-				ImageIcon iconTim = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/search.png"));
-				Image imgTim = iconTim.getImage();
-				BufferedImage bImageTim = new BufferedImage(imgTim.getWidth(null), imgTim.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g2dTim = bImageTim.createGraphics();
-				g2dTim.drawImage(imgTim, 0, 0, null);
-				g2dTim.setComposite(AlphaComposite.SrcIn);
-				g2dTim.setColor(Color.WHITE);
-				g2dTim.fillRect(0, 0, bImageTim.getWidth(), bImageTim.getHeight());
-				g2dTim.dispose();
-				Image scaledImageTim = bImageTim.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnTim.setIcon(new ImageIcon(scaledImageTim));
+				
 				panel.add(btnTim);
+				//Actions Menu
+				mnTrangChu.addActionListener(e -> openTrangChu());
+				mntmSP.addActionListener(e -> openQuanLySanPham());
+			mntmNhanVien.addActionListener(e -> openQuanLyNhanVien());
+			mntmKH.addActionListener(e -> openQuanLyKhachHang());
+			mnBanHang.addActionListener(e -> openBanHang());
+			mntmDoanhSo.addActionListener(e -> openThongKeDoanhSo());
+			mntmTCNV.addActionListener(e -> openThongKeNhanVien());
+			mntmTCKH.addActionListener(e -> openThongKeKhachHang());
+			mntmTCSP.addActionListener(e -> openThongKeSanPham());
+			mntmTCSP.addActionListener(e -> openTraCuuSanPham());
+			mntmTCNV.addActionListener(e -> openTraCuuNhanVien());
+			mntmTCKH.addActionListener(e -> openTraCuuKhachHang());
+			table.addMouseListener(this);
+			btnThem.addActionListener(this);
+			btnXoa.addActionListener(this);
+			btnLuu.addActionListener(this);
+			btnSua.addActionListener(this);
+			btnTim.addActionListener(this);
+			btnXoaTrang.addActionListener(this);
+			btThoat.addActionListener(this);
+
+			 duyetListVaoTable();
+			this.setVisible(true);
 	}
+		
+		public void openTrangChu() {
+	        TrangChu_GUI trangChu = new TrangChu_GUI();
+	        trangChu.setVisible(true);
+	    }
+		
+		public void openQuanLySanPham() {
+	        QuanLySanPham_GUI quanLySanPham = new QuanLySanPham_GUI();
+	        quanLySanPham.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openQuanLyNhanVien() {
+	        QuanLyNhanVien_GUI quanLyNhanVien = new QuanLyNhanVien_GUI();
+	        quanLyNhanVien.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openQuanLyKhachHang() {
+	        QuanLyKhachHang_GUI quanLyKhachHang = new QuanLyKhachHang_GUI();
+	        quanLyKhachHang.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openBanHang() {
+	        BanHang_GUI banHang = new BanHang_GUI();
+	        banHang.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openThongKeDoanhSo() {
+	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
+	        thongKeDoanhSo.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openThongKeNhanVien() {
+	        ThongKeNhanVien_GUI thongKeNhanVien = new ThongKeNhanVien_GUI();
+	        thongKeNhanVien.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openThongKeKhachHang() {
+	        ThongKeKhachHang_GUI e = new ThongKeKhachHang_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openThongKeSanPham() {
+	        ThongKeSanPham_GUI e = new ThongKeSanPham_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openTraCuuSanPham() {
+	        TraCuuSanPham_GUI e = new TraCuuSanPham_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openTraCuuNhanVien() {
+	        TraCuuNhanVien_GUI e = new TraCuuNhanVien_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openTraCuuKhachHang() {
+	        TraCuuKhachHang_GUI e = new TraCuuKhachHang_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+		public void openDangNhap() {
+	        DangNhap_GUI e = new DangNhap_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
+
+		public void duyetListVaoTable() {
+			ArrayList<KhachHang> list = (ArrayList<KhachHang>) dao_kh.getAllKhachHangs();
+			int count = 0;
+			tbm.setRowCount(0);
+			for(KhachHang e : list) {
+			
+				Object[] ob = { e.getMaKhachHang(), e.getTenKhachHang(), e.getSDT()};
+				tbm.addRow(ob);
+			}
+		}
+		public boolean checkdata() {
+		    String tenkh = txtTenNV.getText().trim();
+		    String sdt = txtSDT.getText().trim();
+
+		    if (tenkh.isEmpty()) {
+		        JOptionPane.showMessageDialog(this, "Tên khách hàng không được rỗng");
+		        txtTenNV.requestFocus();
+		        return false;
+		    } else if (!sdt.matches("^0(\\d{9}|\\d{10})$")) {
+		        JOptionPane.showMessageDialog(this, "Số điện thoại phải bắt đầu với số 0 và có 10 đến 11 chữ số");
+		        txtSDT.requestFocus();
+		        return false;
+		    }
+
+		    return true;
+		}
+		public void duyetKH(String makh) {
+			KhachHang kh = dao_kh.findKhachHangById(makh);
+			tbm.setRowCount(0);
+			tbm.addRow(new Object[] {1,kh.getMaKhachHang(), kh.getTenKhachHang(), kh.getSDT()});
+		}
+
+		
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub\
+			
+				Object o = e.getSource();
+				if(o.equals(btnXoaTrang)) {
+					txtTenNV.setText("");
+					txtSDT.setText("");
+					
+				}
+				if (o.equals(btnThem)) {
+				    String ten = txtTenNV.getText().trim();
+				    String sdt = txtSDT.getText().trim();
+				    
+				    String maKhachHang = dao_kh.maTuSinh(); 
+				    KhachHang emp = new KhachHang();
+				    
+				    if (checkdata() && dao_kh.create(emp)) {
+				        duyetListVaoTable();
+				        JOptionPane.showMessageDialog(this, "Thêm thành công!");
+				    }
+				}
+				if (o.equals(btnXoa)) {
+				    int selectedRow = table.getSelectedRow();
+				    if (selectedRow == -1) {
+				        JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng để xóa!");
+				        return;
+				    }
+				    
+				    String makh = tbm.getValueAt(selectedRow, 0).toString();
+				    if (JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa khách hàng có mã: " + makh + "?", "Xác nhận", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				        boolean deleted = dao_kh.delete(makh);
+				        if (deleted) {
+				            tbm.removeRow(selectedRow);
+				            JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
+				        } else {
+				            JOptionPane.showMessageDialog(this, "Không thể xóa khách hàng. Vui lòng kiểm tra mã khách hàng.");
+				        }
+				    }
+				}
+				if (o.equals(btnSua)) {
+				    int selectedRow = table.getSelectedRow();
+				    if (selectedRow == -1) {
+				        JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng để chỉnh sửa!");
+				        return;
+				    }
+				    
+				    String makh = tbm.getValueAt(selectedRow, 0).toString(); 
+				    String tenkh = txtTenNV.getText();
+				    String SDT = txtSDT.getText(); 
+				    
+				    // Tạo đối tượng KhachHang mới để cập nhật
+				    KhachHang kh = new KhachHang();
+				    
+				    if (JOptionPane.showConfirmDialog(this, "Sửa thông tin?", "Xác nhận", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION && dao_kh.update(kh)) {
+				        duyetListVaoTable(); // Cập nhật lại bảng sau khi sửa
+				        JOptionPane.showMessageDialog(this, "Chỉnh sửa khách hàng thành công!");
+				    } else {
+				        JOptionPane.showMessageDialog(this, "Chỉnh sửa khách hàng thất bại!");
+				    }
+				}
+				if (o.equals(btnTim)) {
+					KhachHang kh = dao_kh.findKhachHangById(txtNhap.getText());
+					if(kh != null) {
+						duyetKH((String) kh.getMaKhachHang());
+					} else {
+			            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng!");
+			        }
+				}
+				if(o.equals(btThoat)) {
+					openTrangChu();
+				}
+				if (o.equals(btnLuu)) {
+				    // Duyệt qua tất cả các hàng trong bảng
+				    for (int i = 0; i < table.getRowCount(); i++) {
+				        String maKhachHang = tbm.getValueAt(i, 0).toString(); // Cột 0 chứa mã khách hàng
+				        String tenKhachHang = tbm.getValueAt(i, 1).toString(); // Cột 1 chứa tên khách hàng
+				        String sDT = tbm.getValueAt(i, 2).toString(); // Cột 2 chứa số điện thoại
+
+				        // Tạo đối tượng KhachHang từ dữ liệu trong bảng
+				        KhachHang kh = new KhachHang();
+				        
+				        // Gọi phương thức thêm hoặc cập nhật khách hàng vào cơ sở dữ liệu
+				        if (dao_kh.findKhachHangById(maKhachHang) == null) {
+				            // Nếu khách hàng chưa tồn tại, thêm mới
+				            dao_kh.create(kh);
+				        } else {
+				            // Nếu khách hàng đã tồn tại, cập nhật thông tin
+				            dao_kh.update(kh);
+				        }
+				    }
+				    
+				    // Cập nhật lại bảng sau khi lưu
+				    duyetListVaoTable();
+				    JOptionPane.showMessageDialog(this, "Lưu thông tin khách hàng thành công!");
+				}
+
+
+
+			} 
+
+
+				
+			
+			
+		
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 }

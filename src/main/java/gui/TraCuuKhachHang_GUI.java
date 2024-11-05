@@ -16,6 +16,9 @@ public class TraCuuKhachHang_GUI extends JFrame {
     private JTextField textField_4;
     private JTextField textField_5;
     private JTable table;
+    private JComboBox<String> comboBox;
+    private JRadioButton rdbtnMale;
+    private JRadioButton rdbtnFemale;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -38,10 +41,10 @@ public class TraCuuKhachHang_GUI extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        // Tạo Menu
+        // Create Menu
         createMenuBar();
 
-        // Tạo phần còn lại của giao diện
+        // Main Content Section
         createMainContent();
     }
 
@@ -52,50 +55,18 @@ public class TraCuuKhachHang_GUI extends JFrame {
         menuBar.setBounds(0, 0, 1445, 70);
         contentPane.add(menuBar);
 
-        // Trang Chủ
         JMenu menuHome = new JMenu(" Trang Chủ");
         setupMenu(menuHome, "/gui/house-solid.png", new Color(26, 133, 94));
         menuBar.add(menuHome);
 
-        // Quản Lý
         JMenu menuManage = new JMenu(" Quản Lý");
         setupMenu(menuManage, "/gui/list-check-solid.png", new Color(26, 133, 94));
         menuBar.add(Box.createHorizontalStrut(30));
         menuBar.add(menuManage);
 
-        // Các mục con của Quản Lý
         addMenuItem(menuManage, "Sản Phẩm");
         addMenuItem(menuManage, "Nhân Viên");
         addMenuItem(menuManage, "Khách Hàng");
-
-        // Bán Hàng
-        JMenu menuSales = new JMenu(" Bán Hàng");
-        setupMenu(menuSales, "/gui/cart-shopping-solid.png", new Color(26, 133, 94));
-        menuBar.add(Box.createHorizontalStrut(30));
-        menuBar.add(menuSales);
-
-        // Thống Kê
-        JMenu menuStats = new JMenu(" Thống Kê");
-        setupMenu(menuStats, "/gui/clipboard-solid.png", new Color(26, 133, 94));
-        menuBar.add(Box.createHorizontalStrut(30));
-        menuBar.add(menuStats);
-
-        // Các mục con của Thống Kê
-        addMenuItem(menuStats, "Doanh Số");
-        addMenuItem(menuStats, "Nhân Viên");
-        addMenuItem(menuStats, "Khách Hàng");
-        addMenuItem(menuStats, "Sản Phẩm");
-
-        // Tra Cứu
-        JMenu menuSearch = new JMenu(" Tra Cứu");
-        setupMenu(menuSearch, "/gui/circle-question-solid.png", new Color(26, 133, 94));
-        menuBar.add(Box.createHorizontalStrut(30));
-        menuBar.add(menuSearch);
-
-        // Các mục con của Tra Cứu
-        addMenuItem(menuSearch, "Sản Phẩm");
-        addMenuItem(menuSearch, "Nhân Viên");
-        addMenuItem(menuSearch, "Khách Hàng");
     }
 
     private void setupMenu(JMenu menu, String iconPath, Color bgColor) {
@@ -141,7 +112,6 @@ public class TraCuuKhachHang_GUI extends JFrame {
         panel.add(panel_1);
         panel_1.setLayout(null);
 
-        // Các thành phần trong panel
         createCustomerInfoSection(panel_1);
 
         textField_5 = new JTextField();
@@ -158,23 +128,20 @@ public class TraCuuKhachHang_GUI extends JFrame {
         table.setBackground(Color.LIGHT_GRAY);
         table.setRowHeight(40);
         table.setModel(new DefaultTableModel(
-                new Object[][] {
-                    {null, null, null, null, null, null, null},
-                    {null, null, null, null, null, null, null},
-                    {null, null, null, null, null, null, null},
-                },
+                new Object[][] {},
                 new String[] {
                     "STT", "Tên Khách Hàng", "Số Điện Thoại", "Giới Tính", "Sản Phẩm Đã Mua", "Số Lượng", "Tổng Tiền"
                 }
         ));
         scrollPane.setViewportView(table);
 
-        JComboBox<String> comboBox = new JComboBox<>();
+        comboBox = new JComboBox<>(new String[] {"Tên Khách Hàng", "Số Điện Thoại"});
         comboBox.setBounds(36, 532, 152, 32);
         panel.add(comboBox);
 
         JButton btnSearch = new JButton("Tìm Kiếm");
         btnSearch.setBounds(1228, 532, 152, 32);
+        btnSearch.addActionListener(e -> searchCustomer());
         panel.add(btnSearch);
     }
 
@@ -202,16 +169,51 @@ public class TraCuuKhachHang_GUI extends JFrame {
         lblGender.setBounds(132, 287, 126, 36);
         panel.add(lblGender);
 
-        JRadioButton rdbtnMale = new JRadioButton("Nam");
+        rdbtnMale = new JRadioButton("Nam");
         rdbtnMale.setFont(new Font("Tahoma", Font.PLAIN, 23));
         rdbtnMale.setBackground(Color.WHITE);
         rdbtnMale.setBounds(406, 297, 109, 23);
         panel.add(rdbtnMale);
 
-        JRadioButton rdbtnFemale = new JRadioButton("Nữ");
+        rdbtnFemale = new JRadioButton("Nữ");
         rdbtnFemale.setFont(new Font("Tahoma", Font.PLAIN, 23));
         rdbtnFemale.setBackground(Color.WHITE);
         rdbtnFemale.setBounds(570, 297, 109, 23);
         panel.add(rdbtnFemale);
+
+        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup.add(rdbtnMale);
+        genderGroup.add(rdbtnFemale);
+    }
+
+    private void searchCustomer() {
+        String searchField = (String) comboBox.getSelectedItem();
+        String searchText = textField_5.getText();
+
+        
+        Object[][] customers = {
+        	    {"1", "Nguyen Van A", "0123456789", "Nam", "Panadol", "2", "100000"},
+        	    {"2", "Tran Thi B", "0987654321", "Nữ", "Aspirin", "5", "50000"},
+        	    {"3", "Tran Doan Khoe", "0981234567", "Nam", "Vitamin C", "10", "200000"},
+        	    {"4", "Huynh Thi Luu Ly", "0938765432", "Nữ", "Tylenol", "1", "55000"},
+        	    {"5", "Nguyen Anh Duc", "0912345678", "Nam", "Decolgen", "3", "75000"}
+        	};
+
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0); 
+
+        for (Object[] customer : customers) {
+            String customerName = (String) customer[1];
+            String phone = (String) customer[2];
+
+            if (searchField.equals("Tên Khách Hàng") && customerName.contains(searchText) ||
+                searchField.equals("Số Điện Thoại") && phone.contains(searchText)) {
+                model.addRow(customer);
+            }
+        }
+
+        if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng.", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }

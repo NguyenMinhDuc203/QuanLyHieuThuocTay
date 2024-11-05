@@ -488,6 +488,22 @@ public class ThongKeSanPham_GUI extends JFrame {
 
 
 		scrollPane.setViewportView(table);
+		//Actions Menu
+				mnNewMenu.addActionListener(e -> openTrangChu());
+				mntmNewMenuItem.addActionListener(e -> openQuanLySanPham());
+				mntmNhnVin.addActionListener(e -> openQuanLyNhanVien());
+				mntmKhchHng.addActionListener(e -> openQuanLyKhachHang());
+				mnNewMenu_2_1.addActionListener(e -> openBanHang());
+				mntmNewMenuItem_1.addActionListener(e -> openThongKeDoanhSo());
+				mntmNewMenuItem_1_3.addActionListener(e -> openThongKeNhanVien());
+				mntmNewMenuItem_1_2.addActionListener(e -> openThongKeKhachHang());
+//				mntmNewMenuItem_1_1.addActionListener(e -> openThongKeSanPham());
+				mntmNewMenuItem_2.addActionListener(e -> openTraCuuSanPham());
+				mntmNewMenuItem_2_2.addActionListener(e -> openTraCuuNhanVien());
+				mntmNewMenuItem_2_1.addActionListener(e -> openTraCuuKhachHang());
+				mntmNewMenuItem_2_1_1.addActionListener(e -> openTraCuuHoaDon());
+		
+				
 		btnThongKe.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
@@ -568,12 +584,82 @@ public class ThongKeSanPham_GUI extends JFrame {
 		            sp.getSoLuongTonkho()
 		        });
 		    }
-		
+		});
 
 
    
-});
 
+
+    }
+    public void openTrangChu() {
+        TrangChu_GUI trangChu = new TrangChu_GUI();
+        trangChu.setVisible(true);
+    }
+	
+	public void openQuanLySanPham() {
+        QuanLySanPham_GUI quanLySanPham = new QuanLySanPham_GUI();
+        quanLySanPham.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openQuanLyNhanVien() {
+        QuanLyNhanVien_GUI quanLyNhanVien = new QuanLyNhanVien_GUI();
+        quanLyNhanVien.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openQuanLyKhachHang() {
+        QuanLyKhachHang_GUI quanLyKhachHang = new QuanLyKhachHang_GUI();
+        quanLyKhachHang.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openBanHang() {
+        BanHang_GUI banHang = new BanHang_GUI();
+        banHang.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeDoanhSo() {
+        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
+        thongKeDoanhSo.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeNhanVien() {
+        ThongKeNhanVien_GUI thongKeNhanVien = new ThongKeNhanVien_GUI();
+        thongKeNhanVien.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeKhachHang() {
+        ThongKeKhachHang_GUI e = new ThongKeKhachHang_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openThongKeSanPham() {
+        ThongKeSanPham_GUI e = new ThongKeSanPham_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuSanPham() {
+        TraCuuSanPham_GUI e = new TraCuuSanPham_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuNhanVien() {
+        TraCuuNhanVien_GUI e = new TraCuuNhanVien_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuKhachHang() {
+        TraCuuKhachHang_GUI e = new TraCuuKhachHang_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openTraCuuHoaDon() {
+		TraCuuHoaDon_GUI e = new TraCuuHoaDon_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
+    }
+	public void openDangNhap() {
+        DangNhap_GUI e = new DangNhap_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
     }
     
 }

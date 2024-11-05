@@ -1,24 +1,27 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import gui.TrangChu_GUI;
 public class BanHang_GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
-    private JTextField textField_2;
-    private JTextField textField_3;
-    private JTextField textField_4;
-    private JTextField textField_7;
-    private JTextField textField_8;
-    private JTextField textField_10;
-    private JTable table;
+    private JTable productTable;
+    private JTextField txtMSnPhm;
+    private JTextField phoneField, nameField, membershipField, discountField, amountGivenField;
+    private JTextField totalAmountLabel;
+    private DefaultTableModel productTableModel;
+    private TrangChu_GUI trangChu;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -33,235 +36,200 @@ public class BanHang_GUI extends JFrame {
 
     public BanHang_GUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1440, 912);
+        setBounds(0, 0, 1920, 1080);
         contentPane = new JPanel();
-        contentPane.setBackground(new Color(224, 255, 255));
+        contentPane.setBackground(new Color(255, 255, 255));
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        // Tạo Menu
-        createMenuBar();
-
-        // Tạo phần thông tin hóa đơn
-        createInvoiceInfoSection();
-
-        // Tạo các nút chức năng
-        createFunctionButtons();
-
-        // Tạo bảng hiển thị sản phẩm
-        createProductTableSection();
-
-        // Tạo phần tổng kết
-        createSummarySection();
-    }
-
-    private void createMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBorderPainted(false);
-        menuBar.setOpaque(true);
-        menuBar.setBackground(new Color(26, 133, 94));
-        menuBar.setBounds(0, 0, 1426, 70);
+        // Menu setup
+        trangChu = new TrangChu_GUI();
+        JMenuBar menuBar = trangChu.createMenuBar();
+        menuBar.setBounds(0, 0, 1906, 70);
         contentPane.add(menuBar);
 
-        // Trang Chủ
-        JMenu mnNewMenu = new JMenu(" Trang Chủ");
-        mnNewMenu.setOpaque(true);
-        mnNewMenu.setBackground(new Color(26, 133, 94));
-        mnNewMenu.setForeground(Color.WHITE);
-        mnNewMenu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        mnNewMenu.setIcon(loadIcon("/gui/house-solid.png"));
-        mnNewMenu.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-        menuBar.add(mnNewMenu);
-
-        // Quản Lý
-        JMenu mnNewMenu_1 = new JMenu(" Quản Lý");
-        mnNewMenu_1.setOpaque(true);
-        mnNewMenu_1.setBackground(new Color(26, 133, 94));
-        mnNewMenu_1.setForeground(Color.WHITE);
-        mnNewMenu_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        mnNewMenu_1.setIcon(loadIcon("/gui/list-check-solid.png"));
-        mnNewMenu_1.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-        menuBar.add(mnNewMenu_1);
-
-        // Các mục con của Quản Lý
-        addMenuItem(mnNewMenu_1, "Sản Phẩm");
-        addMenuItem(mnNewMenu_1, "Nhân Viên");
-        addMenuItem(mnNewMenu_1, "Khách Hàng");
-
-        // Bán Hàng
-        JMenu mnNewMenu_2_1 = new JMenu(" Bán Hàng");
-        mnNewMenu_2_1.setBackground(new Color(26, 133, 94));
-        mnNewMenu_2_1.setOpaque(true);
-        mnNewMenu_2_1.setForeground(Color.WHITE);
-        mnNewMenu_2_1.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        mnNewMenu_2_1.setIcon(loadIcon("/gui/cart-shopping-solid.png"));
-        mnNewMenu_2_1.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-        menuBar.add(mnNewMenu_2_1);
-
-        // Thống Kê
-        JMenu mnNewMenu_2 = new JMenu(" Thống Kê");
-        mnNewMenu_2.setBackground(new Color(26, 133, 94));
-        mnNewMenu_2.setOpaque(true);
-        mnNewMenu_2.setForeground(Color.WHITE);
-        mnNewMenu_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        mnNewMenu_2.setIcon(loadIcon("/gui/clipboard-solid.png"));
-        mnNewMenu_2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-        menuBar.add(mnNewMenu_2);
-
-        // Các mục con của Thống Kê
-        addMenuItem(mnNewMenu_2, "Doanh Số");
-        addMenuItem(mnNewMenu_2, "Nhân Viên");
-        addMenuItem(mnNewMenu_2, "Khách Hàng");
-        addMenuItem(mnNewMenu_2, "Sản Phẩm");
-
-        // Tra Cứu
-        JMenu mnNewMenu_2_2 = new JMenu(" Tra Cứu   ");
-        mnNewMenu_2_2.setBackground(new Color(26, 133, 94));
-        mnNewMenu_2_2.setOpaque(true);
-        mnNewMenu_2_2.setForeground(Color.WHITE);
-        mnNewMenu_2_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        mnNewMenu_2_2.setIcon(loadIcon("/gui/circle-question-solid.png"));
-        mnNewMenu_2_2.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
-        menuBar.add(mnNewMenu_2_2);
-
-        // Các mục con của Tra Cứu
-        addMenuItem(mnNewMenu_2_2, "Sản Phẩm");
-        addMenuItem(mnNewMenu_2_2, "Nhân Viên");
-        addMenuItem(mnNewMenu_2_2, "Hóa Đơn");
-        addMenuItem(mnNewMenu_2_2, "Khách Hàng");
+        
     }
 
-    private void addMenuItem(JMenu menu, String title) {
-        JMenuItem menuItem = new JMenuItem(title);
-        menuItem.setForeground(Color.WHITE);
-        menuItem.setBackground(new Color(26, 133, 94));
-        menuItem.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        menu.add(menuItem);
+    
+
+    private JPanel createProductTablePanel() {
+        JPanel productPanel = new JPanel();
+        productPanel.setLayout(null);
+
+        String[] columnNames = {"Mã sản phẩm", "Tên sản phẩm", "Số lượng", "Giá bán", "VAT", "Tổng tiền", "Tiền giảm", "Thành tiền"};
+        productTableModel = new DefaultTableModel(columnNames, 0);
+        productTable = new JTable(productTableModel);
+
+        JScrollPane scrollPane = new JScrollPane(productTable);
+        scrollPane.setBounds(0, 0, 1065, 821);
+        productPanel.add(scrollPane);
+
+        return productPanel;
     }
 
-    private ImageIcon loadIcon(String path) {
-        ImageIcon icon = new ImageIcon(BanHang_GUI.class.getResource(path));
-        Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaledImage);
-    }
+    private JPanel createInfoPanel() {
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
-    private void createInvoiceInfoSection() {
-        JPanel panel = new JPanel();
-        panel.setBackground(Color.WHITE);
-        panel.setBounds(210, 166, 545, 208);
-        contentPane.add(panel);
-        panel.setLayout(null);
+        // Thông tin khách hàng
+        JPanel customerInfoPanel = new JPanel(new GridLayout(6, 2, 5, 5));
+        customerInfoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
 
-        JLabel lblNhanVien = new JLabel("Mã Nhân Viên Lập HD:");
-        lblNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblNhanVien.setBounds(20, 29, 248, 30);
-        panel.add(lblNhanVien);
+     // Replace the JCheckBox with a JComboBox for customer type selection
+        String[] customerTypes = {"Vãng lai", "Thành viên", "Mới"};
+        JComboBox<String> customerTypeComboBox = new JComboBox<>(customerTypes);
 
-        textField_2 = new JTextField();
-        textField_2.setBounds(244, 35, 277, 30);
-        panel.add(textField_2);
+        phoneField = new JTextField();
+        nameField = new JTextField();
+        nameField.setEditable(false);
+        membershipField = new JTextField();
+        membershipField.setEditable(false);
 
-        JLabel lblKhachHang = new JLabel("Tên Khách Hàng:");
-        lblKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblKhachHang.setBounds(20, 84, 150, 30);
-        panel.add(lblKhachHang);
+     // Add a label and the JComboBox for customer type selection to the panel
+        customerInfoPanel.add(new JLabel("Loại khách hàng:"));
+        customerInfoPanel.add(customerTypeComboBox);
 
-        textField_3 = new JTextField();
-        textField_3.setBounds(244, 90, 277, 30);
-        panel.add(textField_3);
+        customerInfoPanel.add(new JLabel("Số điện thoại:"));
+        customerInfoPanel.add(phoneField);
+        customerInfoPanel.add(new JLabel("Họ và tên:"));
+        customerInfoPanel.add(nameField);
+        customerInfoPanel.add(new JLabel("Tích điểm"));
+        customerInfoPanel.add(membershipField);
+        infoPanel.add(customerInfoPanel);
 
-        JLabel lblDienThoai = new JLabel("Điện Thoại:");
-        lblDienThoai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblDienThoai.setBounds(23, 149, 150, 30);
-        panel.add(lblDienThoai);
+        // Thông tin hóa đơn
+     // Thông tin hóa đơn
+        JPanel invoiceInfoPanel = new JPanel(new GridLayout(14, 2, 5, 5));
+        invoiceInfoPanel.setBorder(BorderFactory.createTitledBorder("Thông tin hóa đơn"));
 
-        textField_4 = new JTextField();
-        textField_4.setBounds(244, 150, 277, 30);
-        panel.add(textField_4);
+        JTextField invoiceIdField = new JTextField("HD111220230004");
+        JTextField dateField = new JTextField("11/12/2023");
+        discountField = new JTextField();
+        totalAmountLabel = new JTextField("0 đ"); // Đã đổi thành JTextField
+        totalAmountLabel.setEditable(false); // Đặt là không thể chỉnh sửa
+        JComboBox<String> paymentMethodCombo = new JComboBox<>(new String[]{"Tiền mặt", "Thẻ tín dụng", "Chuyển khoản"});
+        amountGivenField = new JTextField("0");
 
-        JLabel lblBanHang = new JLabel("Bán Hàng");
-        lblBanHang.setForeground(Color.BLUE);
-        lblBanHang.setFont(new Font("Segoe UI", Font.PLAIN, 35));
-        lblBanHang.setBounds(138, 83, 240, 50);
-        contentPane.add(lblBanHang);
-    }
+        invoiceInfoPanel.add(new JLabel("Mã hóa đơn:"));
+        invoiceInfoPanel.add(invoiceIdField);
+        invoiceInfoPanel.add(new JLabel("Ngày tạo:"));
+        invoiceInfoPanel.add(dateField);
+        invoiceInfoPanel.add(new JLabel("Chiết khấu:"));
+        invoiceInfoPanel.add(discountField);
+        invoiceInfoPanel.add(new JLabel("Khách phải trả:"));
+        invoiceInfoPanel.add(totalAmountLabel); // Đã thêm dưới dạng JTextField
+        invoiceInfoPanel.add(new JLabel("Phương thức:"));
+        invoiceInfoPanel.add(paymentMethodCombo);
+        invoiceInfoPanel.add(new JLabel("Tiền khách đưa:"));
+        invoiceInfoPanel.add(amountGivenField);
 
-    private void createFunctionButtons() {
-        JButton btnInHoaDon = new JButton("In Hóa Đơn");
-        btnInHoaDon.setBounds(868, 204, 150, 30);
-        btnInHoaDon.setBackground(new Color(173, 216, 230));
-        contentPane.add(btnInHoaDon);
+        addMoneyButtons(invoiceInfoPanel);
 
-        JButton btnTaoHoaDonMoi = new JButton("Tạo Hóa Đơn Mới");
-        btnTaoHoaDonMoi.setBounds(868, 260, 150, 30);
-        btnTaoHoaDonMoi.setBackground(new Color(173, 216, 230));
-        contentPane.add(btnTaoHoaDonMoi);
+        JScrollPane scrollPane = new JScrollPane(invoiceInfoPanel);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+        infoPanel.add(scrollPane);
 
-        JButton btnThoat = new JButton("Thoát");
-        btnThoat.setBounds(868, 324, 150, 30);
-        btnThoat.setBackground(new Color(173, 216, 230));
-        contentPane.add(btnThoat);
-    }
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 5, 5, 5));
+        JButton saveButton = new JButton("LƯU TẠM");
+        JButton processButton = new JButton("XỬ LÍ ĐƠN TẠM");
+        JButton cancelButton = new JButton("HỦY");
+        JButton discountButton = new JButton("KHUYẾN MÃI");
+        JButton checkoutButton = new JButton("THANH TOÁN");
 
-    private void createProductTableSection() {
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(148, 463, 1143, 208);
-        contentPane.add(scrollPane);
+        buttonPanel.add(saveButton);
+        buttonPanel.add(processButton);
+        buttonPanel.add(cancelButton);
+        buttonPanel.add(discountButton);
+        buttonPanel.add(checkoutButton);
 
-        table = new JTable();
-        table.setModel(new DefaultTableModel(
-            new Object[][] {
-                {1, "Panadol", "Hộp", 2, 50000, 10, 110000},
-                {2, "Aspirin", "Viên", 5, 2000, 5, 10500},
-                {3, "Vitamin C", "Viên", 10, 1000, 0, 10000},
-                {4, "Tylenol", "Hộp", 1, 55000, 10, 60500},
-            },
-            new String[] {
-                "STT", "Tên Sản Phẩm", "Đơn Vị Tính", "Số Lượng", "Đơn Giá", "Thuế GTGT (%)", "Thành Tiền"
+        
+        
+
+        saveButton.addActionListener(e -> saveTemporaryInvoice());
+        processButton.addActionListener(e -> openTemporaryInvoicesDialog());
+
+        cancelButton.addActionListener(e -> {
+            productTableModel.setRowCount(0);
+            phoneField.setText("");
+            nameField.setText("");
+            membershipField.setText("");
+            discountField.setText("");
+            totalAmountLabel.setText("0 đ");
+            amountGivenField.setText("0");
+
+            JOptionPane.showMessageDialog(this, "Hóa đơn đã được hủy.");
+        });
+
+   
+        checkoutButton.addActionListener(e -> {
+            if (productTableModel.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Không có sản phẩm nào trong hóa đơn. Vui lòng thêm sản phẩm trước khi thanh toán.");
+                return;
             }
-        ));
-        scrollPane.setViewportView(table);
+
+            try {
+                double totalAmount = Double.parseDouble(totalAmountLabel.getText().replace(" đ", ""));
+                double amountGiven = Double.parseDouble(amountGivenField.getText());
+
+                if (amountGiven >= totalAmount) {
+                    double change = amountGiven - totalAmount;
+                    JOptionPane.showMessageDialog(this, "Thanh toán thành công. Tiền thừa: " + change + " đ");
+                    cancelButton.doClick(); // Xóa thông tin hóa đơn sau khi thanh toán thành công
+                } else {
+                    JOptionPane.showMessageDialog(this, "Số tiền khách đưa không đủ. Vui lòng kiểm tra lại.");
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập số tiền hợp lệ.");
+            }
+        });
+
+        infoPanel.add(buttonPanel);
+        return infoPanel;
     }
 
-    private void createSummarySection() {
-        JPanel panelFooter = new JPanel();
-        panelFooter.setBackground(Color.WHITE);
-        panelFooter.setBounds(0, 712, 1426, 133);
-        contentPane.add(panelFooter);
-        panelFooter.setLayout(null);
+    private void addMoneyButtons(JPanel panel) {
+        String[] moneyValues = {"1k", "2k", "5k", "10k", "20k", "50k", "100k", "200k", "500k"};
+        int[] moneyAmounts = {1000, 2000, 5000, 10000, 20000, 50000, 100000, 200000, 500000};
 
-        JLabel lblTongTien = new JLabel("Tổng Tiền Thuốc:");
-        lblTongTien.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblTongTien.setBounds(737, 37, 193, 30);
-        panelFooter.add(lblTongTien);
+        for (int i = 0; i < moneyValues.length; i++) {
+            JButton moneyButton = new JButton(moneyValues[i]);
+            int amount = moneyAmounts[i];
 
-        textField_7 = new JTextField();
-        textField_7.setBounds(952, 43, 150, 30);
-        panelFooter.add(textField_7);
+            moneyButton.setPreferredSize(new Dimension(30, 20));
 
-        JLabel lblTienNhan = new JLabel("Tiền Nhận:");
-        lblTienNhan.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblTienNhan.setBounds(298, 37, 150, 30);
-        panelFooter.add(lblTienNhan);
+            moneyButton.addActionListener(e -> {
+                try {
+                    double currentAmount = amountGivenField.getText().isEmpty() ? 0 : Double.parseDouble(amountGivenField.getText());
+                    double newAmount = currentAmount + amount;
+                    amountGivenField.setText(String.format("%.0f", newAmount));
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi nhập số tiền.");
+                }
+            });
 
-        textField_8 = new JTextField();
-        textField_8.setBounds(461, 38, 150, 30);
-        panelFooter.add(textField_8);
+            panel.add(moneyButton);
+        }
+    }
 
-        JLabel lblTienTraLai = new JLabel("Tiền Trả Lại:");
-        lblTienTraLai.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        lblTienTraLai.setBounds(298, 96, 150, 30);
-        panelFooter.add(lblTienTraLai);
+    private double calculateTotalAmount() {
+        double total = 0.0;
+        for (int i = 0; i < productTableModel.getRowCount(); i++) {
+            total += Double.parseDouble(productTableModel.getValueAt(i, 5).toString());
+        }
+        return total;
+    }
 
-        textField_10 = new JTextField();
-        textField_10.setBounds(461, 97, 150, 30);
-        panelFooter.add(textField_10);
+    private void saveTemporaryInvoice() {
+        int confirmation = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn lưu tạm hóa đơn không?", "Xác nhận lưu tạm", JOptionPane.YES_NO_OPTION);
+        if (confirmation == JOptionPane.YES_OPTION) {
+            JOptionPane.showMessageDialog(this, "Lưu tạm thành công vào bảng hóa đơn.");
+        }
+    }
 
-        JButton btnLuuHoaDon = new JButton("Lưu Hóa Đơn");
-        btnLuuHoaDon.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-        btnLuuHoaDon.setBounds(737, 93, 150, 30);
-        panelFooter.add(btnLuuHoaDon);
+    private void openTemporaryInvoicesDialog() {
+        TemporaryInvoicesDialog dialog = new TemporaryInvoicesDialog(this);
+        dialog.setVisible(true);
     }
 }

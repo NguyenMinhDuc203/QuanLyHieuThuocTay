@@ -599,7 +599,6 @@ public class TraCuuHoaDon_GUI extends JFrame {
 				mntmNewMenuItem_2_1.addActionListener(e -> openTraCuuKhachHang());
 				
 		
-		this.setVisible(true);
 		
 	}
 	public void openTrangChu() {
@@ -654,9 +653,9 @@ public class TraCuuHoaDon_GUI extends JFrame {
         this.setVisible(false);
     }
 	public void openTraCuuNhanVien() {
-//        TraCuuNhanVien_GUI e = new TraCuuNhanVien_GUI();
-//        e.setVisible(true);
-//        this.setVisible(false);
+        TraCuuNhanVien_GUI e = new TraCuuNhanVien_GUI();
+        e.setVisible(true);
+        this.setVisible(false);
     }
 	public void openTraCuuKhachHang() {
         TraCuuKhachHang_GUI e = new TraCuuKhachHang_GUI();

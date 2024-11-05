@@ -1,5 +1,6 @@
 package dao;
 
+import entity.NhanVien;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -10,7 +11,7 @@ import jakarta.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+import entity.SanPham;
 public class SanPham_DAO {
     private EntityManagerFactory emf;
 
@@ -36,12 +37,20 @@ public class SanPham_DAO {
     }
 
     // Phương thức tìm kiếm sản phẩm theo mã
-    public SanPham findSanPhamById(int maSanPham) {
-        EntityManager em = emf.createEntityManager();
-        SanPham sanPham = null;
+    public SanPham findSanPhamById(String maSanPham) {
+    	EntityManager em = emf.createEntityManager();
+        SanPham sanPham = null; // Initialize the employee object
 
         try {
-            sanPham = em.find(SanPham.class, maSanPham);
+            String jpql = "SELECT sp FROM SanPham sp " +
+                          "WHERE sp.maSanPham = :maSanPham";
+
+            TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
+            query.setParameter("maSanPham" ,maSanPham ); // Use wildcards for contains search
+
+            // Get the first result (if any)
+            sanPham = query.getResultStream().findFirst().orElse(null);
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

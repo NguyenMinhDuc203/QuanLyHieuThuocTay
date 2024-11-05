@@ -317,9 +317,6 @@ public class HoaDonXuat_DAO {
 
 
 
-
-
-
         // Đóng EntityManagerFactory
         public void close() {
             if (emf != null) emf.close();
