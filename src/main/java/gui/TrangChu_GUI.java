@@ -72,22 +72,10 @@ public class TrangChu_GUI extends JFrame {
 		menuBar.setBorderPainted(false);
 		menuBar.setOpaque(true);
 		menuBar.setBackground(new Color(26, 133, 94));
-		menuBar.setBounds(0, 0, 1395, 70);
+		menuBar.setBounds(0, 0, 1396, 70);
 		contentPane.add(menuBar);
-		
-		
-		JButton btnNewButton = new JButton("Đăng Xuất");
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-		btnNewButton.setBackground(new Color(26, 133, 94));
-		btnNewButton.setOpaque(true);
-		btnNewButton.setBounds(1393, 0, 211, 70);
 		ImageIcon iconBt = new ImageIcon(TrangChu_GUI.class.getResource("/gui/arrow-right-from-bracket-solid.png"));
 		Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		btnNewButton.setIcon(new ImageIcon(scaledImageBt));
-		btnNewButton.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-		btnNewButton.setHorizontalTextPosition(SwingConstants.LEFT);
-		contentPane.add(btnNewButton);
 		
 		//Trang Chủ
 		JPanel panel = new JPanel();
@@ -231,6 +219,18 @@ public class TrangChu_GUI extends JFrame {
 		txtpnChiNhnhTrn.setBackground(new Color(26, 133, 94));
 		txtpnChiNhnhTrn.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
 		txtpnChiNhnhTrn.setText("CHI NHÁNH TRÊN TOÀN QUỐC:");
+		
+		
+		JButton btnNewButton = new JButton("Đăng Xuất");
+		btnNewButton.setBounds(1393, 0, 211, 70);
+		contentPane.add(btnNewButton);
+		btnNewButton.setForeground(new Color(255, 255, 255));
+		btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+		btnNewButton.setBackground(new Color(26, 133, 94));
+		btnNewButton.setOpaque(true);
+		btnNewButton.setIcon(new ImageIcon(scaledImageBt));
+		btnNewButton.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+		btnNewButton.setHorizontalTextPosition(SwingConstants.LEFT);
 		
 	}
 	public JMenuBar createMenuBar() {
