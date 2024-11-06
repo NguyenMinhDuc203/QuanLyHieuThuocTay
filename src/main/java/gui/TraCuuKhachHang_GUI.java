@@ -1,219 +1,157 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Image;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import java.awt.*;
 
 public class TraCuuKhachHang_GUI extends JFrame {
 
-    private static final long serialVersionUID = 1L;
-    private JPanel contentPane;
-    private JTextField textField_3;
-    private JTextField textField_4;
-    private JTextField textField_5;
-    private JTable table;
-    private JComboBox<String> comboBox;
-    private JRadioButton rdbtnMale;
-    private JRadioButton rdbtnFemale;
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                TraCuuKhachHang_GUI frame = new TraCuuKhachHang_GUI();
-                frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
+    private JTextField txtMaKhachHang, txtTenKhachHang, txtSDT;
+    private JTable bangKhachHang, bangSanPhamDaMua;
+    private JButton btnTimKiem;
 
     public TraCuuKhachHang_GUI() {
+        setTitle("Tra Cứu Mua Hàng Khách Hàng");
+        setBounds(0, 0, 1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1440, 912);
-        contentPane = new JPanel();
-        contentPane.setBackground(Color.LIGHT_GRAY);
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        getContentPane().setLayout(new BorderLayout());
 
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
-
-        // Create Menu
-        createMenuBar();
-
-        // Main Content Section
-        createMainContent();
-    }
-
-    private void createMenuBar() {
+        // Menu Bar
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBorderPainted(false);
         menuBar.setOpaque(true);
         menuBar.setBackground(new Color(26, 133, 94));
-        menuBar.setBounds(0, 0, 1445, 70);
-        contentPane.add(menuBar);
+        menuBar.setPreferredSize(new Dimension(getWidth(), 70));
+        setJMenuBar(menuBar);
 
-        JMenu menuHome = new JMenu(" Trang Chủ");
-        setupMenu(menuHome, "/gui/house-solid.png", new Color(26, 133, 94));
-        menuBar.add(menuHome);
+        JMenu mnHome = createMenu(" Trang Chủ", "/gui/house-solid.png");
+        JMenu mnManage = createMenu(" Quản Lý", "/gui/list-check-solid.png");
+        JMenu mnSales = createMenu(" Bán Hàng", "/gui/cart-shopping-solid.png");
+        JMenu mnStats = createMenu(" Thống Kê", "/gui/clipboard-solid.png");
+        JMenu mnLookup = createMenu(" Tra Cứu", "/gui/circle-question-solid.png");
 
-        JMenu menuManage = new JMenu(" Quản Lý");
-        setupMenu(menuManage, "/gui/list-check-solid.png", new Color(26, 133, 94));
-        menuBar.add(Box.createHorizontalStrut(30));
-        menuBar.add(menuManage);
+        menuBar.add(mnHome);
+        menuBar.add(mnManage);
+        menuBar.add(mnSales);
+        menuBar.add(mnStats);
+        menuBar.add(mnLookup);
 
-        addMenuItem(menuManage, "Sản Phẩm");
-        addMenuItem(menuManage, "Nhân Viên");
-        addMenuItem(menuManage, "Khách Hàng");
+        // Add items to Quản Lý menu
+        addItemToMenu(mnManage, "Sản Phẩm");
+        addItemToMenu(mnManage, "Nhân Viên");
+        addItemToMenu(mnManage, "Khách Hàng");
+
+        // Add items to Thống Kê menu
+        addItemToMenu(mnStats, "Doanh Số");
+        addItemToMenu(mnStats, "Nhân Viên");
+        addItemToMenu(mnStats, "Khách Hàng");
+        addItemToMenu(mnStats, "Sản Phẩm");
+
+        // Add items to Tra Cứu menu
+        addItemToMenu(mnLookup, "Sản Phẩm");
+        addItemToMenu(mnLookup, "Nhân Viên");
+        addItemToMenu(mnLookup, "Hóa Đơn");
+        addItemToMenu(mnLookup, "Khách Hàng");
+
+        // Panel Tìm kiếm Khách Hàng
+        JPanel timKiemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 20));
+        timKiemPanel.setBackground(new Color(245, 245, 245));
+
+        JLabel lblMaKhachHang = new JLabel("Mã khách hàng");
+        lblMaKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        timKiemPanel.add(lblMaKhachHang);
+        txtMaKhachHang = new JTextField(20);
+        timKiemPanel.add(txtMaKhachHang);
+
+        JLabel lblTenKhachHang = new JLabel("Tên khách hàng");
+        lblTenKhachHang.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        timKiemPanel.add(lblTenKhachHang);
+        txtTenKhachHang = new JTextField(25);
+        timKiemPanel.add(txtTenKhachHang);
+
+        JLabel lblSDT = new JLabel("Số điện thoại");
+        lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        timKiemPanel.add(lblSDT);
+        txtSDT = new JTextField(15);
+        timKiemPanel.add(txtSDT);
+
+        btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.setBackground(new Color(76, 175, 80));
+        btnTimKiem.setForeground(Color.WHITE);
+        timKiemPanel.add(btnTimKiem);
+
+        // Bảng Khách Hàng
+        String[] khachHangColumns = {"Mã KH", "Tên KH", "Số ĐT"};
+        Object[][] khachHangData = {};
+        bangKhachHang = new JTable(new DefaultTableModel(khachHangData, khachHangColumns));
+        bangKhachHang.setRowHeight(30);
+        bangKhachHang.setGridColor(new Color(220, 220, 220));
+        bangKhachHang.setSelectionBackground(new Color(245, 245, 245));
+        
+        JTableHeader headerKH = bangKhachHang.getTableHeader();
+        headerKH.setBackground(Color.WHITE);
+        headerKH.setForeground(new Color(26, 133, 94));
+        headerKH.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        JScrollPane bangKhachHangScrollPane = new JScrollPane(bangKhachHang);
+        bangKhachHangScrollPane.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(183, 28, 28)), "Danh Sách Khách Hàng"));
+        
+        // Bảng Sản Phẩm Đã Mua
+        String[] sanPhamColumns = {"Mã SP", "Tên SP", "Số lượng", "Ngày mua"};
+        Object[][] sanPhamData = {};
+        bangSanPhamDaMua = new JTable(new DefaultTableModel(sanPhamData, sanPhamColumns));
+        bangSanPhamDaMua.setRowHeight(30);
+        bangSanPhamDaMua.setGridColor(new Color(220, 220, 220));
+        bangSanPhamDaMua.setSelectionBackground(new Color(245, 245, 245));
+
+        JTableHeader headerSP = bangSanPhamDaMua.getTableHeader();
+        headerSP.setBackground(Color.WHITE);
+        headerSP.setForeground(new Color(26, 133, 94));
+        headerSP.setFont(new Font("Segoe UI", Font.BOLD, 16));
+
+        JScrollPane bangSanPhamScrollPane = new JScrollPane(bangSanPhamDaMua);
+        bangSanPhamScrollPane.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(new Color(183, 28, 28)), "Sản Phẩm Đã Mua"));
+
+        // Panel Nút chức năng
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+        // Main Layout
+        getContentPane().add(timKiemPanel, BorderLayout.NORTH);
+        getContentPane().add(bangKhachHangScrollPane, BorderLayout.WEST);
+        getContentPane().add(bangSanPhamScrollPane, BorderLayout.CENTER);
+        getContentPane().add(actionPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
     }
 
-    private void setupMenu(JMenu menu, String iconPath, Color bgColor) {
+    private JMenu createMenu(String title, String iconPath) {
+        JMenu menu = new JMenu(title);
+        menu.setHorizontalAlignment(SwingConstants.CENTER);
         menu.setOpaque(true);
-        menu.setBackground(bgColor);
+        menu.setBackground(new Color(26, 133, 94));
         menu.setForeground(Color.WHITE);
         menu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        ImageIcon icon = new ImageIcon(TraCuuKhachHang_GUI.class.getResource(iconPath));
+
+        ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
         Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         menu.setIcon(new ImageIcon(scaledImage));
         menu.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+        return menu;
     }
 
-    private void addMenuItem(JMenu menu, String title) {
-        JMenuItem menuItem = new JMenuItem(title);
-        menuItem.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        menuItem.setBackground(new Color(26, 133, 94));
-        menuItem.setForeground(Color.WHITE);
-        menu.add(menuItem);
+    private void addItemToMenu(JMenu menu, String title) {
+        JMenuItem item = new JMenuItem(title);
+        item.setForeground(Color.WHITE);
+        item.setBackground(new Color(26, 133, 94));
+        item.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+        menu.add(item);
     }
 
-    private void createMainContent() {
-        JPanel panel = new JPanel();
-        panel.setBackground(new Color(226, 250, 252));
-        panel.setBounds(0, 69, 1445, 833);
-        contentPane.add(panel);
-        panel.setLayout(null);
-
-        JLabel lblTitle = new JLabel("TRA CỨU KHÁCH HÀNG");
-        lblTitle.setForeground(Color.BLUE);
-        lblTitle.setFont(new Font("Leelawadee UI", Font.BOLD, 46));
-        lblTitle.setBounds(97, 22, 703, 70);
-        ImageIcon poster = new ImageIcon(TraCuuKhachHang_GUI.class.getResource("/gui/poster.png"));
-        Image scaledPoster = poster.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-        JLabel imageLabel = new JLabel(new ImageIcon(scaledPoster));
-        imageLabel.setBounds(10, 11, 77, 81);
-        panel.add(imageLabel);
-        panel.add(lblTitle);
-
-        JPanel panel_1 = new JPanel();
-        panel_1.setBackground(Color.WHITE);
-        panel_1.setBounds(231, 102, 903, 372);
-        panel.add(panel_1);
-        panel_1.setLayout(null);
-
-        createCustomerInfoSection(panel_1);
-
-        textField_5 = new JTextField();
-        textField_5.setBounds(214, 533, 972, 32);
-        panel.add(textField_5);
-
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(79, 585, 1294, 179);
-        panel.add(scrollPane);
-
-        table = new JTable();
-        table.setForeground(Color.WHITE);
-        table.setFont(new Font("Tahoma", Font.PLAIN, 13));
-        table.setBackground(Color.LIGHT_GRAY);
-        table.setRowHeight(40);
-        table.setModel(new DefaultTableModel(
-                new Object[][] {},
-                new String[] {
-                    "STT", "Tên Khách Hàng", "Số Điện Thoại", "Giới Tính", "Sản Phẩm Đã Mua", "Số Lượng", "Tổng Tiền"
-                }
-        ));
-        scrollPane.setViewportView(table);
-
-        comboBox = new JComboBox<>(new String[] {"Tên Khách Hàng", "Số Điện Thoại"});
-        comboBox.setBounds(36, 532, 152, 32);
-        panel.add(comboBox);
-
-        JButton btnSearch = new JButton("Tìm Kiếm");
-        btnSearch.setBounds(1228, 532, 152, 32);
-        btnSearch.addActionListener(e -> searchCustomer());
-        panel.add(btnSearch);
-    }
-
-    private void createCustomerInfoSection(JPanel panel) {
-        textField_3 = new JTextField();
-        textField_3.setBounds(406, 80, 382, 41);
-        panel.add(textField_3);
-
-        textField_4 = new JTextField();
-        textField_4.setBounds(406, 193, 382, 41);
-        panel.add(textField_4);
-
-        JLabel lblCustomerName = new JLabel("Tên Khách Hàng");
-        lblCustomerName.setFont(new Font("Tahoma", Font.PLAIN, 23));
-        lblCustomerName.setBounds(127, 71, 264, 49);
-        panel.add(lblCustomerName);
-
-        JLabel lblPhone = new JLabel("Số Điện Thoại ");
-        lblPhone.setFont(new Font("Tahoma", Font.PLAIN, 23));
-        lblPhone.setBounds(132, 193, 264, 41);
-        panel.add(lblPhone);
-
-        JLabel lblGender = new JLabel("Giới Tính");
-        lblGender.setFont(new Font("Tahoma", Font.PLAIN, 23));
-        lblGender.setBounds(132, 287, 126, 36);
-        panel.add(lblGender);
-
-        rdbtnMale = new JRadioButton("Nam");
-        rdbtnMale.setFont(new Font("Tahoma", Font.PLAIN, 23));
-        rdbtnMale.setBackground(Color.WHITE);
-        rdbtnMale.setBounds(406, 297, 109, 23);
-        panel.add(rdbtnMale);
-
-        rdbtnFemale = new JRadioButton("Nữ");
-        rdbtnFemale.setFont(new Font("Tahoma", Font.PLAIN, 23));
-        rdbtnFemale.setBackground(Color.WHITE);
-        rdbtnFemale.setBounds(570, 297, 109, 23);
-        panel.add(rdbtnFemale);
-
-        ButtonGroup genderGroup = new ButtonGroup();
-        genderGroup.add(rdbtnMale);
-        genderGroup.add(rdbtnFemale);
-    }
-
-    private void searchCustomer() {
-        String searchField = (String) comboBox.getSelectedItem();
-        String searchText = textField_5.getText();
-
-        
-        Object[][] customers = {
-        	    {"1", "Nguyen Van A", "0123456789", "Nam", "Panadol", "2", "100000"},
-        	    {"2", "Tran Thi B", "0987654321", "Nữ", "Aspirin", "5", "50000"},
-        	    {"3", "Tran Doan Khoe", "0981234567", "Nam", "Vitamin C", "10", "200000"},
-        	    {"4", "Huynh Thi Luu Ly", "0938765432", "Nữ", "Tylenol", "1", "55000"},
-        	    {"5", "Nguyen Anh Duc", "0912345678", "Nam", "Decolgen", "3", "75000"}
-        	};
-
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0); 
-
-        for (Object[] customer : customers) {
-            String customerName = (String) customer[1];
-            String phone = (String) customer[2];
-
-            if (searchField.equals("Tên Khách Hàng") && customerName.contains(searchText) ||
-                searchField.equals("Số Điện Thoại") && phone.contains(searchText)) {
-                model.addRow(customer);
-            }
-        }
-
-        if (model.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng.", "Thông Báo", JOptionPane.INFORMATION_MESSAGE);
-        }
+    public static void main(String[] args) {
+        new TraCuuKhachHang_GUI();
     }
 }

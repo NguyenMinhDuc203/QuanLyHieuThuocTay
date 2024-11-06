@@ -4,9 +4,15 @@ import entity.KhachHang;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import java.lang.reflect.Field;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
+
 
 public class KhachHang_DAO {
     private EntityManagerFactory emf;
@@ -73,31 +79,26 @@ public class KhachHang_DAO {
         String maKhachHang = null;
 
         try {
-            // Truy vấn để lấy mã khách hàng lớn nhất
-            String jpql = "SELECT MAX(kh.maKhachHang) FROM KhachHang kh";
-            TypedQuery<String> query = em.createQuery(jpql, String.class);
-            String maxMaKhachHang = query.getSingleResult();
+            // Đếm số lượng khách hàng hiện có trong bảng
+            String jpql = "SELECT COUNT(kh) FROM KhachHang kh";
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            Long count = query.getSingleResult();
 
-            if (maxMaKhachHang != null && maxMaKhachHang.startsWith("KH")) {
-                try {
-                    int nextId = Integer.parseInt(maxMaKhachHang.substring(2)) + 1; // Bỏ qua "KH"
-                    maKhachHang = String.format("KH%03d", nextId); // Định dạng lại thành "KH001", "KH002", ...
-                } catch (NumberFormatException ex) {
-                    System.err.println("Định dạng mã khách hàng không hợp lệ: " + maxMaKhachHang);
-                    maKhachHang = "KH001"; // Trường hợp lỗi, bắt đầu lại từ "KH001"
-                }
-            } else {
-                maKhachHang = "KH001"; // Nếu chưa có khách hàng nào, bắt đầu từ "KH001"
-            }
+            // Tạo mã khách hàng mới dựa trên số lượng khách hàng hiện tại
+            int nextId = count.intValue() + 1;
+            maKhachHang = String.format("KH%03d", nextId); // Định dạng lại thành "KH001", "KH002", ...
+            
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã khách hàng: " + e.getMessage());
             e.printStackTrace();
+            maKhachHang = "KH001"; // Trong trường hợp lỗi, bắt đầu lại từ "KH001"
         } finally {
             em.close();
         }
 
         return maKhachHang;
     }
+
 //
     public boolean delete(String maKhachHang) {
         EntityManager entityManager = emf.createEntityManager();
@@ -125,57 +126,87 @@ public class KhachHang_DAO {
         return isDeleted; // Trả về true nếu đã xóa thành công
     }
 //
-    public boolean update(KhachHang kh) {
-        EntityManager entityManager = emf.createEntityManager();
-        boolean isUpdated = false; // Đặt cờ cho việc cập nhật thành công
+    public boolean updateKhachHang(String maKhachHang, String tenKhachHang, String sDT) {
+        EntityManager em = emf.createEntityManager();
+        boolean isUpdated = false;
 
         try {
-            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
-            KhachHang existingKhachHang = entityManager.find(KhachHang.class, kh.getMaKhachHang());
+            em.getTransaction().begin();
             
-            if (existingKhachHang != null) {
-                // Cập nhật thông tin cho khách hàng
-                existingKhachHang.setTenKhachHang((String) kh.getTenKhachHang());
-                existingKhachHang.getSDT();
-                
-                entityManager.merge(existingKhachHang); // Kết hợp thay đổi
-                isUpdated = true; // Đánh dấu là đã cập nhật thành công
-            }
+            // Truy vấn JPQL để cập nhật thông tin khách hàng
+            int updatedCount = em.createQuery(
+                    "UPDATE KhachHang kh SET kh.tenKhachHang = :tenKhachHang, kh.sDT = :sDT WHERE kh.maKhachHang = :maKhachHang")
+                .setParameter("tenKhachHang", tenKhachHang)
+                .setParameter("sDT", sDT)
+                .setParameter("maKhachHang", maKhachHang)
+                .executeUpdate();
 
-            entityManager.getTransaction().commit(); // Cam kết giao dịch
+            em.getTransaction().commit();
+            
+            isUpdated = updatedCount > 0; // Kiểm tra xem có bản ghi nào được cập nhật không
         } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Hoàn tác giao dịch nếu có lỗi
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
             }
-            e.printStackTrace(); // In ra lỗi
+            e.printStackTrace();
         } finally {
-            entityManager.close(); // Đảm bảo EntityManager được đóng
+            em.close();
         }
 
-        return isUpdated; // Trả về true nếu cập nhật thành công
+        return isUpdated;
     }
 //
-
-    public boolean saveKhachHang(KhachHang kh) {
+    public boolean saveKhachHang(String maNV, String tenNV, String sdt, int diemTichLuy) {
         EntityManager entityManager = emf.createEntityManager();
-        boolean isSaved = false; // Đặt cờ cho việc lưu thành công
+        boolean isSaved = false;
 
         try {
             entityManager.getTransaction().begin(); // Bắt đầu giao dịch
-            entityManager.persist(kh); // Lưu đối tượng KhachHang
+
+            // Tạo đối tượng KhachHang mà không cần constructor
+            KhachHang kh = new KhachHang(); // Tạo đối tượng KhachHang rỗng
+
+            // Sử dụng Reflection để gán giá trị cho các trường của đối tượng KhachHang
+            Field maKhachHangField = KhachHang.class.getDeclaredField("maKhachHang");
+            maKhachHangField.setAccessible(true);  // Đảm bảo có thể truy cập trường private
+            maKhachHangField.set(kh, maNV);
+
+            Field tenKhachHangField = KhachHang.class.getDeclaredField("tenKhachHang");
+            tenKhachHangField.setAccessible(true);
+            tenKhachHangField.set(kh, tenNV);
+
+            Field sdtField = KhachHang.class.getDeclaredField("sDT");
+            sdtField.setAccessible(true);
+            sdtField.set(kh, sdt);
+
+            Field diemTichLuyField = KhachHang.class.getDeclaredField("diemTichLuy");
+            diemTichLuyField.setAccessible(true);
+            diemTichLuyField.set(kh, diemTichLuy);
+
+            // Lưu đối tượng KhachHang vào cơ sở dữ liệu
+            entityManager.persist(kh);
             entityManager.getTransaction().commit(); // Cam kết giao dịch
             isSaved = true; // Đánh dấu là đã lưu thành công
         } catch (Exception e) {
+            // Hoàn tác giao dịch nếu có lỗi
             if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Hoàn tác giao dịch nếu có lỗi
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace(); // In ra lỗi
         } finally {
-            entityManager.close(); // Đảm bảo EntityManager được đóng
+            // Đảm bảo EntityManager được đóng
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
 
         return isSaved; // Trả về true nếu lưu thành công
     }
+
+
+//
+
+
     // Phương thức tìm kiếm khách hàng theo mã khách hàng
     public KhachHang findKhachHangById(String maKhachHang) {
         EntityManager em = emf.createEntityManager();
@@ -391,4 +422,34 @@ public class KhachHang_DAO {
             System.out.println("Không có kết quả nào.");
         }
     }
+        
+    //xóa toàn bộ dữ iêu csdl
+    public boolean clearAllKhachHang() {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isCleared = false;
+
+        try {
+            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
+
+            // Truy vấn để xóa tất cả khách hàng
+            String jpql = "DELETE FROM KhachHang";
+            Query query = entityManager.createQuery(jpql);
+            query.executeUpdate();
+
+            entityManager.getTransaction().commit(); // Cam kết giao dịch
+            isCleared = true; // Đánh dấu là xóa thành công
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback(); // Hoàn tác nếu có lỗi
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close(); // Đóng EntityManager
+        }
+
+        return isCleared;
+    }
+   
+
+
 }

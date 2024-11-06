@@ -25,6 +25,13 @@
 		    <scope>provided</scope>
 		</dependency>
 		
+		<dependency>
+    <groupId>com.twilio.sdk</groupId>
+    <artifactId>twilio</artifactId>
+    <version>8.32.0</version> <!-- Kiểm tra phiên bản mới nhất -->
+</dependency>
+
+		
 	<dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
