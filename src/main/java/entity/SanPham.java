@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -34,6 +36,7 @@ public class SanPham {
 	private int soLuongTonkho;
 	private String ghiChu;
 	private String nhaSanXuat;
+	@Enumerated(EnumType.STRING)
 	private DonViTinh donViTinh;
 	private double thueGTGT;
 	private double giaNhap;
