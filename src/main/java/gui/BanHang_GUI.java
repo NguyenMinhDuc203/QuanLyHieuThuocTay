@@ -9,6 +9,10 @@ import java.awt.Image;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import dao.SanPham_DAO;
+import entity.SanPham;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import gui.TrangChu_GUI;
@@ -17,6 +21,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Component;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 public class BanHang_GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +45,7 @@ public class BanHang_GUI extends JFrame {
     private JTextField textField_7;
     private JTextField textField_8;
     private JTextField textField_9;
-
+    private DefaultTableModel tableModel;
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -52,6 +58,7 @@ public class BanHang_GUI extends JFrame {
     }
 
   public BanHang_GUI() {
+	  
 	  trangChu = new TrangChu_GUI();
         // Cài đặt cửa sổ chính
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -232,13 +239,13 @@ public class BanHang_GUI extends JFrame {
         scrollPane.setBounds(10, 62, 925, 449);
         BanHangPane.add(scrollPane);
         
-        table = new JTable();
+         table = new JTable();
         table.setModel(new DefaultTableModel(
         	new Object[][] {
         		{null, null, null, null, null, null, null},
         	},
         	new String[] {
-        		"M\u00E3 S\u1EA3n Ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "Gi\u00E1 B\u00E1n", "Thu\u1EBF GTGT", "Gi\u1EA3m Gi\u00E1", "Th\u00E0nh Ti\u1EC1n"
+        		"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng", "Giá Bán", "Thuế GTGT", "Giảm giá", "Thành Tiền"
         	}
         ) {
         	boolean[] columnEditables = new boolean[] {
@@ -349,7 +356,105 @@ public class BanHang_GUI extends JFrame {
 
         // Hiển thị cửa sổ
         setVisible(true);
+        
+        
+        
+        
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String maSanPham = txtNhpMSn.getText().trim();
+                
+                if (maSanPham.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                SanPham_DAO sanPhamDAO = new SanPham_DAO();
+                SanPham sanPham = sanPhamDAO.getSanPhamByMaSanPham(maSanPham);
+                
+                if (sanPham != null) {
+                    // Sản phẩm đã tồn tại, lấy thông tin và hiển thị
+                    // Ví dụ: Hiển thị thông tin sản phẩm trong bảng hoặc một nơi nào đó
+                    JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại: " + sanPham.toString());
+                    
+                    // Cập nhật bảng hoặc các trường thông tin nếu cần
+                    // Ví dụ, thêm sản phẩm vào bảng
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    model.addRow(new Object[]{
+                        sanPham.getMaSanPham(),
+                        sanPham.getTenSanPham(),
+                        1,  // Số lượng mặc định
+                        sanPham.getGiaBan(),
+                        sanPham.getThueGTGT(),
+                        0,  // Giảm giá mặc định
+                        sanPham.getGiaBan()  // Thành tiền mặc định
+                    });
+                } else {
+                    // Sản phẩm không tồn tại
+                    JOptionPane.showMessageDialog(null, "Sản phẩm không tồn tại trong hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        
+        
+     // Đặt bảng vào chế độ chọn hàng (mỗi lần chỉ có thể chọn 1 dòng)
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        // Thêm ListSelectionListener để theo dõi lựa chọn hàng trong bảng
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                // Kiểm tra nếu có hàng nào được chọn
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = table.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Hành động khi hàng được chọn (có thể sử dụng thông tin của dòng này nếu cần)
+                        // Ví dụ: Lấy giá trị của cột đầu tiên (Mã Sản Phẩm)
+                        String productCode = table.getValueAt(selectedRow, 0).toString();
+                        System.out.println("Sản phẩm được chọn: " + productCode);
+                    }
+                }
+            }
+        });
+
+        // Thêm sự kiện cho nút Xóa
+        btnXa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Lấy chỉ số dòng được chọn
+                int selectedRow = table.getSelectedRow();
+
+                // Kiểm tra xem có dòng nào được chọn không
+                if (selectedRow != -1) {
+                    // Lấy model của bảng
+                    DefaultTableModel model = (DefaultTableModel) table.getModel();
+                    
+                    // Xóa dòng được chọn
+                    model.removeRow(selectedRow);
+                } else {
+                    // Hiển thị thông báo nếu không có dòng nào được chọn
+                    JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
+
     }
+  
+  
+//  tính thuế gtgt = giá bán * thuế /100
+//  tính giảm giá = giá bán * giảm giá /100
+  //  tính thành tiền = giá bán + thuế gtgt - giảm giá
+  //  tính tổng tiền = thành tiền 1 = thánh tiền 2 + . . . 
+ 
+  
+  
+  
+  
+  
+  
+  
+  
 
 //    private JPanel createProductTablePanel() {
 //        JPanel productPanel = new JPanel();

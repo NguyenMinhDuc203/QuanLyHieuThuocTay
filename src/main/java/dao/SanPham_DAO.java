@@ -8,6 +8,9 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -260,6 +263,17 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
-
+    
+    public SanPham getSanPhamByMaSanPham(String maSanPham) {
+    	EntityManager em = emf.createEntityManager();
+        try {
+            String query = "SELECT s FROM SanPham s WHERE s.maSanPham = :maSanPham";
+            return em.createQuery(query, SanPham.class)
+                     .setParameter("maSanPham", maSanPham)
+                     .getSingleResult();
+        } catch (NoResultException e) {
+            return null;  // Trả về null nếu không tìm thấy sản phẩm
+        }
+    }
     
 }
