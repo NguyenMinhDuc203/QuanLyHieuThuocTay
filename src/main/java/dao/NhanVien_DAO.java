@@ -2,9 +2,9 @@ package dao;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-//import com.twilio.Twilio;
-//import com.twilio.rest.api.v2010.account.Message;
-//import com.twilio.type.PhoneNumber;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
 
 
 import entity.NhanVien;
@@ -17,15 +17,15 @@ import jakarta.persistence.TypedQuery;
 public class NhanVien_DAO {
 	private EntityManagerFactory emf;
 	// Thay thế bằng thông tin của bạn
-//	public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
-	//public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
-	///public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
+	public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
+	public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
+	public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
 
 
 
     public NhanVien_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
-   //     Twilio.init(ACCOUNT_SID, AUTH_TOKEN); // Khởi tạo Twilio
+    Twilio.init(ACCOUNT_SID, AUTH_TOKEN); // Khởi tạo Twilio
     }
     public ArrayList<Object[]> layDanhSachNhanVien(String searchTerm, String searchType) {
         EntityManager em = emf.createEntityManager();
@@ -156,11 +156,11 @@ public class NhanVien_DAO {
             
             // Gửi tin nhắn SMS
             try {
-   //             Message message = Message.creator(
-    //                new PhoneNumber(formattedPhoneNumber),  // Số điện thoại nhận đã được định dạng
-      //              new PhoneNumber(FROM_PHONE_NUMBER),     // Số điện thoại Twilio của bạn
-           //         "Mã xác nhận của bạn là: " + maXacNhan  // Nội dung tin nhắn
-              //  ).create();
+                Message message = Message.creator(
+                    new PhoneNumber(formattedPhoneNumber),  // Số điện thoại nhận đã được định dạng
+                    new PhoneNumber(FROM_PHONE_NUMBER),     // Số điện thoại Twilio của bạn
+                    "Mã xác nhận của bạn là: " + maXacNhan  // Nội dung tin nhắn
+                ).create();
 
                 responseMessage = "Mã xác nhận đã được gửi đến số điện thoại của bạn.";
             } catch (com.twilio.exception.ApiException apiEx) {
