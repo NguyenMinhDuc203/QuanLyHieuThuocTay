@@ -50,7 +50,19 @@ import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+		
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> c607df336acb638a05561c694e724b6e6638743e
+>>>>>>> 58a2c0183435d4efe2aa94a2d10fd8cb0fece662
+>>>>>>> e8eec9d2ea875d7934a2453524bb234bdfc2101a
 	public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
 	private static final long serialVersionUID = 1L;
