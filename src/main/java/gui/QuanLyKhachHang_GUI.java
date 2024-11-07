@@ -718,9 +718,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			        model.setValueAt(sdt, row, 2);    // Cập nhật số điện thoại tại cột 2
 			        model.setValueAt(diemTichLuy, row, 3);  // Cập nhật điểm tích lũy tại cột 3
 
-			        // Cập nhật lại cơ sở dữ liệu (nếu cần)
-			        // Ví dụ: dao_kh.suaNhanVien(maNV, tenNV, sdt, diemTichLuy);
-
+			       
 			        JOptionPane.showMessageDialog(null, "Cập nhật thông tin nhân viên thành công!");
 
 			        txtTenNV.setText("");

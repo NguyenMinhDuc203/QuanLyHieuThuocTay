@@ -3,6 +3,8 @@ package dao;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
@@ -264,90 +266,23 @@ public class NhanVien_DAO {
         return isCleared;
     }
     //
-    public boolean saveNhanVien(String maNV, String tenNV, String sdt, LocalDate ngaySinhDate, LocalDate ngayVaoLamDate, double luongCanBan, String chucVu, String cmnd, String trinhDo, String diaChi, Boolean gioiTinh, String email, String matKhau, String trangThai) {
-        EntityManager entityManager = emf.createEntityManager();
-        boolean isSaved = false;
+    public List<NhanVien> getAllNhanViens() {
+        EntityManager em = emf.createEntityManager();
+        List<NhanVien> nhanViens = null;
 
         try {
-            entityManager.getTransaction().begin();
-
-            NhanVien nv = new NhanVien();
-
-            // Đặt giá trị cho các trường khác
-            Field maNhanVienField = NhanVien.class.getDeclaredField("maNhanVien");
-            maNhanVienField.setAccessible(true);
-            maNhanVienField.set(nv, maNV);
-
-            Field tenNhanVienField = NhanVien.class.getDeclaredField("tenNhanVien");
-            tenNhanVienField.setAccessible(true);
-            tenNhanVienField.set(nv, tenNV);
-
-            Field sdtField = NhanVien.class.getDeclaredField("sDT");
-            sdtField.setAccessible(true);
-            sdtField.set(nv, sdt);
-
-            // Đặt giá trị cho các trường ngày
-            Field ngaySinhField = NhanVien.class.getDeclaredField("ngaySinh");
-            ngaySinhField.setAccessible(true);
-            ngaySinhField.set(nv, ngaySinhDate);
-
-            Field ngayVaoLamField = NhanVien.class.getDeclaredField("ngayVaoLam");
-            ngayVaoLamField.setAccessible(true);
-            ngayVaoLamField.set(nv, ngayVaoLamDate);
-
-            Field gioiTinhField = NhanVien.class.getDeclaredField("gioiTinh");
-            gioiTinhField.setAccessible(true);
-            gioiTinhField.set(nv, gioiTinh);
-
-            Field luongCanBanField = NhanVien.class.getDeclaredField("luongCanBan");
-            luongCanBanField.setAccessible(true);
-            luongCanBanField.set(nv, luongCanBan);
-
-            Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
-            chucVuField.setAccessible(true);
-            ChucVu chucVuEnum = ChucVu.valueOf(chucVu);
-            chucVuField.set(nv, chucVuEnum);
-
-            Field cmndField = NhanVien.class.getDeclaredField("cMND");
-            cmndField.setAccessible(true);
-            cmndField.set(nv, cmnd);
-
-            Field trinhDoField = NhanVien.class.getDeclaredField("trinhDo");
-            trinhDoField.setAccessible(true);
-            trinhDoField.set(nv, trinhDo);
-
-            Field diaChiField = NhanVien.class.getDeclaredField("diaChi");
-            diaChiField.setAccessible(true);
-            diaChiField.set(nv, diaChi);
-
-            Field emailField = NhanVien.class.getDeclaredField("email");
-            emailField.setAccessible(true);
-            emailField.set(nv, email);
-
-            Field matKhauField = NhanVien.class.getDeclaredField("matKhau");
-            matKhauField.setAccessible(true);
-            matKhauField.set(nv, matKhau);
-
-            Field trangThaiField = NhanVien.class.getDeclaredField("trangThai");
-            trangThaiField.setAccessible(true);
-            trangThaiField.set(nv, trangThai);
-
-            entityManager.persist(nv);
-            entityManager.getTransaction().commit();
-            isSaved = true;
+            TypedQuery<NhanVien> query = em.createQuery("SELECT nv FROM NhanVien nv", NhanVien.class);
+            nhanViens = query.getResultList();
         } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
             e.printStackTrace();
         } finally {
-            if (entityManager != null) {
-                entityManager.close();
-            }
+            em.close();
         }
 
-        return isSaved;
+        return nhanViens;
     }
+
+  
 
 }
 
