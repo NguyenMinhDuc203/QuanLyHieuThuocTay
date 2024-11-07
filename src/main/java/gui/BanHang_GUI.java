@@ -17,9 +17,16 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Component;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import dao.SanPham_DAO;
+import entity.SanPham;
+
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.border.EtchedBorder;
@@ -297,7 +304,7 @@ public class BanHang_GUI extends JFrame {
       		{null, null, null, null, null, null, null},
       	},
       	new String[] {
-      		"M\u00E3 S\u1EA3n Ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "Gi\u00E1 B\u00E1n", "Thu\u1EBF GTGT", "Gi\u1EA3m Gi\u00E1", "Th\u00E0nh Ti\u1EC1n"
+      		"Mã sản phẩm", "Tên Sản Phẩm", "Số Lượng", "Giá Bán", "Thuế GTGT", "Giảm Giá", "Thành Tiền"
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
@@ -633,6 +640,79 @@ public class BanHang_GUI extends JFrame {
 
       // Hiển thị cửa sổ
       setVisible(true);
+      
+      
+   // Xử lý sự kiện thêm sản phẩm
+      btnNewButton.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              String maSanPham = txtNhpMSn.getText().trim(); // Giả sử bạn có một text field nhập mã sản phẩm
+
+              if (maSanPham.isEmpty()) {
+                  JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                  return;
+              }
+
+              SanPham_DAO sanPhamDAO = new SanPham_DAO();
+              SanPham sanPham = sanPhamDAO.getSanPhamByMaSanPham(maSanPham);
+
+              if (sanPham != null) {
+                  double giaBan = sanPham.getGiaBan();
+                  double thueGTGT = giaBan * sanPham.getThueGTGT() / 100;
+                  double giamGia = giaBan * 0 / 100; // Giả sử không có giảm giá
+                  double thanhTien = giaBan + thueGTGT - giamGia;
+
+                  DefaultTableModel model = (DefaultTableModel) table.getModel();
+                  model.addRow(new Object[]{
+                      sanPham.getMaSanPham(),
+                      sanPham.getTenSanPham(),
+                      1,  // Số lượng mặc định là 1
+                      giaBan,
+                      thueGTGT,
+                      giamGia,
+                      thanhTien
+                  });
+
+                  // Tính và cập nhật tổng thành tiền
+                  double tongThanhTien = 0.0;
+                  for (int i = 0; i < model.getRowCount(); i++) {
+                      double thanhTienRow = (double) model.getValueAt(i, 6); // Cột "Thành Tiền"
+                      tongThanhTien += thanhTienRow;
+                  }
+
+                  textField_9.setText(String.format("%.2f", tongThanhTien));
+
+                  JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại: " + sanPham.toString());
+              } else {
+                  JOptionPane.showMessageDialog(null, "Sản phẩm không tồn tại trong hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+              }
+          }
+      });
+
+      // Xử lý sự kiện xóa sản phẩm
+      btnXa.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              int selectedRow = table.getSelectedRow();
+
+              if (selectedRow != -1) {
+                  DefaultTableModel model = (DefaultTableModel) table.getModel();
+                  model.removeRow(selectedRow);
+
+                  // Tính và cập nhật tổng thành tiền sau khi xóa sản phẩm
+                  double tongThanhTien = 0.0;
+                  for (int i = 0; i < model.getRowCount(); i++) {
+                      double thanhTienRow = (double) model.getValueAt(i, 6); // Cột "Thành Tiền"
+                      tongThanhTien += thanhTienRow;
+                  }
+
+                  textField_9.setText(String.format("%.2f", tongThanhTien));
+              } else {
+                  JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+              }
+          }
+      });
         
     }
+
+ 
+
 }

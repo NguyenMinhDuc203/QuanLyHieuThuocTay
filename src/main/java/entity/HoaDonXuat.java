@@ -37,7 +37,8 @@ public class HoaDonXuat {
 	@JoinColumn(name = "maGiamGia")
 	private MaGiamGia maGiamGia;
 	
-	
+	private double tienKhachDua;
+	private double tienThoi;
 	
 
 }
