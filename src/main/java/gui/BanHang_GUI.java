@@ -22,6 +22,7 @@ import java.awt.event.MouseEvent;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
+import javax.swing.border.EtchedBorder;
 public class BanHang_GUI extends JFrame {
 
     private static final long serialVersionUID = 1L;
@@ -44,6 +45,18 @@ public class BanHang_GUI extends JFrame {
     private JTextField textField_7;
     private JTextField textField_8;
     private JTextField textField_9;
+    private JTable table_1;
+    private JTextField txtMHan;
+    private JTable table_2;
+    private JTextField textField_10;
+    private JTable table_3;
+    private JTable table_4;
+    private JTextField txtLoiKhchHng;
+    private JTextField textField_11;
+    private JTextField textField_12;
+    private JTextField textField_13;
+    private JTextField textField_14;
+    private JTable table_5;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -319,6 +332,11 @@ public class BanHang_GUI extends JFrame {
       JButton btnNewButton_1 = new JButton("Xử lý đơn tạm");
       btnNewButton_1.setBounds(10, 606, 195, 54);
       BanHangPane.add(btnNewButton_1);
+   // Thêm sự kiện cho các nút chuyển panel
+      btnNewButton_1.addActionListener(e -> {
+          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "DonTamPane"); // Chuyển sang trang Bán Hàng
+      });
       
       JButton btnNewButton_1_1 = new JButton("Lưu đơn tạm");
       btnNewButton_1_1.setBounds(253, 606, 195, 54);
@@ -327,6 +345,11 @@ public class BanHang_GUI extends JFrame {
       JButton btnNewButton_1_2 = new JButton("Khuyến mãi");
       btnNewButton_1_2.setBounds(495, 606, 195, 54);
       BanHangPane.add(btnNewButton_1_2);
+   // Thêm sự kiện cho các nút chuyển panel
+      btnNewButton_1_2.addActionListener(e -> {
+          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "KhuyenMaiPane"); // Chuyển sang trang Bán Hàng
+      });
       
       JButton btnNewButton_1_3 = new JButton("Hủy");
       btnNewButton_1_3.setBounds(740, 606, 195, 54);
@@ -351,13 +374,231 @@ public class BanHang_GUI extends JFrame {
       panelContent.add(DonTamPane, "DonTamPane"); // Tên để chuyển đổi
       DonTamPane.setLayout(null);
       
+      JScrollPane scrollPane_1 = new JScrollPane();
+      scrollPane_1.setBounds(10, 65, 558, 528);
+      DonTamPane.add(scrollPane_1);
+      
+      table_1 = new JTable();
+      table_1.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 H\u00F3a \u0110\u01A1n", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o H\u00F3a \u0110\u01A1n"
+      	}
+      ));
+      scrollPane_1.setViewportView(table_1);
+      
+      JScrollPane scrollPane_1_1 = new JScrollPane();
+      scrollPane_1_1.setBounds(607, 11, 740, 671);
+      DonTamPane.add(scrollPane_1_1);
+      
+      table_2 = new JTable();
+      table_2.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1"
+      	}
+      ));
+      scrollPane_1_1.setViewportView(table_2);
+      
+      txtMHan = new JTextField();
+      txtMHan.setForeground(new Color(192, 192, 192));
+      txtMHan.setText("Mã hóa đơn");
+      txtMHan.setBounds(147, 11, 276, 43);
+      DonTamPane.add(txtMHan);
+      txtMHan.setColumns(10);
+      
+      JButton btnNewButton_3 = new JButton("TÌm kiếm");
+      btnNewButton_3.setBounds(445, 11, 123, 43);
+      DonTamPane.add(btnNewButton_3);
+      
+      JButton btnNewButton_4 = new JButton("Xóa tát cả đơn");
+      btnNewButton_4.setBounds(10, 633, 156, 49);
+      DonTamPane.add(btnNewButton_4);
+      
+      JButton btnNewButton_4_1 = new JButton("Xóa đơn tạm");
+      btnNewButton_4_1.setBounds(212, 633, 156, 49);
+      DonTamPane.add(btnNewButton_4_1);
+      
+      JButton btnNewButton_4_2 = new JButton("Xử lí đơn");
+      btnNewButton_4_2.setBounds(412, 633, 156, 49);
+      DonTamPane.add(btnNewButton_4_2);
+      
+      JSpinner spinner_1 = new JSpinner();
+      spinner_1.setModel(new SpinnerListModel(new String[] {"M\u00E3 h\u00F3a \u0111\u01A1n", "T\u00EAn kh\u00E1ch h\u00E0ng", "Ng\u00E0y t\u1EA1o h\u00F3a \u0111\u01A1n"}));
+      spinner_1.setBounds(10, 11, 127, 43);
+      DonTamPane.add(spinner_1);
+      
+      
+      
       JPanel DonHoanThanhPane = new JPanel();
       panelContent.add(DonHoanThanhPane, "DonHoanThanhPane"); // Tên để chuyển đổi
       DonHoanThanhPane.setLayout(null);
       
+      JScrollPane scrollPane_2 = new JScrollPane();
+      scrollPane_2.setBounds(30, 73, 659, 584);
+      DonHoanThanhPane.add(scrollPane_2);
+      
+      table_3 = new JTable();
+      table_3.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "Th\u00E0nh ti\u1EC1n"
+      	}
+      ));
+      scrollPane_2.setViewportView(table_3);
+      
+      JScrollPane scrollPane_2_1 = new JScrollPane();
+      scrollPane_2_1.setBounds(699, 11, 648, 459);
+      DonHoanThanhPane.add(scrollPane_2_1);
+      
+      table_4 = new JTable();
+      table_4.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, "", null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1", "Thu\u1EBF GTGT", "Th\u00E0nh Ti\u1EC1n"
+      	}
+      ));
+      scrollPane_2_1.setViewportView(table_4);
+      
+      JPanel panel_3 = new JPanel();
+      panel_3.setBorder(new TitledBorder(null, "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+      panel_3.setBounds(699, 497, 648, 273);
+      DonHoanThanhPane.add(panel_3);
+      panel_3.setLayout(null);
+      
+      txtLoiKhchHng = new JTextField();
+      txtLoiKhchHng.setText("Loại khách hàng");
+      txtLoiKhchHng.setBounds(119, 22, 508, 41);
+      panel_3.add(txtLoiKhchHng);
+      txtLoiKhchHng.setColumns(10);
+      
+      JLabel lblNewLabel_4 = new JLabel("Mã khách hàng");
+      lblNewLabel_4.setBounds(20, 79, 151, 41);
+      panel_3.add(lblNewLabel_4);
+      
+      JLabel lblNewLabel_4_1 = new JLabel("Tên khách hàng");
+      lblNewLabel_4_1.setBounds(20, 147, 151, 41);
+      panel_3.add(lblNewLabel_4_1);
+      
+      JLabel lblNewLabel_4_2 = new JLabel("Tiền khách đưa");
+      lblNewLabel_4_2.setBounds(20, 210, 89, 41);
+      panel_3.add(lblNewLabel_4_2);
+      
+      textField_11 = new JTextField();
+      textField_11.setText("Loại khách hàng");
+      textField_11.setColumns(10);
+      textField_11.setBounds(119, 74, 508, 41);
+      panel_3.add(textField_11);
+      
+      textField_12 = new JTextField();
+      textField_12.setColumns(10);
+      textField_12.setBounds(119, 147, 508, 41);
+      panel_3.add(textField_12);
+      
+      textField_13 = new JTextField();
+      textField_13.setColumns(10);
+      textField_13.setBounds(119, 210, 161, 41);
+      panel_3.add(textField_13);
+      
+      JLabel lblNewLabel_4_2_1 = new JLabel("Tiền trả lại khách");
+      lblNewLabel_4_2_1.setBounds(348, 210, 89, 41);
+      panel_3.add(lblNewLabel_4_2_1);
+      
+      textField_14 = new JTextField();
+      textField_14.setText("Loại khách hàng");
+      textField_14.setColumns(10);
+      textField_14.setBounds(466, 210, 161, 41);
+      panel_3.add(textField_14);
+      
+      JSpinner spinner_2 = new JSpinner();
+      spinner_2.setModel(new SpinnerListModel(new String[] {"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 Kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "Th\u00E0nh ti\u1EC1n"}));
+      spinner_2.setBounds(30, 11, 157, 51);
+      DonHoanThanhPane.add(spinner_2);
+      
+      textField_10 = new JTextField();
+      textField_10.setBounds(195, 11, 345, 51);
+      DonHoanThanhPane.add(textField_10);
+      textField_10.setColumns(10);
+      
+      JButton btnNewButton_5 = new JButton("Tìm kiếm");
+      btnNewButton_5.setBounds(550, 11, 124, 51);
+      DonHoanThanhPane.add(btnNewButton_5);
+      
+      JButton btnNewButton_6 = new JButton("Xem bản in");
+      btnNewButton_6.setBounds(30, 678, 145, 43);
+      DonHoanThanhPane.add(btnNewButton_6);
+      
+      JButton btnNewButton_6_1 = new JButton("Xuất hóa đơn");
+      btnNewButton_6_1.setBounds(205, 678, 145, 43);
+      DonHoanThanhPane.add(btnNewButton_6_1);
+      
+      JButton btnNewButton_6_2 = new JButton("Trả hàng");
+      btnNewButton_6_2.setBounds(544, 678, 145, 43);
+      DonHoanThanhPane.add(btnNewButton_6_2);
+      
+      JButton btnNewButton_6_2_1 = new JButton("Đổi hàng");
+      btnNewButton_6_2_1.setBounds(375, 678, 145, 43);
+      DonHoanThanhPane.add(btnNewButton_6_2_1);
+      
       JPanel DonTraPane = new JPanel();
       panelContent.add(DonTraPane, "DonTraPane"); // Tên để chuyển đổi
       DonTraPane.setLayout(null);
+      
+      JScrollPane scrollPane_3 = new JScrollPane();
+      scrollPane_3.setBounds(23, 240, 629, 479);
+      DonTraPane.add(scrollPane_3);
+      
+      table_5 = new JTable();
+      table_5.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null, null, null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1", "Thu\u1EBF", "Gi\u1EA3m gi\u00E1", "Th\u00E0nh ti\u1EC1n"
+      	}
+      ));
+      scrollPane_3.setViewportView(table_5);
+      
+      JLabel lblNewLabel_5 = new JLabel("ĐỔI HÀNG");
+      lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 22));
+      lblNewLabel_5.setBounds(10, 11, 311, 57);
+      DonTraPane.add(lblNewLabel_5);
+      
+      JPanel panel_4 = new JPanel();
+      panel_4.setBorder(new TitledBorder(null, "Th\u00F4ng tin nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+      panel_4.setBounds(20, 65, 406, 141);
+      DonTraPane.add(panel_4);
+      
+      JPanel panel_4_1 = new JPanel();
+      panel_4_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+      panel_4_1.setBounds(465, 65, 406, 141);
+      DonTraPane.add(panel_4_1);
+      
+      JPanel panel_4_1_1 = new JPanel();
+      panel_4_1_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin \u0111\u01A1n mua", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+      panel_4_1_1.setBounds(914, 65, 406, 141);
+      DonTraPane.add(panel_4_1_1);
+      
+      JPanel panel_5 = new JPanel();
+      panel_5.setBorder(new TitledBorder(null, "Th\u00F4ng tin \u0111\u01A1n \u0111\u1ED5i tr\u1EA3", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+      panel_5.setBounds(682, 240, 635, 479);
+      DonTraPane.add(panel_5);
+      
+      JButton btnNewButton_7 = new JButton("Tạo hóa đơn đổi trả");
+      btnNewButton_7.setBounds(782, 730, 206, 43);
+      DonTraPane.add(btnNewButton_7);
+      
+      JButton btnNewButton_7_1 = new JButton("Hủy đổi trả");
+      btnNewButton_7_1.setBounds(1017, 730, 206, 43);
+      DonTraPane.add(btnNewButton_7_1);
 
       // Trang Khuyến Mãi
       JPanel KhuyenMaiPane = new JPanel();
