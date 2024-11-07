@@ -1,23 +1,29 @@
 package dao;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import java.lang.reflect.Field;
 
 public class NhanVien_DAO {
-    private EntityManagerFactory emf;
 
-    // Thay thế bằng thông tin của bạn
-    public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
-    public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
-    public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
+	private EntityManagerFactory emf;
+	private Object gioiTinh;
+	private Object trangThai;
+	// Thay thế bằng thông tin của bạn
+	public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
+	public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
+	public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
 
     public NhanVien_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
@@ -196,4 +202,141 @@ public class NhanVien_DAO {
         int code = 100000 + random.nextInt(900000); // Tạo mã 6 chữ số
         return String.valueOf(code);
     }
+
+    //
+    public String maTuSinhNhanVien() {
+        EntityManager em = emf.createEntityManager();
+        String maNhanVien = null;
+
+        try {
+            // Đếm số lượng nhân viên hiện có trong bảng
+            String jpql = "SELECT COUNT(nv) FROM NhanVien nv";
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            Long count = query.getSingleResult();
+
+            // Tạo mã nhân viên mới dựa trên số lượng nhân viên hiện tại
+            int nextId = count.intValue() + 1;
+            maNhanVien = String.format("NV%03d", nextId); // Định dạng lại thành "NV001", "NV002", ...
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tự sinh mã nhân viên: " + e.getMessage());
+            e.printStackTrace();
+            maNhanVien = "NV001"; // Trong trường hợp lỗi, bắt đầu lại từ "NV001"
+        } finally {
+            em.close();
+        }
+
+        return maNhanVien;
+    }
+    public boolean clearAllNhanVien() {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isCleared = false;
+
+        try {
+            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
+
+            // Truy vấn để xóa tất cả khách hàng
+            String jpql = "DELETE FROM NhanVien";
+            Query query = entityManager.createQuery(jpql);
+            query.executeUpdate();
+
+            entityManager.getTransaction().commit(); // Cam kết giao dịch
+            isCleared = true; // Đánh dấu là xóa thành công
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback(); // Hoàn tác nếu có lỗi
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close(); // Đóng EntityManager
+        }
+
+        return isCleared;
+    }
+    //
+    public boolean saveNhanVien(String maNV, String tenNV, String sdt, LocalDate ngaySinhDate, LocalDate ngayVaoLamDate, double luongCanBan, String chucVu, String cmnd, String trinhDo, String diaChi, Boolean gioiTinh, String email, String matKhau, String trangThai) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isSaved = false;
+
+        try {
+            entityManager.getTransaction().begin();
+
+            NhanVien nv = new NhanVien();
+
+            // Đặt giá trị cho các trường khác
+            Field maNhanVienField = NhanVien.class.getDeclaredField("maNhanVien");
+            maNhanVienField.setAccessible(true);
+            maNhanVienField.set(nv, maNV);
+
+            Field tenNhanVienField = NhanVien.class.getDeclaredField("tenNhanVien");
+            tenNhanVienField.setAccessible(true);
+            tenNhanVienField.set(nv, tenNV);
+
+            Field sdtField = NhanVien.class.getDeclaredField("sDT");
+            sdtField.setAccessible(true);
+            sdtField.set(nv, sdt);
+
+            // Đặt giá trị cho các trường ngày
+            Field ngaySinhField = NhanVien.class.getDeclaredField("ngaySinh");
+            ngaySinhField.setAccessible(true);
+            ngaySinhField.set(nv, ngaySinhDate);
+
+            Field ngayVaoLamField = NhanVien.class.getDeclaredField("ngayVaoLam");
+            ngayVaoLamField.setAccessible(true);
+            ngayVaoLamField.set(nv, ngayVaoLamDate);
+
+            Field gioiTinhField = NhanVien.class.getDeclaredField("gioiTinh");
+            gioiTinhField.setAccessible(true);
+            gioiTinhField.set(nv, gioiTinh);
+
+            Field luongCanBanField = NhanVien.class.getDeclaredField("luongCanBan");
+            luongCanBanField.setAccessible(true);
+            luongCanBanField.set(nv, luongCanBan);
+
+            Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
+            chucVuField.setAccessible(true);
+            ChucVu chucVuEnum = ChucVu.valueOf(chucVu);
+            chucVuField.set(nv, chucVuEnum);
+
+            Field cmndField = NhanVien.class.getDeclaredField("cMND");
+            cmndField.setAccessible(true);
+            cmndField.set(nv, cmnd);
+
+            Field trinhDoField = NhanVien.class.getDeclaredField("trinhDo");
+            trinhDoField.setAccessible(true);
+            trinhDoField.set(nv, trinhDo);
+
+            Field diaChiField = NhanVien.class.getDeclaredField("diaChi");
+            diaChiField.setAccessible(true);
+            diaChiField.set(nv, diaChi);
+
+            Field emailField = NhanVien.class.getDeclaredField("email");
+            emailField.setAccessible(true);
+            emailField.set(nv, email);
+
+            Field matKhauField = NhanVien.class.getDeclaredField("matKhau");
+            matKhauField.setAccessible(true);
+            matKhauField.set(nv, matKhau);
+
+            Field trangThaiField = NhanVien.class.getDeclaredField("trangThai");
+            trangThaiField.setAccessible(true);
+            trangThaiField.set(nv, trangThai);
+
+            entityManager.persist(nv);
+            entityManager.getTransaction().commit();
+            isSaved = true;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
+        return isSaved;
+    }
 }
+

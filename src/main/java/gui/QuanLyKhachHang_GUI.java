@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
@@ -29,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -50,9 +52,13 @@ import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
+<<<<<<< HEAD
 
 	public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
+=======
+>>>>>>> d505b0e3f8096fcb21d0fe9bc5de1045ef102915
 
+public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;
@@ -99,198 +105,64 @@ import java.lang.reflect.Field;
 	public QuanLyKhachHang_GUI() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 1423, 912); 
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(0, 0, 1920, 1080); 
+        setSize(1920,1080);
         contentPane = new JPanel();
-        contentPane.setBackground(Color.decode("#FF5733"));
+        contentPane.setBackground(new Color(26, 133, 94));
         contentPane.setForeground(SystemColor.window);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
+        setLocationRelativeTo(null);
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		 // Menu Bar
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setOpaque(true);
-        menuBar.setBackground(new Color(46, 139, 87));
-        menuBar.setBounds(0, 0, 1407, 70);
-        contentPane.add(menuBar);
-
-        // Menu "Trang Chủ"
-        JMenu mnTrangChu = new JMenu(" Trang Chủ");
-        mnTrangChu.setOpaque(true);
-        mnTrangChu.setBackground(new Color(46, 139, 87));
-        mnTrangChu.setForeground(Color.WHITE);
-        mnTrangChu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        
-        // Tạo icon trắng cho "Trang Chủ"
-        ImageIcon icon = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/house-solid.png"));
-        Image img = icon.getImage();
-        BufferedImage bImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = bImage.createGraphics();
-        g2d.drawImage(img, 0, 0, null);
-        g2d.setComposite(AlphaComposite.SrcIn);
-        g2d.setColor(Color.WHITE);
-        g2d.fillRect(0, 0, bImage.getWidth(), bImage.getHeight());
-        g2d.dispose();
-        Image scaledImage = bImage.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnTrangChu.setIcon(new ImageIcon(scaledImage));
-        menuBar.add(mnTrangChu);
-
-      
-     // Menu "Quản Lý"
-        JMenu mnQuanLy = new JMenu(" Quản Lý");
-        mnQuanLy.setOpaque(true);
-        mnQuanLy.setBackground(new Color(46, 139, 87));
-        mnQuanLy.setForeground(new Color(255, 255, 255));
-        mnQuanLy.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        ImageIcon icon1 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/list-check-solid.png"));
-        Image img1 = icon1.getImage();
-        BufferedImage bImage1 = new BufferedImage(img1.getWidth(null), img1.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d1 = bImage1.createGraphics();
-        g2d1.drawImage(img1, 0, 0, null);
-        g2d1.setComposite(AlphaComposite.SrcIn);
-        g2d1.setColor(Color.WHITE);
-        g2d1.fillRect(0, 0, bImage1.getWidth(), bImage1.getHeight());
-        g2d1.dispose();
-        Image scaledImage1 = bImage1.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnQuanLy.setIcon(new ImageIcon(scaledImage1));
-        mnQuanLy.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Thay đổi giá trị 20 để điều chỉnh khoảng cách
-        menuBar.add(mnQuanLy);
-
-        // Thêm các menu item cho "Quản Lý"
-        JMenuItem mntmSP = new JMenuItem("Sản Phẩm");
-        mntmSP.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmSP);
-
-        JMenuItem mntmNV = new JMenuItem("Nhân Viên");
-        mntmNV.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmNV);
-
-        JMenuItem mntmKH = new JMenuItem("Khách Hàng");
-        mntmKH.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnQuanLy.add(mntmKH);
-
-        // Menu "Bán Hàng"
-        JMenu mnBanHang = new JMenu(" Bán Hàng");
-        mnBanHang.setOpaque(true);
-        mnBanHang.setBackground(new Color(46, 139, 87));
-        mnBanHang.setForeground(new Color(255, 255, 255));
-        mnBanHang.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-        ImageIcon icon2 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/cart-shopping-solid.png"));
-        Image img2 = icon2.getImage();
-        BufferedImage bImage2 = new BufferedImage(img2.getWidth(null), img2.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d2 = bImage2.createGraphics();
-        g2d2.drawImage(img2, 0, 0, null); // Sử dụng img2 thay vì img1
-        g2d2.setComposite(AlphaComposite.SrcIn);
-        g2d2.setColor(Color.WHITE);
-        g2d2.fillRect(0, 0, bImage2.getWidth(), bImage2.getHeight());
-        g2d2.dispose();
-        Image scaledImage2 = bImage2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnBanHang.setIcon(new ImageIcon(scaledImage2));
-        mnBanHang.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Thay đổi giá trị 20 để điều chỉnh khoảng cách
-        menuBar.add(mnBanHang);
-
-     // Menu "Thống Kê"
-        JMenu mnThongKe = new JMenu(" Thống Kê");
-        mnThongKe.setBackground(new Color(46, 139, 87));
-        mnThongKe.setOpaque(true);
-        mnThongKe.setForeground(new Color(255, 255, 255));
-        mnThongKe.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-
-        ImageIcon icon3 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/clipboard-solid.png"));
-        Image img3 = icon3.getImage();
-        BufferedImage bImage3 = new BufferedImage(img3.getWidth(null), img3.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d3 = bImage3.createGraphics();
-        g2d3.drawImage(img3, 0, 0, null);
-        g2d3.setComposite(AlphaComposite.SrcIn);
-        g2d3.setColor(Color.WHITE);
-        g2d3.fillRect(0, 0, bImage3.getWidth(), bImage3.getHeight());
-        g2d3.dispose();
-        Image scaledImage3 = bImage3.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnThongKe.setIcon(new ImageIcon(scaledImage3)); // Sử dụng icon đã được chuyển thành màu trắng
-
-        menuBar.add(Box.createHorizontalStrut(30)); // Thêm khoảng cách
-        menuBar.add(mnThongKe);
-
-        // Thêm các menu item cho "Thống Kê"
-        JMenuItem mntmDoanhSo = new JMenuItem("Doanh Số");
-        mntmDoanhSo.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnThongKe.add(mntmDoanhSo);
-
-        JMenuItem mntmNhanVien = new JMenuItem("Nhân Viên");
-        mntmNhanVien.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnThongKe.add(mntmNhanVien);
-
-        JMenuItem mntmKhachHang = new JMenuItem("Khách Hàng");
-        mntmKhachHang.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnThongKe.add(mntmKhachHang);
-
-        JMenuItem mntmSanPham = new JMenuItem("Sản Phẩm");
-        mntmSanPham.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnThongKe.add(mntmSanPham);
-
-        // Menu "Tra Cứu"
-        JMenu mnNewMenu_2_2 = new JMenu(" Tra Cứu");
-        mnNewMenu_2_2.setBackground(new Color(46, 139, 87));
-        mnNewMenu_2_2.setOpaque(true);
-        mnNewMenu_2_2.setForeground(new Color(255, 255, 255));
-        mnNewMenu_2_2.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-
-        ImageIcon icon2_2 = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/circle-question-solid.png"));
-        Image img2_2 = icon2_2.getImage();
-        BufferedImage bImage2_2 = new BufferedImage(img2_2.getWidth(null), img2_2.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d2_2 = bImage2_2.createGraphics();
-        g2d2_2.drawImage(img2_2, 0, 0, null);
-        g2d2_2.setComposite(AlphaComposite.SrcIn);
-        g2d2_2.setColor(Color.WHITE);
-        g2d2_2.fillRect(0, 0, bImage2_2.getWidth(), bImage2_2.getHeight());
-        g2d2_2.dispose();
-        Image scaledImage2_2 = bImage2_2.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        mnNewMenu_2_2.setIcon(new ImageIcon(scaledImage2_2)); // Sử dụng icon đã được chuyển thành màu trắng
-
-        Component horizontalStrut2 = Box.createHorizontalStrut(30); // Thêm khoảng cách
-        horizontalStrut2.setBackground(new Color(46, 139, 87));
-        menuBar.add(horizontalStrut2);
-        menuBar.add(mnNewMenu_2_2);
-
-        // Thêm các menu item cho "Tra Cứu"
-        JMenuItem mntmTCSP = new JMenuItem("Sản Phẩm");
-        mntmTCSP.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnNewMenu_2_2.add(mntmTCSP);
-
-        JMenuItem mntmTCNV = new JMenuItem("Nhân Viên");
-        mntmTCNV.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-        mnNewMenu_2_2.add(mntmTCNV);
-
+		contentPane.setLayout(null);		
+		//Menu
+				JMenuBar menuBar = createMenuBar();
+				menuBar.setBorderPainted(false);
+				menuBar.setOpaque(true);
+				menuBar.setBackground(new Color(26, 133, 94));
+				menuBar.setBounds(0, 0, 1338, 70);
+				contentPane.add(menuBar);
 				
-				JMenuItem mntmTCKH = new JMenuItem("Khách Hàng");
-				mntmTCKH.setFont(new Font("Segoe UI", Font.PLAIN, 24));
-				mnNewMenu_2_2.add(mntmTCKH);
-				mnNewMenu_2_2.setOpaque(true);
-				ImageIcon iconBt = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/arrow-from-bracket-solid.png"));
+				
+				JButton btnNewButton = new JButton("Đăng Xuất");
+				btnNewButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+					}
+				});
+				btnNewButton.setForeground(new Color(255, 255, 255));
+				btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+				btnNewButton.setBackground(new Color(26, 133, 94));
+				btnNewButton.setOpaque(true);
+				btnNewButton.setBounds(1244, 0, 348, 70);
+				ImageIcon iconBt = new ImageIcon(TrangChu_GUI.class.getResource("/gui/arrow-right-from-bracket-solid.png"));
 				Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				
+				btnNewButton.setIcon(new ImageIcon(scaledImageBt));
+				btnNewButton.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
+				btnNewButton.setHorizontalTextPosition(SwingConstants.LEFT);
+				contentPane.add(btnNewButton);
 				JPanel panel = new JPanel();
 				panel.setBackground(new Color(226, 250, 252));
-				panel.setBounds(0, 69, 1407, 866);
+				panel.setBounds(0, 69, 1550, 866);
 				contentPane.add(panel);
 				panel.setLayout(null);
+				
+				////
+				
 				
 				JLabel lblNewLabel = new JLabel("QUẢN LÝ KHÁCH HÀNG");
 				lblNewLabel.setForeground(new Color(46, 139, 87));
 				lblNewLabel.setFont(new Font("Leelawadee UI", Font.BOLD, 40));
-				lblNewLabel.setBounds(96, 11, 512, 70);
+				lblNewLabel.setBounds(97, 11, 512, 70);
 				ImageIcon poster = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/poster.png"));
 				Image scaledPoster = poster.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 				JLabel imageLabel = new JLabel(new ImageIcon(scaledPoster));
-				imageLabel.setBounds(9, 11, 77, 81);
+				imageLabel.setBounds(10, 11, 77, 81);
 				panel.add(imageLabel);
 				panel.add(lblNewLabel);
 				
 				JPanel panel_1 = new JPanel();
 				
-				panel_1.setBounds(9, 99, 1386, 164);
+				panel_1.setBounds(10, 106, 1073, 212);
 				panel.add(panel_1);
 				panel_1.setBackground(new Color(154, 202, 189));
 				panel_1.setLayout(null);
@@ -298,12 +170,12 @@ import java.lang.reflect.Field;
 				
 				txtTenNV = new JTextField();
 				txtTenNV.setColumns(10);
-				txtTenNV.setBounds(23, 31, 352, 30);
+				txtTenNV.setBounds(23, 31, 427, 30);
 				panel_1.add(txtTenNV);
 				
 				txtSDT = new JTextField();
 				txtSDT.setColumns(10);
-				txtSDT.setBounds(23, 98, 352, 30);
+				txtSDT.setBounds(23, 128, 427, 30);
 				panel_1.add(txtSDT);
 				
 				
@@ -315,7 +187,7 @@ import java.lang.reflect.Field;
 				
 				JLabel lblSDT = new JLabel("Số Điện Thoại ");
 				lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblSDT.setBounds(23, 82, 126, 14);
+				lblSDT.setBounds(23, 104, 126, 14);
 				panel_1.add(lblSDT);
 				
 				JLabel lblDTL = new JLabel("Điểm tích lũy");
@@ -325,19 +197,10 @@ import java.lang.reflect.Field;
 				
 				txtDTL = new JTextField();
 				txtDTL.setColumns(10);
-				txtDTL.setBounds(574, 31, 352, 30);
+				txtDTL.setBounds(574, 31, 427, 30);
 				panel_1.add(txtDTL);
-				
-				
-				// Nút "Thêm"
-				 btnThem = new JButton("Thêm");
-				btnThem.setOpaque(true);
-				btnThem.setForeground(new Color(255, 255, 255));
-				btnThem.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnThem.setBackground(new Color(46, 139, 87));
-				btnThem.setBounds(10, 291, 128, 45);
 
-				ImageIcon iconThem = new ImageIcon(qlNV.class.getResource("/gui/4993253681582956831-128.png"));
+				ImageIcon iconThem = new ImageIcon(QuanLyKhachHang_GUI.class.getResource("/gui/4993253681582956831-128.png"));
 				Image imgThem = iconThem.getImage();
 				BufferedImage bImageThem = new BufferedImage(imgThem.getWidth(null), imgThem.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2dThem = bImageThem.createGraphics();
@@ -347,17 +210,6 @@ import java.lang.reflect.Field;
 				g2dThem.fillRect(0, 0, bImageThem.getWidth(), bImageThem.getHeight());
 				g2dThem.dispose();
 				Image scaledImageThem = bImageThem.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnThem.setIcon(new ImageIcon(scaledImageThem));
-				panel.add(btnThem);
-
-
-				// Nút "Xóa"
-				 btnXoa = new JButton("Xóa");
-				btnXoa.setOpaque(true);
-				btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btnXoa.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnXoa.setBackground(new Color(46, 139, 87));
-				btnXoa.setBounds(148, 291, 113, 45);
 
 				ImageIcon iconXoa = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/320632131667326703-128.png"));
 				Image imgXoa = iconXoa.getImage();
@@ -369,16 +221,6 @@ import java.lang.reflect.Field;
 				g2dXoa.fillRect(0, 0, bImageXoa.getWidth(), bImageXoa.getHeight());
 				g2dXoa.dispose();
 				Image scaledImageXoa = bImageXoa.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnXoa.setIcon(new ImageIcon(scaledImageXoa));
-				panel.add(btnXoa);
-
-				// Nút "Sửa"
-				 btnSua = new JButton("Sửa");
-				btnSua.setOpaque(true);
-				btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btnSua.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnSua.setBackground(new Color(46, 139, 87));
-				btnSua.setBounds(280, 291, 113, 45);
 
 				ImageIcon iconSua = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/setting-icon.png"));
 				Image imgSua = iconSua.getImage();
@@ -390,17 +232,6 @@ import java.lang.reflect.Field;
 				g2dSua.fillRect(0, 0, bImageSua.getWidth(), bImageSua.getHeight());
 				g2dSua.dispose();
 				Image scaledImageSua = bImageSua.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnSua.setIcon(new ImageIcon(scaledImageSua));
-				panel.add(btnSua);
-
-
-				// Nút "Xóa Trắng"
-			btnXoaTrang = new JButton("Xóa Trắng");
-				btnXoaTrang.setOpaque(true);
-				btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnXoaTrang.setBackground(new Color(46, 139, 87));
-				btnXoaTrang.setBounds(414, 291, 152, 45);
 
 				ImageIcon iconXT = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/calendar-remove-icon.png"));
 				Image imgXT = iconXT.getImage();
@@ -412,16 +243,6 @@ import java.lang.reflect.Field;
 				g2dXT.fillRect(0, 0, bImageXT.getWidth(), bImageXT.getHeight());
 				g2dXT.dispose();
 				Image scaledImageXT = bImageXT.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
-				panel.add(btnXoaTrang);
-
-				// Nút "Lưu"
-				 btnLuu = new JButton("Lưu");
-				btnLuu.setOpaque(true);
-				btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnLuu.setBackground(new Color(46, 139, 87));
-				btnLuu.setBounds(589, 291, 119, 45);
 
 				ImageIcon iconLuu = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/GUI/save-icon.png"));
 				Image imgLuu = iconLuu.getImage();
@@ -433,17 +254,9 @@ import java.lang.reflect.Field;
 				g2dLuu.fillRect(0, 0, bImageLuu.getWidth(), bImageLuu.getHeight());
 				g2dLuu.dispose();
 				Image scaledImageLuu = bImageLuu.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnLuu.setIcon(new ImageIcon(scaledImageLuu));
-				panel.add(btnLuu);
-
-				
-				txtNhap = new JTextField();
-				txtNhap.setColumns(10);
-				txtNhap.setBounds(1070, 304, 318, 32);
-				panel.add(txtNhap);
 				
 				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setBounds(10, 347, 1386, 453);
+				scrollPane.setBounds(10, 355, 1073, 426);
 				panel.add(scrollPane);
 				table = new JTable();
 				table.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -454,7 +267,7 @@ import java.lang.reflect.Field;
 
 					},
 					new String[] {
-						"M\u00E3 Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "\u00F3 \u0111i\u1EC7n tho\u1EA1i", "i\u1EC3m t\u00EDch l\u0169y"
+						"M\u00E3 Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "\u00F3 \u0111i\u1EC7n tho\u1EA1i", "Điểm Tích Lũy"
 					}
 				) {
 					Class[] columnTypes = new Class[] {
@@ -506,19 +319,6 @@ import java.lang.reflect.Field;
 
 				scrollPane.setViewportView(table);
 
-				
-				JLabel lblNhpMNhn = new JLabel("Nhập mã nhân Viên ");
-				lblNhpMNhn.setFont(new Font("Tahoma", Font.PLAIN, 14));
-				lblNhpMNhn.setBounds(1070, 282, 126, 26);
-				panel.add(lblNhpMNhn);
-				
-				 btThoat = new JButton("Thoát");
-				btThoat.setOpaque(true);
-				btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btThoat.setBackground(new Color(46, 139, 87));
-				btThoat.setBounds(718, 291, 120, 45);
-
 				ImageIcon iconThoat = new ImageIcon(QuanLyNhanVien_GUI.class.getResource("/gui/exit-icon.png"));
 				Image imgThoat = iconThoat.getImage();
 				BufferedImage bImageThoat = new BufferedImage(imgThoat.getWidth(null), imgThoat.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -529,45 +329,198 @@ import java.lang.reflect.Field;
 				g2dThoat.fillRect(0, 0, bImageThoat.getWidth(), bImageThoat.getHeight());
 				g2dThoat.dispose();
 				Image scaledImageThoat = bImageThoat.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btThoat.setIcon(new ImageIcon(scaledImageThoat));
-				panel.add(btThoat);
 				
-				// Nút "Tìm"
-				 btnTim = new JButton("Tìm");
-				btnTim.setOpaque(true);
-				btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-				btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-				btnTim.setBackground(new Color(46, 139, 87));
-				btnTim.setBounds(955, 291, 105, 45);
-
+				JPanel panel_2 = new JPanel();
+				panel_2.setBounds(1105, 106, 407, 212);
+				TitledBorder titledBorder1 = BorderFactory.createTitledBorder("Tìm Kiếm nhân Viên");
+	 	        //titledBorder.setTitleColor(Color.RED);  // Đặt màu chữ cho tiêu đề
+	 	        titledBorder1.setBorder(BorderFactory.createLineBorder(Color.black));  // Đặt màu cho viền
+	 			panel_2.setBorder(titledBorder1);
+				panel_2.setBackground(new Color(226, 250, 252));
+				panel.add(panel_2);
+												panel_2.setLayout(null);
+								
+												
+												txtNhap = new JTextField();
+												txtNhap.setBounds(51, 58, 309, 38);
+												panel_2.add(txtNhap);
+												txtNhap.setColumns(10);
 				
-				panel.add(btnTim);
+								
+								JLabel lblNhpMNhn = new JLabel("Nhập mã nhân Viên ");
+								lblNhpMNhn.setBounds(136, 31, 130, 17);
+								panel_2.add(lblNhpMNhn);
+								lblNhpMNhn.setFont(new Font("Tahoma", Font.PLAIN, 14));
+								
+								// Nút "Tìm"
+								 btnTim = new JButton("Tìm Kiếm ");
+								 btnTim.setBounds(40, 140, 146, 47);
+								 panel_2.add(btnTim);
+								 btnTim.setOpaque(true);
+								 btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 btnTim.setBackground(new Color(46, 139, 87));
+								 
+								 
+								 				// Nút "Xóa Trắng"
+								 			btnXoaTrang = new JButton("Xóa Trắng");
+								 			btnXoaTrang.setBounds(215, 140, 166, 47);
+								 			panel_2.add(btnXoaTrang);
+								 			btnXoaTrang.setOpaque(true);
+								 			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			btnXoaTrang.setBackground(new Color(46, 139, 87));
+								 			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
+								 			
+								 			JPanel panel_2_1 = new JPanel();
+								 			panel_2_1.setLayout(null);
+								 			TitledBorder titledBorder = BorderFactory.createTitledBorder("Thao tác ");
+								 	        //titledBorder.setTitleColor(Color.RED);  // Đặt màu chữ cho tiêu đề
+								 	        titledBorder.setBorder(BorderFactory.createLineBorder(Color.black));  // Đặt màu cho viền
+								 			panel_2_1.setBorder(titledBorder);
+								 			panel_2_1.setBackground(new Color(226, 250, 252));
+								 			
+								 			panel_2_1.setBounds(1105, 362, 407, 291);
+								 			panel.add(panel_2_1);
+								 			
+								 			 btThoat = new JButton("Thoát");
+								 			 btThoat.setBounds(212, 37, 144, 45);
+								 			 panel_2_1.add(btThoat);
+								 			 btThoat.setOpaque(true);
+								 			 btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 btThoat.setBackground(new Color(46, 139, 87));
+								 			 btThoat.setIcon(new ImageIcon(scaledImageThoat));
+								 			 
+								 			 				// Nút "Lưu"
+								 			 				 btnLuu = new JButton("Lưu");
+								 			 				 btnLuu.setBounds(35, 126, 144, 45);
+								 			 				 panel_2_1.add(btnLuu);
+								 			 				 btnLuu.setOpaque(true);
+								 			 				 btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 btnLuu.setBackground(new Color(46, 139, 87));
+								 			 				 btnLuu.setIcon(new ImageIcon(scaledImageLuu));
+								 			 				 
+								 			 				 				// Nút "Sửa"
+								 			 				 				 btnSua = new JButton("Sửa");
+								 			 				 				 btnSua.setBounds(87, 214, 222, 45);
+								 			 				 				 panel_2_1.add(btnSua);
+								 			 				 				 btnSua.setOpaque(true);
+								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 btnSua.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 				 btnSua.setBackground(new Color(46, 139, 87));
+								 			 				 				 btnSua.setIcon(new ImageIcon(scaledImageSua));
+								 			 				 				 
+								 			 				 				 
+								 			 				 				 				// Nút "Xóa"
+								 			 				 				 				 btnXoa = new JButton("Xóa");
+								 			 				 				 				 btnXoa.setBounds(212, 126, 144, 45);
+								 			 				 				 				 panel_2_1.add(btnXoa);
+								 			 				 				 				 btnXoa.setOpaque(true);
+								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 				 btnXoa.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 				 				 btnXoa.setBackground(new Color(46, 139, 87));
+								 			 				 				 				 btnXoa.setIcon(new ImageIcon(scaledImageXoa));
+								 			 				 				 				 
+								 			 				 				 				 
+								 			 				 				 				 // Nút "Thêm"
+								 			 				 				 				  btnThem = new JButton("Thêm");
+								 			 				 				 				  btnThem.setBounds(35, 37, 144, 45);
+								 			 				 				 				  panel_2_1.add(btnThem);
+								 			 				 				 				  btnThem.setOpaque(true);
+								 			 				 				 				  btnThem.setForeground(new Color(255, 255, 255));
+								 			 				 				 				  btnThem.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 				 				  btnThem.setBackground(new Color(46, 139, 87));
+								 			 				 				 				  btnThem.setIcon(new ImageIcon(scaledImageThem));
+								 			 				 				 				  btnThem.addActionListener(this);
+								 			 				 				 				 btnXoa.addActionListener(this);
+								 			 				 				 btnSua.addActionListener(this);
+								 			 				 btnLuu.addActionListener(this);
+								 			 btThoat.addActionListener(this);
+								 			btnXoaTrang.addActionListener(this);
+								 btnTim.addActionListener(this);
+				
 				//Actions Menu
-				mnTrangChu.addActionListener(e -> openTrangChu());
-				mntmSP.addActionListener(e -> openQuanLySanPham());
-			mntmNhanVien.addActionListener(e -> openQuanLyNhanVien());
-			mntmKH.addActionListener(e -> openQuanLyKhachHang());
-			mnBanHang.addActionListener(e -> openBanHang());
-			mntmDoanhSo.addActionListener(e -> openThongKeDoanhSo());
-			mntmTCNV.addActionListener(e -> openThongKeNhanVien());
-			mntmTCKH.addActionListener(e -> openThongKeKhachHang());
-			mntmTCSP.addActionListener(e -> openThongKeSanPham());
-			mntmTCSP.addActionListener(e -> openTraCuuSanPham());
-			mntmTCNV.addActionListener(e -> openTraCuuNhanVien());
-			mntmTCKH.addActionListener(e -> openTraCuuKhachHang());
+				
 			table.addMouseListener(this);
-			btnThem.addActionListener(this);
-			btnXoa.addActionListener(this);
-			btnLuu.addActionListener(this);
-			btnSua.addActionListener(this);
-			btnTim.addActionListener(this);
-			btnXoaTrang.addActionListener(this);
-			btThoat.addActionListener(this);
 
 			displayKhachHangsInTable();
 			this.setVisible(true);
 	}
-		
+		//
+	
+	//
+	public JMenuBar createMenuBar() {
+	    JMenuBar menuBar = new JMenuBar();
+	    menuBar.setBorderPainted(false);
+	    menuBar.setOpaque(true);
+	    menuBar.setBackground(new Color(26, 133, 94));
+
+	 // Menu Trang Chủ
+	    JMenu homeMenu = createMenu("Trang Chủ", "/gui/house-solid.png");
+	    menuBar.add(homeMenu);
+	    
+	    // Menu Quản Lý
+	    JMenuItem manageMenuItem1 = createMenuItem("Sản Phẩm");
+	    JMenuItem manageMenuItem2 = createMenuItem("Nhân Viên");
+	    JMenuItem manageMenuItem3 = createMenuItem("Khách Hàng");
+
+	    JMenu manageMenu = createMenu("Quản Lý", "/gui/list-check-solid.png");
+	    manageMenu.add(manageMenuItem1);
+	    manageMenu.add(manageMenuItem2);
+	    manageMenu.add(manageMenuItem3);
+	    menuBar.add(manageMenu);
+
+	    // Menu Bán Hàng
+	    JMenu salesMenu = createMenu("Bán Hàng", "/gui/cart-shopping-solid.png");
+	    menuBar.add(salesMenu);
+
+	    // Menu Thống Kê
+	    JMenuItem statsMenuItem1 = createMenuItem("Doanh Số");
+	    JMenuItem statsMenuItem2 = createMenuItem("Nhân Viên");
+	    JMenuItem statsMenuItem3 = createMenuItem("Khách Hàng");
+	    JMenuItem statsMenuItem4 = createMenuItem("Sản Phẩm");
+	    
+	    JMenu statsMenu = createMenu("Thống Kê", "/gui/clipboard-solid.png");
+	    statsMenu.add(statsMenuItem1);
+	    statsMenu.add(statsMenuItem2);
+	    statsMenu.add(statsMenuItem3);
+	    statsMenu.add(statsMenuItem4);
+	    menuBar.add(statsMenu);
+	    
+	    // Menu Tra Cứu
+	    JMenuItem searchMenuItem1 = createMenuItem("Sản Phẩm");
+	    JMenuItem searchMenuItem2 = createMenuItem("Nhân Viên");
+	    JMenuItem searchMenuItem3 = createMenuItem("Khách Hàng");
+	    JMenuItem searchMenuItem4 = createMenuItem("Hóa Đơn");
+	    
+	    JMenu searchMenu = createMenu("Tra Cứu", "/gui/circle-question-solid.png");
+	    searchMenu.add(searchMenuItem1);
+	    searchMenu.add(searchMenuItem2);
+	    searchMenu.add(searchMenuItem3);
+	    searchMenu.add(searchMenuItem4);
+	    menuBar.add(searchMenu);
+	    // **Sự kiện cho các nút trong menu (gộp chung trong một hàm xử lý)**
+
+	    searchMenuItem1.addActionListener(createMenuActionListener(this, TraCuuSanPham_GUI.class));
+	    searchMenuItem2.addActionListener(createMenuActionListener(this, TraCuuNhanVien_GUI.class));
+	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
+	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
+	    
+	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
+	    
+	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
+	    manageMenuItem2.addActionListener(createMenuActionListener(this, QuanLyNhanVien_GUI.class));
+	    manageMenuItem3.addActionListener(createMenuActionListener(this, QuanLyKhachHang_GUI.class));
+
+	    statsMenuItem1.addActionListener(createMenuActionListener(this, ThongKeDoanhSo_GUI.class));
+	    statsMenuItem2.addActionListener(createMenuActionListener(this, ThongKeNhanVien_GUI.class));
+	    statsMenuItem3.addActionListener(createMenuActionListener(this, ThongKeKhachHang_GUI.class));
+	    statsMenuItem4.addActionListener(createMenuActionListener(this, ThongKeSanPham_GUI.class));
+
+	    return menuBar;}
 
 	public void displayKhachHangsInTable() {
 	    // Get all customer records from the database
@@ -633,7 +586,7 @@ import java.lang.reflect.Field;
 	        this.setVisible(false);
 	    }
 		public void openQuanLyKhachHang() {
-	        qlNV quanLyKhachHang = new qlNV();
+			QuanLyKhachHang_GUI quanLyKhachHang = new QuanLyKhachHang_GUI();
 	        quanLyKhachHang.setVisible(true);
 	        this.setVisible(false);
 	    }
@@ -677,12 +630,7 @@ import java.lang.reflect.Field;
 	        e.setVisible(true);
 	        this.setVisible(false);
 	    }
-		public void openDangNhap() {
-	        DangNhap_GUI e = new DangNhap_GUI();
-	        e.setVisible(true);
-	        this.setVisible(false);
-	        
-	    }
+		
 
 		
 		@Override
@@ -697,35 +645,31 @@ import java.lang.reflect.Field;
 				}
 
 				if (o.equals(btnThem)) {
-				    // Lấy giá trị từ các trường nhập liệu
+				    
 				    String tenKH = txtTenNV.getText();
 				    String sdt = txtSDT.getText();
 				    String diemTichLuy = txtDTL.getText();
 
-				    // Kiểm tra xem các trường nhập liệu có trống không
+				    
 				    if (tenKH.isEmpty() || sdt.isEmpty() || diemTichLuy.isEmpty()) {
 				        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				        return; // Dừng lại nếu có trường nhập liệu trống
+				        return; 
 				    }
 
-				    // Dựa vào số hàng trong bảng để tạo mã khách hàng mới
+				   
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
 				    int rowCount = model.getRowCount(); // Số dòng hiện có
 				    String maKH = String.format("KH%03d", rowCount + 1); // Mã mới: KH001, KH002,...
 
-				    // Thêm dữ liệu vào bảng
+				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
 
-				    // Lưu thông tin khách hàng vào cơ sở dữ liệu mà không cần khởi tạo đối tượng `KhachHang`
-				  //  boolean isSaved = dao_kh.saveKhachHang(maKH, tenKH, sdt, diemTichLuy);
-
-				    // Hiển thị thông báo thành công hoặc lỗi
 				   
 				        JOptionPane.showMessageDialog(null, "Thêm khách hàng vào bảng thành công!");
 				    
 				       
 
-				    // Xóa trắng các trường nhập liệu sau khi thêm
+				   
 				    txtTenNV.setText("");
 				    txtSDT.setText("");
 				    txtDTL.setText("");
@@ -735,26 +679,25 @@ import java.lang.reflect.Field;
 
 
 			    if(o.equals(btnXoa)) {
-			        // Lấy chỉ số dòng đang được chọn trong bảng
+			       
 			        int row = table.getSelectedRow();
 
-			        // Kiểm tra xem có dòng nào được chọn không
+			       
 			        if (row == -1) {
 			            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			            return;  // Nếu không có dòng được chọn, dừng lại
+			            return;  
 			        }
 
-			        // Xóa dòng khỏi bảng
+			       
 			        DefaultTableModel model = (DefaultTableModel) table.getModel();
 			        model.removeRow(row);
 
-			        // Hiển thị thông báo xóa thành công
+			        
 			        JOptionPane.showMessageDialog(null, "Xóa nhân viên khỏi bảng thành công!");
 
-			        // Cập nhật lại các trường nhập liệu (nếu cần)
 			        txtTenNV.setText("");
 			        txtSDT.setText("");
-			        txtDTL.setText("");  // Nếu có trường Điểm tích lũy
+			        txtDTL.setText("");  
 			    }
 
 			    if(o.equals(btnSua)) {
@@ -841,19 +784,17 @@ import java.lang.reflect.Field;
 			            return;
 			        }
 
-			        // Tìm kiếm khách hàng theo mã
 			        KhachHang khachHang = dao_kh.findKhachHangById(maKH);
 
 			        if (khachHang != null) {
 			            DefaultTableModel model = (DefaultTableModel) table.getModel();
-			            model.setRowCount(0); // Xóa hết các dòng trong bảng
+			            model.setRowCount(0);
 
 			            try {
-			                // Sử dụng Reflection để lấy tất cả các trường từ đối tượng
+			                
 			                Field[] fields = KhachHang.class.getDeclaredFields();
 			                Object[] rowData = new Object[fields.length];
 
-			                // Truy cập giá trị của các trường trong đối tượng KhachHang
 			                for (int i = 0; i < fields.length; i++) {
 			                    fields[i].setAccessible(true); // Cho phép truy cập trường private
 			                    rowData[i] = fields[i].get(khachHang); // Lấy giá trị của trường từ đối tượng
@@ -906,6 +847,103 @@ import java.lang.reflect.Field;
 			// TODO Auto-generated method stub
 			
 		}
-		
+		// Hàm chung xử lý sự kiện click chuột cho JMenu
+		public MouseAdapter createMenuMouseAdapter(JFrame frame, Class<?> guiClass) {
+		    return new MouseAdapter() {
+		        @Override
+		        public void mouseClicked(MouseEvent e) {
+		            System.out.println("Đã vào mouseClicked"); // Kiểm tra sự kiện mouseClicked
 
+		            try {
+		                System.out.println("Đang khởi tạo giao diện: " + guiClass.getName());
+
+		                // Tạo đối tượng GUI mới từ class truyền vào
+		                Object guiInstance = guiClass.getDeclaredConstructor().newInstance();
+		                System.out.println("Khởi tạo đối tượng thành công");
+
+		                // Kiểm tra nếu guiInstance là một JFrame, thì hiển thị nó
+		                if (guiInstance instanceof JFrame) {
+		                    JFrame newFrame = (JFrame) guiInstance;
+		                    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Đóng cửa sổ hiện tại
+		                    newFrame.setSize(1920, 1080);  // Kích thước cửa sổ mới
+		                    newFrame.setLocationRelativeTo(null); // Căn giữa cửa sổ
+		                    newFrame.setVisible(true);  // Hiển thị cửa sổ mới
+
+		                    // Đóng cửa sổ hiện tại
+		                    frame.dispose();  // Đảm bảo cửa sổ cũ được đóng lại khi chuyển sang cửa sổ mới
+		                    System.out.println("Đã chuyển sang cửa sổ mới: " + guiClass.getName());
+		                } else {
+		                    System.out.println("Gui không phải là một JFrame, xử lý khác: " + guiClass.getName());
+		                }
+		            } catch (Exception ex) {
+		                ex.printStackTrace();
+		                System.out.println("Lỗi khi khởi tạo giao diện: " + guiClass.getName());
+		            }
+		        }
+		    };
+		}
+
+
+
+	// Hàm chung xử lý sự kiện
+		public ActionListener createMenuActionListener(JFrame frame, Class<?> guiClass) {
+		    return new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            System.out.println("Đã vào actionPerformed"); // Kiểm tra xem có vào đây không
+		            try {
+		                System.out.println("Đang khởi tạo giao diện: " + guiClass.getName());
+
+		                Object guiInstance = guiClass.getDeclaredConstructor().newInstance();
+		                System.out.println("Khởi tạo đối tượng thành công");
+
+		                if (guiInstance instanceof JFrame) {
+		                    JFrame newFrame = (JFrame) guiInstance;
+		                    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		                    newFrame.setSize(1920, 1080);
+		                    newFrame.setLocationRelativeTo(null);
+		                    newFrame.setVisible(true);
+
+		                    // Đóng cửa sổ hiện tại
+		                    frame.dispose();  // Đảm bảo cửa sổ cũ được đóng lại khi chuyển sang cửa sổ mới
+		                    System.out.println("Đã chuyển sang cửa sổ mới: " + guiClass.getName());
+		                } else {
+		                    System.out.println("Gui không phải là một JFrame, xử lý khác: " + guiClass.getName());
+		                }
+		            } catch (Exception ex) {
+		                ex.printStackTrace();
+		                System.out.println("Lỗi khi khởi tạo giao diện: " + guiClass.getName());
+		            }
+		        }
+		    };
+		}
+
+
+
+		public JMenu createMenu(String title, String iconPath) {
+	        JMenu menu = new JMenu(" " + title + " ");
+	        menu.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+	        menu.setForeground(Color.WHITE);
+	        menu.setOpaque(true);
+	        menu.setBackground(new Color(26, 133, 94));
+
+	        ImageIcon icon = new ImageIcon(getClass().getResource(iconPath));
+	        Image scaledImage = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+	        menu.setIcon(new ImageIcon(scaledImage));
+	        menu.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 30));
+
+	        return menu;
+	    }
+		public JMenuItem createMenuItem(String title) {
+	        JMenuItem menuItem = new JMenuItem(" " + title + " ");
+	        menuItem.setBackground(new Color(26, 133, 94));
+	        menuItem.setForeground(Color.WHITE);
+	        menuItem.setFont(new Font("Segoe UI", Font.PLAIN, 24));
+	        return menuItem;
+	    }
+		public void openDangNhap() {
+	        DangNhap_GUI e = new DangNhap_GUI();
+	        e.setVisible(true);
+	        this.setVisible(false);
+	    }
 }

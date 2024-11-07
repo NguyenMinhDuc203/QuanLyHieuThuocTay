@@ -413,10 +413,6 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		        // Get the selected type from the dropdown
 		        String selectedType = (String) typeSearch.getSelectedItem(); 
 		        
-		        // Print both search term and search type to the terminal
-		        System.out.println("Search Term: " + searchTerm);
-		        System.out.println("Search Type: " + selectedType);
-		        
 		        // Get the results from the DAO using the search term and selected type
 		        ArrayList<Object[]> results = nhanVienDAO.layDanhSachNhanVien(searchTerm, selectedType);
 
