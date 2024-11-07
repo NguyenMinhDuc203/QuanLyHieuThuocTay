@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-<<<<<<< HEAD
-=======
-
 import entity.ChucVu;
->>>>>>> 82ca4afdbabf9840bbf21dd0c92462dec8712a88
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -20,9 +16,7 @@ import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
 
 public class NhanVien_DAO {
-<<<<<<< HEAD
-    private EntityManagerFactory emf;
-=======
+
 	private EntityManagerFactory emf;
 	private Object gioiTinh;
 	private Object trangThai;
@@ -30,13 +24,6 @@ public class NhanVien_DAO {
 	public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
 	public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
 	public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
-
->>>>>>> 82ca4afdbabf9840bbf21dd0c92462dec8712a88
-
-    // Thay thế bằng thông tin của bạn
-    public static final String ACCOUNT_SID = "AC3001d074e4aed285b21710f05e6a3693"; // SID tài khoản của bạn
-    public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
-    public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
 
     public NhanVien_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
@@ -215,8 +202,7 @@ public class NhanVien_DAO {
         int code = 100000 + random.nextInt(900000); // Tạo mã 6 chữ số
         return String.valueOf(code);
     }
-<<<<<<< HEAD
-=======
+
     //
     public String maTuSinhNhanVien() {
         EntityManager em = emf.createEntityManager();
@@ -352,7 +338,5 @@ public class NhanVien_DAO {
 
         return isSaved;
     }
-
->>>>>>> 82ca4afdbabf9840bbf21dd0c92462dec8712a88
 }
 

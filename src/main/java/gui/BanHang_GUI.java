@@ -109,11 +109,11 @@ public class BanHang_GUI extends JFrame {
       btnDonTam.setAlignmentX(Component.LEFT_ALIGNMENT);
       panelDonHang.add(btnDonTam);
 
-      JButton btnDonMoi = new JButton("Đơn Mới");
-      btnDonMoi.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
-      btnDonMoi.setMaximumSize(new Dimension(200, 45));  
-      btnDonMoi.setAlignmentX(Component.LEFT_ALIGNMENT);
-      panelDonHang.add(btnDonMoi);
+      JButton btnDonHoanThanh = new JButton("Đơn Hoàn Thành");
+      btnDonHoanThanh.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
+      btnDonHoanThanh.setMaximumSize(new Dimension(200, 45));  
+      btnDonHoanThanh.setAlignmentX(Component.LEFT_ALIGNMENT);
+      panelDonHang.add(btnDonHoanThanh);
 
       JButton btnDonTra = new JButton("Đơn Trả");
       btnDonTra.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
@@ -347,9 +347,17 @@ public class BanHang_GUI extends JFrame {
       textField_9.setColumns(10);
 
       // Trang Đơn Hàng
-      JPanel DonHangPane = new JPanel();
-      panelContent.add(DonHangPane, "DonHangPane"); // Tên để chuyển đổi
-      DonHangPane.setLayout(null);
+      JPanel DonTamPane = new JPanel();
+      panelContent.add(DonTamPane, "DonTamPane"); // Tên để chuyển đổi
+      DonTamPane.setLayout(null);
+      
+      JPanel DonHoanThanhPane = new JPanel();
+      panelContent.add(DonHoanThanhPane, "DonHoanThanhPane"); // Tên để chuyển đổi
+      DonHoanThanhPane.setLayout(null);
+      
+      JPanel DonTraPane = new JPanel();
+      panelContent.add(DonTraPane, "DonTraPane"); // Tên để chuyển đổi
+      DonTraPane.setLayout(null);
 
       // Trang Khuyến Mãi
       JPanel KhuyenMaiPane = new JPanel();
@@ -362,9 +370,19 @@ public class BanHang_GUI extends JFrame {
           cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
       });
 
-      btnDonHang.addActionListener(e -> {
+      btnDonTam.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
-          cardLayout.show(panelContent, "DonHangPane"); // Chuyển sang trang Đơn Hàng
+          cardLayout.show(panelContent, "DonTamPane"); // Chuyển sang trang Đơn Hàng
+      });
+      
+      btnDonHoanThanh.addActionListener(e -> {
+          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "DonHoanThanhPane"); // Chuyển sang trang Đơn Hàng
+      });
+      
+      btnDonTra.addActionListener(e -> {
+          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "DonTraPane"); // Chuyển sang trang Đơn Hàng
       });
 
       btnKhuyenMai.addActionListener(e -> {
