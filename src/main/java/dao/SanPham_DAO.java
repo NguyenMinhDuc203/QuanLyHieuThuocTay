@@ -1,6 +1,5 @@
 package dao;
 
-import entity.NhanVien;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -8,15 +7,116 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import entity.SanPham;
-public class SanPham_DAO {
-    private EntityManagerFactory emf;
+import java.util.logging.Logger;
 
+public class SanPham_DAO {
+    private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
+    private EntityManagerFactory emf;
+    private Connection connection;
+
+    public SanPham_DAO(Connection connection) {
+        this.connection = connection;
+    }
     public SanPham_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
+    }
+    public List<String[]> laySanPhamDaMua(String maKhachHang) {
+        List<String[]> danhSachSanPham = new ArrayList<>();
+        try {
+            String sql = "SELECT sp.maSanPham, sp.tenSanPham, cthd.soLuong, hd.ngayTao " +
+                         "FROM chitiethoadon cthd " +
+                         "JOIN hoadonxuat hd ON cthd.maHoaDonXuat = hd.maHoaDonXuat " +
+                         "JOIN sanpham sp ON cthd.maSanPham = sp.maSanPham " +
+                         "WHERE hd.maKhachHang = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, maKhachHang);
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String[] sanPham = {
+                    rs.getString("maSanPham"),
+                    rs.getString("tenSanPham"),
+                    rs.getString("soLuong"),
+                    rs.getString("ngayTao")
+                };
+                danhSachSanPham.add(sanPham);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return danhSachSanPham;
+    }
+
+   
+     
+    // Bổ sung phương thức tìm kiếm sản phẩm
+    public List<String[]> timKiemSanPham(String maSanPham, String tenSanPham, String loaiSanPham) {
+        List<String[]> danhSachSanPham = new ArrayList<>();
+        String query = "SELECT maSanPham, tenSanPham, giaNhap, giaBan, soLuongTonkho FROM sanpham WHERE 1=1";
+
+        if (maSanPham != null && !maSanPham.isEmpty()) {
+            query += " AND maSanPham LIKE ?";
+        }
+        if (tenSanPham != null && !tenSanPham.isEmpty()) {
+            query += " AND tenSanPham LIKE ?";
+        }
+        if (loaiSanPham != null && !loaiSanPham.equals("Tất Cả")) {
+            query += " AND maLoaiSanPham = ?";
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            int index = 1;
+            if (maSanPham != null && !maSanPham.isEmpty()) {
+                stmt.setString(index++, "%" + maSanPham + "%");
+            }
+            if (tenSanPham != null && !tenSanPham.isEmpty()) {
+                stmt.setString(index++, "%" + tenSanPham + "%");
+            }
+            if (loaiSanPham != null && !loaiSanPham.equals("Tất Cả")) {
+                stmt.setString(index, loaiSanPham);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                danhSachSanPham.add(new String[]{
+                    rs.getString("maSanPham"),
+                    rs.getString("tenSanPham"),
+                    rs.getString("giaNhap"),
+                    rs.getString("giaBan"),
+                    rs.getString("soLuongTonkho")
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return danhSachSanPham;
+    }
+
+    // Bổ sung phương thức lấy chi tiết sản phẩm
+    public String[] layChiTietSanPham(String maSanPham) {
+        String query = "SELECT * FROM sanpham WHERE maSanPham = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, maSanPham);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new String[]{
+                    rs.getString("maSanPham"), rs.getString("tenSanPham"), rs.getString("giaNhap"),
+                    rs.getString("giaBan"), rs.getString("soLuongTonkho"), rs.getString("congDung"),
+                    rs.getString("thanhPhan"), rs.getString("baoQuan"), rs.getString("chongChiDinh"),
+                    rs.getString("ngaySanXuat"), rs.getString("hanSuDung"), rs.getString("nhaSanXuat"),
+                    rs.getString("thueGTGT"), rs.getString("ghiChu")
+                };
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Phương thức lấy tất cả sản phẩm
@@ -38,19 +138,14 @@ public class SanPham_DAO {
 
     // Phương thức tìm kiếm sản phẩm theo mã
     public SanPham findSanPhamById(String maSanPham) {
-    	EntityManager em = emf.createEntityManager();
-        SanPham sanPham = null; // Initialize the employee object
+        EntityManager em = emf.createEntityManager();
+        SanPham sanPham = null;
 
         try {
-            String jpql = "SELECT sp FROM SanPham sp " +
-                          "WHERE sp.maSanPham = :maSanPham";
-
+            String jpql = "SELECT sp FROM SanPham sp WHERE sp.maSanPham = :maSanPham";
             TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
-            query.setParameter("maSanPham" ,maSanPham ); // Use wildcards for contains search
-
-            // Get the first result (if any)
+            query.setParameter("maSanPham", maSanPham);
             sanPham = query.getResultStream().findFirst().orElse(null);
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -127,24 +222,16 @@ public class SanPham_DAO {
         }
     }
 
-    // Đóng EntityManagerFactory
-    public void close() {
-        if (emf != null) emf.close();
-    }
-    
- // Thống kê sản phẩm theo mã loại
+    // Thống kê sản phẩm theo mã loại
     public List<SanPham> thongKeSanPhamTheoLoaiMa(String maLoai) {
         EntityManager em = emf.createEntityManager();
         List<SanPham> result = new ArrayList<>();
 
         try {
-        	String jpql = "SELECT sp FROM SanPham sp JOIN FETCH sp.loaiSanPham WHERE sp.loaiSanPham.maLoai = :maLoai";
-
+            String jpql = "SELECT sp FROM SanPham sp JOIN FETCH sp.loaiSanPham WHERE sp.loaiSanPham.maLoai = :maLoai";
             TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
             query.setParameter("maLoai", maLoai);
             result = query.getResultList();
-
-            // Xử lý kết quả nếu cần
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -154,28 +241,19 @@ public class SanPham_DAO {
         return result;
     }
 
-
     // Tính số lượng đã bán cho sản phẩm
     public int tinhSoLuongDaBan(String maSanPham) {
         EntityManager em = emf.createEntityManager();
         int totalSold = 0;
 
         try {
-            String jpql = """
-                SELECT SUM(cth.soLuong) 
-                FROM ChiTietHoaDon cth 
-                WHERE cth.sanPham.maSanPham = :maSanPham
-            """;
-
-            // Sử dụng TypedQuery<Long> để nhận kết quả đúng kiểu
+            String jpql = "SELECT SUM(cth.soLuong) FROM ChiTietHoaDon cth WHERE cth.sanPham.maSanPham = :maSanPham";
             TypedQuery<Long> query = em.createQuery(jpql, Long.class);
             query.setParameter("maSanPham", maSanPham);
 
-            // Lấy kết quả và chuyển đổi
             Long result = query.getSingleResult();
-            totalSold = (result != null) ? result.intValue() : 0; // Chuyển Long thành int
+            totalSold = (result != null) ? result.intValue() : 0;
         } catch (NoResultException e) {
-            // Nếu không có kết quả, số lượng bán ra là 0
             totalSold = 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -186,8 +264,7 @@ public class SanPham_DAO {
         return totalSold;
     }
 
-
- // Thống kê sản phẩm theo số lượng bán ra
+    // Thống kê sản phẩm theo số lượng bán ra
     public List<Object[]> thongKeSanPhamTheoSoLuongBan() {
         EntityManager em = emf.createEntityManager();
         List<Object[]> result = new ArrayList<>();
@@ -201,21 +278,8 @@ public class SanPham_DAO {
                 GROUP BY sp.maSanPham, sp.tenSanPham, sp.loaiSanPham.tenLoai, sp.soLuongTonkho 
                 ORDER BY soLuongBanRa DESC
             """;
-
             TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
             result = query.getResultList();
-
-            if (result.isEmpty()) {
-                System.out.println("Không có sản phẩm nào đã được bán.");
-            } else {
-                System.out.println("Truy vấn thành công, số lượng sản phẩm đã bán ra: " + result.size());
-                System.out.printf("%-15s %-30s %-20s %-15s %-15s%n", "Mã", "Tên", "Loại", "SL Bán Ra", "SL Tồn Kho");
-                System.out.println("-----------------------------------------------------------------------");
-                for (Object[] row : result) {
-                    System.out.printf("%-15s %-30s %-20s %-15d %-15d%n", 
-                        row[0], row[1], row[2], (Long) row[3], (Integer) row[4]);
-                }
-            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -224,6 +288,35 @@ public class SanPham_DAO {
 
         return result;
     }
+
+    // Phương thức thống kê sản phẩm đã quá hạn sử dụng
+    public List<SanPham> thongKeSanPhamDaQuaHan() {
+        EntityManager em = emf.createEntityManager();
+        List<SanPham> result = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
+
+        try {
+            String jpql = "SELECT sp FROM SanPham sp WHERE sp.hanSuDung < :currentDate";
+            TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
+            query.setParameter("currentDate", currentDate);
+            result = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result;
+    }
+
+    // Đóng EntityManagerFactory
+    public void close() {
+        if (emf != null) emf.close();
+        
+    }
+    
+}
+
     
 // // Phương thức thống kê sản phẩm đã quá hạn sử dụng
 //    public List<SanPham> thongKeSanPhamDaQuaHan() {
