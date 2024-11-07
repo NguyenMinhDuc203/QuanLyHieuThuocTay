@@ -64,6 +64,31 @@ public class BanHang_GUI extends JFrame {
     private JTextField textField_13;
     private JTextField textField_14;
     private JTable table_5;
+    private JTextField textField_15;
+    private JTextField textField_16;
+    private JTextField textField_17;
+    private JTextField textField_18;
+    private JTextField textField_19;
+    private JTextField textField_20;
+    private JTextField textField_21;
+    private JTextField textField_22;
+    private JTextField textField_23;
+    private JTextField textField_24;
+    private JTextField textField_25;
+    private JTable table_6;
+    private JTextField textField_26;
+    private JTextField textField_27;
+    private JTextField textField_28;
+    private JTable table_7;
+    private JTextField textField_29;
+    private JTextField textField_30;
+    private JTextField textField_31;
+    private JTextField textField_32;
+    private JTextField textField_33;
+    private JTextField textField_34;
+    private JTextField textField_35;
+    private JTextField textField_36;
+    private JTable table_8;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -301,7 +326,7 @@ public class BanHang_GUI extends JFrame {
       table = new JTable();
       table.setModel(new DefaultTableModel(
       	new Object[][] {
-      		{null, null, null, null, null, null, null},
+      		
       	},
       	new String[] {
       		"Mã sản phẩm", "Tên Sản Phẩm", "Số Lượng", "Giá Bán", "Thuế GTGT", "Giảm Giá", "Thành Tiền"
@@ -362,7 +387,7 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_1_3.setBounds(740, 606, 195, 54);
       BanHangPane.add(btnNewButton_1_3);
       
-      JButton btnNewButton_2 = new JButton("New button");
+      JButton btnNewButton_2 = new JButton("Hoàn thành đơn");
       btnNewButton_2.setBounds(339, 724, 261, 54);
       BanHangPane.add(btnNewButton_2);
       
@@ -388,7 +413,7 @@ public class BanHang_GUI extends JFrame {
       table_1 = new JTable();
       table_1.setModel(new DefaultTableModel(
       	new Object[][] {
-      		{null, null, null},
+      		
       	},
       	new String[] {
       		"M\u00E3 H\u00F3a \u0110\u01A1n", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o H\u00F3a \u0110\u01A1n"
@@ -403,7 +428,7 @@ public class BanHang_GUI extends JFrame {
       table_2 = new JTable();
       table_2.setModel(new DefaultTableModel(
       	new Object[][] {
-      		{null, null, null, null},
+      		
       	},
       	new String[] {
       		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1"
@@ -452,7 +477,7 @@ public class BanHang_GUI extends JFrame {
       table_3 = new JTable();
       table_3.setModel(new DefaultTableModel(
       	new Object[][] {
-      		{null, null, null, null, null},
+      		
       	},
       	new String[] {
       		"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "Th\u00E0nh ti\u1EC1n"
@@ -560,7 +585,7 @@ public class BanHang_GUI extends JFrame {
       DonTraPane.setLayout(null);
       
       JScrollPane scrollPane_3 = new JScrollPane();
-      scrollPane_3.setBounds(23, 240, 629, 479);
+      scrollPane_3.setBounds(10, 240, 629, 479);
       DonTraPane.add(scrollPane_3);
       
       table_5 = new JTable();
@@ -574,30 +599,173 @@ public class BanHang_GUI extends JFrame {
       ));
       scrollPane_3.setViewportView(table_5);
       
-      JLabel lblNewLabel_5 = new JLabel("ĐỔI HÀNG");
-      lblNewLabel_5.setFont(new Font("Tahoma", Font.PLAIN, 22));
-      lblNewLabel_5.setBounds(10, 11, 311, 57);
-      DonTraPane.add(lblNewLabel_5);
-      
       JPanel panel_4 = new JPanel();
       panel_4.setBorder(new TitledBorder(null, "Th\u00F4ng tin nh\u00E2n vi\u00EAn", TitledBorder.LEADING, TitledBorder.TOP, null, null));
       panel_4.setBounds(20, 65, 406, 141);
       DonTraPane.add(panel_4);
+      panel_4.setLayout(null);
+      
+      JLabel lblNewLabel_6 = new JLabel("Mã nhân viên:");
+      lblNewLabel_6.setBounds(28, 29, 82, 26);
+      panel_4.add(lblNewLabel_6);
+      
+      textField_15 = new JTextField();
+      textField_15.setBounds(122, 29, 257, 26);
+      panel_4.add(textField_15);
+      textField_15.setColumns(10);
+      
+      JLabel lblNewLabel_6_1 = new JLabel("Tên nhân viên:");
+      lblNewLabel_6_1.setBounds(28, 71, 82, 26);
+      panel_4.add(lblNewLabel_6_1);
+      
+      textField_16 = new JTextField();
+      textField_16.setColumns(10);
+      textField_16.setBounds(122, 71, 257, 26);
+      panel_4.add(textField_16);
       
       JPanel panel_4_1 = new JPanel();
       panel_4_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin kh\u00E1ch h\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
       panel_4_1.setBounds(465, 65, 406, 141);
       DonTraPane.add(panel_4_1);
+      panel_4_1.setLayout(null);
+      
+      textField_17 = new JTextField();
+      textField_17.setBounds(115, 25, 281, 27);
+      panel_4_1.add(textField_17);
+      textField_17.setColumns(10);
+      
+      textField_18 = new JTextField();
+      textField_18.setColumns(10);
+      textField_18.setBounds(115, 63, 281, 27);
+      panel_4_1.add(textField_18);
+      
+      textField_19 = new JTextField();
+      textField_19.setColumns(10);
+      textField_19.setBounds(115, 101, 281, 27);
+      panel_4_1.add(textField_19);
+      
+      JLabel lblNewLabel_6_1_1 = new JLabel("Mã khách hàng:");
+      lblNewLabel_6_1_1.setBounds(10, 63, 82, 26);
+      panel_4_1.add(lblNewLabel_6_1_1);
+      
+      JLabel lblNewLabel_6_1_2 = new JLabel("Tên khách hàng:");
+      lblNewLabel_6_1_2.setBounds(10, 101, 82, 26);
+      panel_4_1.add(lblNewLabel_6_1_2);
       
       JPanel panel_4_1_1 = new JPanel();
       panel_4_1_1.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin \u0111\u01A1n mua", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
       panel_4_1_1.setBounds(914, 65, 406, 141);
       DonTraPane.add(panel_4_1_1);
+      panel_4_1_1.setLayout(null);
+      
+      JLabel lblNewLabel_6_1_1_1 = new JLabel("Mã đơn hàng:");
+      lblNewLabel_6_1_1_1.setBounds(10, 29, 76, 14);
+      panel_4_1_1.add(lblNewLabel_6_1_1_1);
+      
+      textField_20 = new JTextField();
+      textField_20.setColumns(10);
+      textField_20.setBounds(114, 23, 281, 27);
+      panel_4_1_1.add(textField_20);
+      
+      JLabel lblNewLabel_6_1_1_1_1 = new JLabel("Ngày tạo:");
+      lblNewLabel_6_1_1_1_1.setBounds(10, 66, 76, 14);
+      panel_4_1_1.add(lblNewLabel_6_1_1_1_1);
+      
+      textField_21 = new JTextField();
+      textField_21.setColumns(10);
+      textField_21.setBounds(114, 63, 281, 27);
+      panel_4_1_1.add(textField_21);
+      
+      JLabel lblNewLabel_6_1_1_1_1_1 = new JLabel("Thành tiền:");
+      lblNewLabel_6_1_1_1_1_1.setBounds(10, 104, 76, 14);
+      panel_4_1_1.add(lblNewLabel_6_1_1_1_1_1);
+      
+      textField_22 = new JTextField();
+      textField_22.setColumns(10);
+      textField_22.setBounds(114, 101, 281, 27);
+      panel_4_1_1.add(textField_22);
       
       JPanel panel_5 = new JPanel();
       panel_5.setBorder(new TitledBorder(null, "Th\u00F4ng tin \u0111\u01A1n \u0111\u1ED5i tr\u1EA3", TitledBorder.LEADING, TitledBorder.TOP, null, null));
       panel_5.setBounds(682, 240, 635, 479);
       DonTraPane.add(panel_5);
+      panel_5.setLayout(null);
+      
+      JLabel lblNewLabel_5 = new JLabel("Mã hóa đơn đổi trả:");
+      lblNewLabel_5.setBounds(25, 31, 128, 30);
+      panel_5.add(lblNewLabel_5);
+      
+      textField_23 = new JTextField();
+      textField_23.setBounds(214, 31, 396, 30);
+      panel_5.add(textField_23);
+      textField_23.setColumns(10);
+      
+      JLabel lblNewLabel_5_1 = new JLabel("Mã nhân viên phụ trách:");
+      lblNewLabel_5_1.setBounds(25, 72, 186, 30);
+      panel_5.add(lblNewLabel_5_1);
+      
+      textField_24 = new JTextField();
+      textField_24.setColumns(10);
+      textField_24.setBounds(214, 72, 396, 30);
+      panel_5.add(textField_24);
+      
+      JLabel lblNewLabel_5_1_1 = new JLabel("Ngày tạo hóa đơn:");
+      lblNewLabel_5_1_1.setBounds(25, 113, 186, 30);
+      panel_5.add(lblNewLabel_5_1_1);
+      
+      textField_25 = new JTextField();
+      textField_25.setColumns(10);
+      textField_25.setBounds(214, 113, 396, 30);
+      panel_5.add(textField_25);
+      
+      JLabel lblNewLabel_5_1_1_1 = new JLabel("Loại:");
+      lblNewLabel_5_1_1_1.setBounds(25, 154, 186, 30);
+      panel_5.add(lblNewLabel_5_1_1_1);
+      
+      JRadioButton rdbtnNewRadioButton = new JRadioButton("Đổi hàng");
+      rdbtnNewRadioButton.setBounds(217, 158, 109, 23);
+      panel_5.add(rdbtnNewRadioButton);
+      
+      JRadioButton rdbtnTrHng = new JRadioButton("Trả hàng");
+      rdbtnTrHng.setBounds(364, 158, 109, 23);
+      panel_5.add(rdbtnTrHng);
+      
+      JLabel lblNewLabel_5_1_1_1_1 = new JLabel("Danh sách sản phẩm:");
+      lblNewLabel_5_1_1_1_1.setBounds(25, 195, 186, 30);
+      panel_5.add(lblNewLabel_5_1_1_1_1);
+      
+      JScrollPane scrollPane_4 = new JScrollPane();
+      scrollPane_4.setBounds(25, 224, 585, 152);
+      panel_5.add(scrollPane_4);
+      
+      table_6 = new JTable();
+      table_6.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "Th\u00E0nh ti\u1EC1n"
+      	}
+      ));
+      scrollPane_4.setViewportView(table_6);
+      
+      JLabel lblNewLabel_5_1_1_1_1_1 = new JLabel("Lý do:");
+      lblNewLabel_5_1_1_1_1_1.setBounds(25, 388, 86, 30);
+      panel_5.add(lblNewLabel_5_1_1_1_1_1);
+      
+      textField_26 = new JTextField();
+      textField_26.setColumns(10);
+      textField_26.setBounds(111, 387, 499, 30);
+      panel_5.add(textField_26);
+      
+      JLabel lblNewLabel_5_1_1_1_1_1_1 = new JLabel("Tiền hoàn");
+      lblNewLabel_5_1_1_1_1_1_1.setBounds(25, 429, 86, 30);
+      panel_5.add(lblNewLabel_5_1_1_1_1_1_1);
+      
+      textField_27 = new JTextField();
+      textField_27.setColumns(10);
+      textField_27.setBounds(111, 428, 499, 30);
+      panel_5.add(textField_27);
       
       JButton btnNewButton_7 = new JButton("Tạo hóa đơn đổi trả");
       btnNewButton_7.setBounds(782, 730, 206, 43);
@@ -611,6 +779,168 @@ public class BanHang_GUI extends JFrame {
       JPanel KhuyenMaiPane = new JPanel();
       panelContent.add(KhuyenMaiPane, "KhuyenMaiPane"); // Tên để chuyển đổi
       KhuyenMaiPane.setLayout(null);
+      
+      textField_28 = new JTextField();
+      textField_28.setBounds(10, 11, 520, 44);
+      KhuyenMaiPane.add(textField_28);
+      textField_28.setColumns(10);
+      
+      JButton btnNewButton_8 = new JButton("Tìm kiếm");
+      btnNewButton_8.setBounds(540, 11, 170, 44);
+      KhuyenMaiPane.add(btnNewButton_8);
+      
+      JSpinner spinner_3 = new JSpinner();
+      spinner_3.setModel(new SpinnerListModel(new String[] {"Lo\u1EA1i", "Ph\u1EA7n tr\u0103m", "Ti\u1EC1n"}));
+      spinner_3.setBounds(747, 11, 158, 44);
+      KhuyenMaiPane.add(spinner_3);
+      
+      JSpinner spinner_3_1 = new JSpinner();
+      spinner_3_1.setModel(new SpinnerListModel(new String[] {"Tr\u1EA1ng th\u00E1i", "H\u1EBFt h\u1EA1n", "C\u00F2n h\u1EA1n"}));
+      spinner_3_1.setBounds(939, 11, 158, 44);
+      KhuyenMaiPane.add(spinner_3_1);
+      
+      JScrollPane scrollPane_5 = new JScrollPane();
+      scrollPane_5.setBounds(10, 66, 700, 718);
+      KhuyenMaiPane.add(scrollPane_5);
+      
+      table_7 = new JTable();
+      table_7.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null, null, null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 gi\u1EA3m gi\u00E1", "Lo\u1EA1i gi\u1EA3m gi\u00E1", "Tr\u1ECB gi\u00E1", "\u0110i\u1EC3m quy \u0111\u1ED5i", "H\u1EA1n s\u1EED d\u1EE5ng"
+      	}
+      ));
+      scrollPane_5.setViewportView(table_7);
+      
+      JSpinner spinner_3_1_1 = new JSpinner();
+      spinner_3_1_1.setModel(new SpinnerListModel(new String[] {"\u0110i\u1EC3m quy \u0111\u1ED5i", "1000", "2000", "3000", "0"}));
+      spinner_3_1_1.setBounds(1132, 11, 158, 44);
+      KhuyenMaiPane.add(spinner_3_1_1);
+      
+      JPanel panel_6 = new JPanel();
+      panel_6.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin \u00E1p d\u1EE5ng khuy\u1EBFn m\u00E3i", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
+      panel_6.setBounds(747, 81, 600, 703);
+      KhuyenMaiPane.add(panel_6);
+      panel_6.setLayout(null);
+      
+      JLabel lblNewLabel_7 = new JLabel("Mã khuyến mãi:");
+      lblNewLabel_7.setBounds(27, 34, 127, 36);
+      panel_6.add(lblNewLabel_7);
+      
+      textField_29 = new JTextField();
+      textField_29.setBounds(167, 34, 400, 36);
+      panel_6.add(textField_29);
+      textField_29.setColumns(10);
+      
+      JLabel lblNewLabel_7_1 = new JLabel("Mã hóa đơn:");
+      lblNewLabel_7_1.setBounds(27, 84, 127, 36);
+      panel_6.add(lblNewLabel_7_1);
+      
+      textField_30 = new JTextField();
+      textField_30.setColumns(10);
+      textField_30.setBounds(167, 81, 400, 36);
+      panel_6.add(textField_30);
+      
+      JLabel lblNewLabel_7_1_1 = new JLabel("Mã khách hàng:");
+      lblNewLabel_7_1_1.setBounds(27, 131, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1);
+      
+      textField_31 = new JTextField();
+      textField_31.setColumns(10);
+      textField_31.setBounds(167, 128, 400, 36);
+      panel_6.add(textField_31);
+      
+      textField_32 = new JTextField();
+      textField_32.setColumns(10);
+      textField_32.setBounds(167, 176, 400, 36);
+      panel_6.add(textField_32);
+      
+      JLabel lblNewLabel_7_1_1_1 = new JLabel("Điểm tích lũy của KH:");
+      lblNewLabel_7_1_1_1.setBounds(27, 176, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1);
+      
+      JLabel lblNewLabel_7_1_1_1_1 = new JLabel("Điểm cần để đổi mã:");
+      lblNewLabel_7_1_1_1_1.setBounds(27, 223, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1);
+      
+      textField_33 = new JTextField();
+      textField_33.setColumns(10);
+      textField_33.setBounds(167, 223, 400, 36);
+      panel_6.add(textField_33);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1 = new JLabel("Loại khuyến mãi:");
+      lblNewLabel_7_1_1_1_1_1.setBounds(27, 271, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1_1 = new JLabel("Trị giá");
+      lblNewLabel_7_1_1_1_1_1_1.setBounds(27, 320, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1_1);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1_1_1 = new JLabel("Giảm được:");
+      lblNewLabel_7_1_1_1_1_1_1_1.setBounds(27, 370, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1_1_1);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1_1_2 = new JLabel("Thành tiền sau giảm:");
+      lblNewLabel_7_1_1_1_1_1_1_2.setBounds(27, 417, 127, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1_1_2);
+      
+      textField_34 = new JTextField();
+      textField_34.setColumns(10);
+      textField_34.setBounds(167, 320, 400, 36);
+      panel_6.add(textField_34);
+      
+      textField_35 = new JTextField();
+      textField_35.setColumns(10);
+      textField_35.setBounds(167, 370, 400, 36);
+      panel_6.add(textField_35);
+      
+      textField_36 = new JTextField();
+      textField_36.setColumns(10);
+      textField_36.setBounds(167, 417, 400, 36);
+      panel_6.add(textField_36);
+      
+      JButton btnNewButton_9 = new JButton("Áp dụng");
+      btnNewButton_9.setBounds(401, 648, 166, 44);
+      panel_6.add(btnNewButton_9);
+      
+      JButton btnNewButton_9_1 = new JButton("Hủy");
+      btnNewButton_9_1.setBounds(204, 648, 166, 44);
+      panel_6.add(btnNewButton_9_1);
+      
+      JSpinner spinner_4 = new JSpinner();
+      spinner_4.setModel(new SpinnerListModel(new String[] {"Ph\u1EA7n tr\u0103m", "Ti\u1EC1n"}));
+      spinner_4.setBounds(167, 270, 132, 37);
+      panel_6.add(spinner_4);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1_2 = new JLabel("Giảm giá trên:");
+      lblNewLabel_7_1_1_1_1_1_2.setBounds(327, 270, 98, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1_2);
+      
+      JSpinner spinner_4_1 = new JSpinner();
+      spinner_4_1.setModel(new SpinnerListModel(new String[] {"H\u00F3a \u0111\u01A1n", "S\u1EA3n ph\u1EA9m"}));
+      spinner_4_1.setBounds(435, 270, 132, 37);
+      panel_6.add(spinner_4_1);
+      
+      JLabel lblNewLabel_7_1_1_1_1_1_1_2_1 = new JLabel("Danh sách sản phẩm có thể áp dụng:");
+      lblNewLabel_7_1_1_1_1_1_1_2_1.setBounds(27, 464, 209, 36);
+      panel_6.add(lblNewLabel_7_1_1_1_1_1_1_2_1);
+      
+      JScrollPane scrollPane_6 = new JScrollPane();
+      scrollPane_6.setBounds(27, 498, 541, 139);
+      panel_6.add(scrollPane_6);
+      
+      table_8 = new JTable();
+      table_8.setModel(new DefaultTableModel(
+      	new Object[][] {
+      		{null, null},
+      	},
+      	new String[] {
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m"
+      	}
+      ));
+      scrollPane_6.setViewportView(table_8);
 
       // Thêm sự kiện cho các nút chuyển panel
       btnBanHang.addActionListener(e -> {
@@ -712,7 +1042,4 @@ public class BanHang_GUI extends JFrame {
       });
         
     }
-
- 
-
 }
