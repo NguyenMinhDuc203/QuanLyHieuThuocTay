@@ -445,7 +445,7 @@ public class BanHang_GUI extends JFrame {
 //  tính thuế gtgt = giá bán * thuế /100
 //  tính giảm giá = giá bán * giảm giá /100
   //  tính thành tiền = giá bán + thuế gtgt - giảm giá
-  //  tính tổng tiền = thành tiền 1 = thánh tiền 2 + . . . 
+  //  tính tổng tiền = thành tiền 1 = thành tiền 2 + . . . 
  
   
   
