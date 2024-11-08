@@ -1,11 +1,21 @@
 package dao;
 
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JOptionPane;
+
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
@@ -204,139 +214,136 @@ public class NhanVien_DAO {
     }
 
     //
-    public String maTuSinhNhanVien() {
+    public String maTuSinhNhanVien(String chucVu) {
         EntityManager em = emf.createEntityManager();
         String maNhanVien = null;
 
         try {
-            // Đếm số lượng nhân viên hiện có trong bảng
-            String jpql = "SELECT COUNT(nv) FROM NhanVien nv";
+            // Đếm số lượng nhân viên hiện tại dựa trên chức vụ
+            String jpql = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.chucVu = :chucVu";
             TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("chucVu", chucVu);
             Long count = query.getSingleResult();
 
             // Tạo mã nhân viên mới dựa trên số lượng nhân viên hiện tại
             int nextId = count.intValue() + 1;
-            maNhanVien = String.format("NV%03d", nextId); // Định dạng lại thành "NV001", "NV002", ...
+            String prefix = chucVu.equalsIgnoreCase("QuanLy") ? "QL" : "NV";
+            maNhanVien = String.format("%s%03d", prefix, nextId); // Định dạng thành "NV001", "QL001", ...
 
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã nhân viên: " + e.getMessage());
             e.printStackTrace();
-            maNhanVien = "NV001"; // Trong trường hợp lỗi, bắt đầu lại từ "NV001"
+            maNhanVien = "NV001"; // Bắt đầu lại từ "NV001" nếu có lỗi
         } finally {
             em.close();
         }
 
         return maNhanVien;
     }
+
     public boolean clearAllNhanVien() {
         EntityManager entityManager = emf.createEntityManager();
         boolean isCleared = false;
 
         try {
-            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
 
-            // Truy vấn để xóa tất cả khách hàng
+            // Xóa toàn bộ dữ liệu trong bảng NhanVien
             String jpql = "DELETE FROM NhanVien";
             Query query = entityManager.createQuery(jpql);
             query.executeUpdate();
 
-            entityManager.getTransaction().commit(); // Cam kết giao dịch
-            isCleared = true; // Đánh dấu là xóa thành công
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Hoàn tác nếu có lỗi
-            }
-            e.printStackTrace();
-        } finally {
-            entityManager.close(); // Đóng EntityManager
-        }
-
-        return isCleared;
-    }
-    //
-    public boolean saveNhanVien(String maNV, String tenNV, String sdt, LocalDate ngaySinhDate, LocalDate ngayVaoLamDate, double luongCanBan, String chucVu, String cmnd, String trinhDo, String diaChi, Boolean gioiTinh, String email, String matKhau, String trangThai) {
-        EntityManager entityManager = emf.createEntityManager();
-        boolean isSaved = false;
-
-        try {
-            entityManager.getTransaction().begin();
-
-            NhanVien nv = new NhanVien();
-
-            // Đặt giá trị cho các trường khác
-            Field maNhanVienField = NhanVien.class.getDeclaredField("maNhanVien");
-            maNhanVienField.setAccessible(true);
-            maNhanVienField.set(nv, maNV);
-
-            Field tenNhanVienField = NhanVien.class.getDeclaredField("tenNhanVien");
-            tenNhanVienField.setAccessible(true);
-            tenNhanVienField.set(nv, tenNV);
-
-            Field sdtField = NhanVien.class.getDeclaredField("sDT");
-            sdtField.setAccessible(true);
-            sdtField.set(nv, sdt);
-
-            // Đặt giá trị cho các trường ngày
-            Field ngaySinhField = NhanVien.class.getDeclaredField("ngaySinh");
-            ngaySinhField.setAccessible(true);
-            ngaySinhField.set(nv, ngaySinhDate);
-
-            Field ngayVaoLamField = NhanVien.class.getDeclaredField("ngayVaoLam");
-            ngayVaoLamField.setAccessible(true);
-            ngayVaoLamField.set(nv, ngayVaoLamDate);
-
-            Field gioiTinhField = NhanVien.class.getDeclaredField("gioiTinh");
-            gioiTinhField.setAccessible(true);
-            gioiTinhField.set(nv, gioiTinh);
-
-            Field luongCanBanField = NhanVien.class.getDeclaredField("luongCanBan");
-            luongCanBanField.setAccessible(true);
-            luongCanBanField.set(nv, luongCanBan);
-
-            Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
-            chucVuField.setAccessible(true);
-            ChucVu chucVuEnum = ChucVu.valueOf(chucVu);
-            chucVuField.set(nv, chucVuEnum);
-
-            Field cmndField = NhanVien.class.getDeclaredField("cMND");
-            cmndField.setAccessible(true);
-            cmndField.set(nv, cmnd);
-
-            Field trinhDoField = NhanVien.class.getDeclaredField("trinhDo");
-            trinhDoField.setAccessible(true);
-            trinhDoField.set(nv, trinhDo);
-
-            Field diaChiField = NhanVien.class.getDeclaredField("diaChi");
-            diaChiField.setAccessible(true);
-            diaChiField.set(nv, diaChi);
-
-            Field emailField = NhanVien.class.getDeclaredField("email");
-            emailField.setAccessible(true);
-            emailField.set(nv, email);
-
-            Field matKhauField = NhanVien.class.getDeclaredField("matKhau");
-            matKhauField.setAccessible(true);
-            matKhauField.set(nv, matKhau);
-
-            Field trangThaiField = NhanVien.class.getDeclaredField("trangThai");
-            trangThaiField.setAccessible(true);
-            trangThaiField.set(nv, trangThai);
-
-            entityManager.persist(nv);
             entityManager.getTransaction().commit();
-            isSaved = true;
+            isCleared = true; // Đánh dấu là xóa thành công
+            //JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ nhân viên thành công!");
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
+            entityManager.close();
+        }
+
+        return isCleared;
+    }
+
+
+    //
+    public List<NhanVien> getAllNhanViens() {
+        EntityManager em = emf.createEntityManager();
+        List<NhanVien> nhanViens = null;
+
+        try {
+            TypedQuery<NhanVien> query = em.createQuery("SELECT nv FROM NhanVien nv", NhanVien.class);
+            nhanViens = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return nhanViens;
+    }
+
+    
+    public boolean saveNhanVien(List<NhanVien> danhSachNhanVien) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isSaved = false;
+        clearAllNhanVien();
+        try {
+          //  JOptionPane.showMessageDialog(null, "Bắt đầu giao dịch", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.getTransaction().begin();
+
+            for (NhanVien nv : danhSachNhanVien) {
+          //      JOptionPane.showMessageDialog(null, "Đang lưu nhân viên: " , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Lưu nhân viên vào cơ sở dữ liệu
+                entityManager.persist(nv);
+            }
+
+          //  JOptionPane.showMessageDialog(null, "Giao dịch đã được flush", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.flush();
+
+         //   JOptionPane.showMessageDialog(null, "Cam kết giao dịch", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.getTransaction().commit();
+            System.out.println("Giao dịch thành công!");
+
+            isSaved = true; // Đánh dấu là đã lưu thành công
+        } catch (Exception e) {
+            // Hoàn tác giao dịch nếu có lỗi
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace(); // In ra lỗi
+        } finally {
+            // Đảm bảo EntityManager được đóng
             if (entityManager != null) {
                 entityManager.close();
             }
         }
 
-        return isSaved;
+        return isSaved; // Trả về true nếu lưu thành công
     }
+ // Phương thức tìm kiếm nhân viên theo mã nhân viên
+    public NhanVien findNhanVienById(String maNhanVien) {
+        EntityManager em = emf.createEntityManager();
+        NhanVien nhanVien = null;
+
+        try {
+            nhanVien = em.find(NhanVien.class, maNhanVien);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return nhanVien;
+    }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 }
 

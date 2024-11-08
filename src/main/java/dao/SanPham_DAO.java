@@ -14,7 +14,14 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.logging.Logger;
+=======
+import entity.SanPham;
+import jakarta.persistence.Query;
+public class SanPham_DAO {
+    private EntityManagerFactory emf;
+>>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 
 public class SanPham_DAO {
     private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
@@ -354,6 +361,7 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
+<<<<<<< HEAD
     
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
@@ -366,5 +374,66 @@ public class SanPham_DAO {
             return null;  // Trả về null nếu không tìm thấy sản phẩm
         }
     }
+=======
+
+    // save sp
+    public boolean saveSanPham(List<SanPham> danhSachSanPham) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isSaved = false;
+        clearAllSanPham();
+        try {
+            entityManager.getTransaction().begin();
+
+            for (SanPham sp : danhSachSanPham) {
+                entityManager.persist(sp);
+            }
+
+            entityManager.flush();
+
+            entityManager.getTransaction().commit();
+            System.out.println("Giao dịch thành công!");
+
+            isSaved = true;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
+        return isSaved;
+    }
+// xóa toàn bộ trong csdl
+    public boolean clearAllSanPham() {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isCleared = false;
+
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+
+            String jpql = "DELETE FROM SanPham";
+            Query query = entityManager.createQuery(jpql);
+            query.executeUpdate();
+
+            entityManager.getTransaction().commit();
+            isCleared = true;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+
+        return isCleared;
+    }
+
+>>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
     
 }

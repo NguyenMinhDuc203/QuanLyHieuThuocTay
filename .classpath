@@ -32,6 +32,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Admin/OneDrive - Industrial University of HoChiMinh City/Documents/QuanLyHieuThuocTay/lib/jcalendar-1.4.jar"/>
 	<classpathentry kind="src" path="target/generated-sources/annotations">
 		<attributes>
 			<attribute name="optional" value="true"/>
@@ -39,8 +40,8 @@
 	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
 		<attributes>
-			<attribute name="optional" value="true"/>
 			<attribute name="test" value="true"/>
+			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

@@ -8,6 +8,9 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+
 import java.lang.reflect.Field;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -74,24 +77,30 @@ public class KhachHang_DAO {
         return isSuccess;
     }
     //
-    public String maTuSinh() {
+    public String maTuSinhKhachHang() {
         EntityManager em = emf.createEntityManager();
         String maKhachHang = null;
 
         try {
-            // Đếm số lượng khách hàng hiện có trong bảng
-            String jpql = "SELECT COUNT(kh) FROM KhachHang kh";
-            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-            Long count = query.getSingleResult();
+            // Tìm mã khách hàng hiện có lớn nhất
+            String jpql = "SELECT MAX(kh.maKhachHang) FROM KhachHang kh";
+            TypedQuery<String> query = em.createQuery(jpql, String.class);
+            String maxMaKhachHang = query.getSingleResult();
 
-            // Tạo mã khách hàng mới dựa trên số lượng khách hàng hiện tại
-            int nextId = count.intValue() + 1;
-            maKhachHang = String.format("KH%03d", nextId); // Định dạng lại thành "KH001", "KH002", ...
-            
+            if (maxMaKhachHang != null) {
+                // Lấy phần số của mã khách hàng lớn nhất hiện tại và tăng lên 1
+                long currentMax = Long.parseLong(maxMaKhachHang.substring(2)); // Bỏ "KH" và chuyển phần số sang long
+                long nextId = currentMax + 1;
+                maKhachHang = String.format("KH%010d", nextId); // Định dạng lại thành "KH0123456789", "KH0234567890", ...
+            } else {
+                // Nếu không có khách hàng nào trong bảng, bắt đầu từ mã đầu tiên
+                maKhachHang = "KH0123456789";
+            }
+
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã khách hàng: " + e.getMessage());
             e.printStackTrace();
-            maKhachHang = "KH001"; // Trong trường hợp lỗi, bắt đầu lại từ "KH001"
+            maKhachHang = "KH0123456789"; // Trong trường hợp lỗi, bắt đầu lại từ "KH0123456789"
         } finally {
             em.close();
         }
@@ -455,27 +464,30 @@ public class KhachHang_DAO {
         boolean isCleared = false;
 
         try {
-            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
 
-            // Truy vấn để xóa tất cả khách hàng
+            // Xóa toàn bộ dữ liệu trong bảng KhachHang
             String jpql = "DELETE FROM KhachHang";
             Query query = entityManager.createQuery(jpql);
             query.executeUpdate();
 
-            entityManager.getTransaction().commit(); // Cam kết giao dịch
+            entityManager.getTransaction().commit();
             isCleared = true; // Đánh dấu là xóa thành công
+            JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ khách hàng thành công!");
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Hoàn tác nếu có lỗi
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Đóng EntityManager
+            entityManager.close();
         }
 
         return isCleared;
     }
-   
+    
+    
 
 
 }
