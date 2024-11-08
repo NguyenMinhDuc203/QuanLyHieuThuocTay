@@ -53,14 +53,9 @@ import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
 
-<<<<<<< HEAD
-
 
 public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
-=======
-public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
->>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;

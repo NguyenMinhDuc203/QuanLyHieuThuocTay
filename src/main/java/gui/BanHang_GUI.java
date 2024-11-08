@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -89,6 +90,7 @@ public class BanHang_GUI extends JFrame {
     private JTextField textField_35;
     private JTextField textField_36;
     private JTable table_8;
+    private JTextField textField_37;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -117,7 +119,7 @@ public class BanHang_GUI extends JFrame {
       menuBar.setBorderPainted(false);
       menuBar.setOpaque(true);
       menuBar.setBackground(new Color(26, 133, 94));
-      menuBar.setBounds(0, 0, 1395, 70);
+      menuBar.setBounds(0, 0, 1920, 70);
       contentPane.add(menuBar);
 
       contentPane.setLayout(null);
@@ -125,60 +127,85 @@ public class BanHang_GUI extends JFrame {
       JToolBar menuToolBar = new JToolBar();
       menuToolBar.setBounds(0, 75, 222, 795);
       menuToolBar.setOrientation(JToolBar.VERTICAL);  // Chuyển menu thành dạng dọc
-      menuToolBar.setBackground(new Color(240, 240, 240));
+      menuToolBar.setBackground(new Color(26,133, 94));
       contentPane.add(menuToolBar);
 
       // Thêm các mục menu vào JToolBar
       JButton btnBanHang = new JButton("Bán Hàng");
+      btnBanHang.setForeground(new Color(255, 255, 255));
+      btnBanHang.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+      btnBanHang.setBackground(new Color(153, 211, 158));
       btnBanHang.setPreferredSize(new Dimension(222, 60)); // Set chiều cao cố định và chiều rộng
       btnBanHang.setMaximumSize(new Dimension(222, 60));  
       btnBanHang.setAlignmentX(Component.LEFT_ALIGNMENT);
+      btnBanHang.setBorder(BorderFactory.createEmptyBorder());
       menuToolBar.add(btnBanHang);
 
       JButton btnDonHang = new JButton("Đơn Hàng");
+      btnDonHang.setForeground(new Color(255, 255, 255));
+      btnDonHang.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+      btnDonHang.setBackground(new Color(26, 133, 94));
       btnDonHang.setPreferredSize(new Dimension(222, 60)); // Set chiều cao cố định và chiều rộng
       btnDonHang.setMaximumSize(new Dimension(222, 60));  
+      btnDonHang.setBorder(BorderFactory.createEmptyBorder());
       btnDonHang.setAlignmentX(Component.LEFT_ALIGNMENT);
       menuToolBar.add(btnDonHang);
 
       // Tạo menu con cho "Đơn Hàng"
       JPanel panelDonHang = new JPanel();
       panelDonHang.setLayout(new BoxLayout(panelDonHang, BoxLayout.Y_AXIS));
-      panelDonHang.setBackground(new Color(220, 220, 220));
+      panelDonHang.setBackground(new Color(26, 133, 94));
       panelDonHang.setVisible(false); // Ẩn menu con khi mới bắt đầu
       menuToolBar.add(panelDonHang);
 
       JButton btnDonTam = new JButton("Đơn Tạm");
-      btnDonTam.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
-      btnDonTam.setMaximumSize(new Dimension(200, 45));  
+      btnDonTam.setForeground(new Color(255, 255, 255));
+      btnDonTam.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnDonTam.setBackground(new Color(32, 210, 139));
+      btnDonTam.setPreferredSize(new Dimension(222, 45)); // Set chiều cao cố định và chiều rộng
+      btnDonTam.setMaximumSize(new Dimension(222, 45));  
       btnDonTam.setAlignmentX(Component.LEFT_ALIGNMENT);
+      btnDonTam.setBorder(BorderFactory.createEmptyBorder());
       panelDonHang.add(btnDonTam);
 
       JButton btnDonHoanThanh = new JButton("Đơn Hoàn Thành");
-      btnDonHoanThanh.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
-      btnDonHoanThanh.setMaximumSize(new Dimension(200, 45));  
-      btnDonHoanThanh.setAlignmentX(Component.LEFT_ALIGNMENT);
+      btnDonHoanThanh.setForeground(new Color(255, 255, 255));
+      btnDonHoanThanh.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnDonHoanThanh.setBackground(new Color(32, 210, 139));
+      btnDonHoanThanh.setPreferredSize(new Dimension(222, 45)); // Set chiều cao cố định và chiều rộng
+      btnDonHoanThanh.setMaximumSize(new Dimension(222, 45));
+      btnDonHoanThanh.setBorder(BorderFactory.createEmptyBorder());
       panelDonHang.add(btnDonHoanThanh);
 
       JButton btnDonTra = new JButton("Đơn Trả");
-      btnDonTra.setPreferredSize(new Dimension(200, 45)); // Set chiều cao cố định và chiều rộng
-      btnDonTra.setMaximumSize(new Dimension(200, 45));  
+      btnDonTra.setForeground(new Color(255, 255, 255));
+      btnDonTra.setBackground(new Color(32, 210, 139));
+      btnDonTra.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnDonTra.setPreferredSize(new Dimension(222, 45)); // Set chiều cao cố định và chiều rộng
+      btnDonTra.setMaximumSize(new Dimension(222, 45));  
       btnDonTra.setAlignmentX(Component.LEFT_ALIGNMENT);
+      btnDonTra.setBorder(BorderFactory.createEmptyBorder());
       panelDonHang.add(btnDonTra);
       
       JButton btnKhuyenMai = new JButton("Khuyến Mãi");
-      btnKhuyenMai.setPreferredSize(new Dimension(200, 60)); // Set chiều cao cố định và chiều rộng
+      btnKhuyenMai.setForeground(new Color(255, 255, 255));
+      btnKhuyenMai.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
+      btnKhuyenMai.setBackground(new Color(26,133, 94));
+      btnKhuyenMai.setPreferredSize(new Dimension(222, 60)); // Set chiều cao cố định và chiều rộng
       btnKhuyenMai.setMaximumSize(new Dimension(222, 60));  
       btnKhuyenMai.setAlignmentX(Component.LEFT_ALIGNMENT);
+      btnKhuyenMai.setBorder(BorderFactory.createEmptyBorder());
       menuToolBar.add(btnKhuyenMai);
 
       // Sự kiện khi nhấn vào "Đơn Hàng" để hiển thị menu con
       btnDonHang.addActionListener(new ActionListener() {
-          @Override
+    	  @Override
           public void actionPerformed(ActionEvent e) {
               // Tạo hiệu ứng hiện/ẩn menu con
               panelDonHang.setVisible(!panelDonHang.isVisible());
           }
+          
+          
       });
       btnKhuyenMai.addActionListener(new ActionListener() {
           @Override
@@ -186,6 +213,7 @@ public class BanHang_GUI extends JFrame {
               // Tạo hiệu ứng ẩn menu con
               panelDonHang.setVisible(false);
           }
+          
       });
 
       // Panel Content
@@ -196,35 +224,45 @@ public class BanHang_GUI extends JFrame {
 
       // Trang Bán Hàng
       JPanel BanHangPane = new JPanel();
+      BanHangPane.setBackground(new Color(255, 255, 255));
       panelContent.add(BanHangPane, "BanHangPane"); // Tên để chuyển đổi
       BanHangPane.setLayout(null);
       
       JPanel panel_1 = new JPanel();
+      panel_1.setBackground(new Color(255, 255, 255));
+      panel_1.setForeground(new Color(217, 245, 251));
       panel_1.setBounds(945, 11, 402, 773);
       BanHangPane.add(panel_1);
       panel_1.setLayout(null);
       
       JPanel panel_2 = new JPanel();
-      panel_2.setBorder(new TitledBorder(null, "Th\u00F4ng Tin Kh\u00E1ch H\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-      panel_2.setBounds(10, 24, 382, 263);
+      panel_2.setBackground(new Color(255, 255, 255));
+      panel_2.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng Tin Kh\u00E1ch H\u00E0ng", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(33, 171, 119)));
+      panel_2.setBounds(10, 0, 382, 214);
       panel_1.add(panel_2);
       panel_2.setLayout(null);
       
       JComboBox comboBox = new JComboBox();
+      comboBox.setBackground(new Color(255, 255, 255));
+      comboBox.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       comboBox.setModel(new DefaultComboBoxModel(new String[] {"Khách Vãng Lai", "Thành Viên", "Khách Mới"}));
       comboBox.setBounds(126, 26, 246, 39);
       panel_2.add(comboBox);
       
       JLabel lblNewLabel = new JLabel("Số điện thoại:");
+      lblNewLabel.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       lblNewLabel.setBounds(24, 87, 98, 39);
       panel_2.add(lblNewLabel);
       
       textField = new JTextField();
+      textField.setBackground(new Color(255, 255, 255));
+      textField.setEditable(false);
       textField.setBounds(126, 87, 246, 39);
       panel_2.add(textField);
       textField.setColumns(10);
       
       JLabel lblHTn = new JLabel("Họ tên");
+      lblHTn.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       lblHTn.setBounds(24, 150, 98, 39);
       panel_2.add(lblHTn);
       
@@ -233,97 +271,126 @@ public class BanHang_GUI extends JFrame {
       textField_1.setBounds(126, 150, 246, 39);
       panel_2.add(textField_1);
       
-      JCheckBox chckbxNewCheckBox = new JCheckBox("Sử dụng mã giảm giá");
-      chckbxNewCheckBox.setBounds(125, 205, 251, 39);
-      panel_2.add(chckbxNewCheckBox);
-      
       JPanel panel = new JPanel();
-      panel.setBorder(new TitledBorder(null, "Th\u00F4ng Tin H\u00F3a \u0110\u01A1n", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-      panel.setBounds(10, 316, 382, 446);
+      panel.setBackground(new Color(255, 255, 255));
+      panel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng Tin H\u00F3a \u0110\u01A1n", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(33, 171, 119)));
+      panel.setBounds(10, 237, 382, 507);
       panel_1.add(panel);
       panel.setLayout(null);
       
       JLabel lblNewLabel_1 = new JLabel("Mã hóa đơn:");
-      lblNewLabel_1.setBounds(10, 25, 105, 35);
+      lblNewLabel_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_1.setBounds(10, 25, 129, 35);
       panel.add(lblNewLabel_1);
       
       textField_2 = new JTextField();
+      textField_2.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      textField_2.setBackground(new Color(255, 255, 255));
       textField_2.setEditable(false);
       textField_2.setBounds(135, 25, 237, 35);
       panel.add(textField_2);
       textField_2.setColumns(10);
       
       JLabel lblNewLabel_1_1 = new JLabel("Ngày tạo:");
-      lblNewLabel_1_1.setBounds(10, 80, 105, 35);
+      lblNewLabel_1_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_1_1.setBounds(10, 137, 105, 35);
       panel.add(lblNewLabel_1_1);
       
       JLabel lblNewLabel_1_2 = new JLabel("Giảm giá");
-      lblNewLabel_1_2.setBounds(10, 137, 105, 35);
+      lblNewLabel_1_2.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_1_2.setBounds(10, 190, 105, 35);
       panel.add(lblNewLabel_1_2);
       
       JLabel lblNewLabel_1_3 = new JLabel("Tiền khách trả:");
-      lblNewLabel_1_3.setBounds(10, 190, 105, 35);
+      lblNewLabel_1_3.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_1_3.setBounds(10, 246, 129, 35);
       panel.add(lblNewLabel_1_3);
       
       textField_3 = new JTextField();
+      textField_3.setBackground(new Color(255, 255, 255));
       textField_3.setEditable(false);
       textField_3.setColumns(10);
-      textField_3.setBounds(135, 80, 237, 35);
+      textField_3.setBounds(135, 140, 237, 35);
       panel.add(textField_3);
       
       textField_4 = new JTextField();
+      textField_4.setBackground(new Color(255, 255, 255));
       textField_4.setEditable(false);
       textField_4.setColumns(10);
-      textField_4.setBounds(135, 137, 237, 35);
+      textField_4.setBounds(135, 193, 237, 35);
       panel.add(textField_4);
       
       textField_5 = new JTextField();
+      textField_5.setHorizontalAlignment(SwingConstants.RIGHT);
+      textField_5.setBackground(new Color(255, 255, 255));
       textField_5.setEditable(false);
       textField_5.setColumns(10);
-      textField_5.setBounds(135, 190, 237, 35);
+      textField_5.setBounds(135, 249, 237, 35);
       panel.add(textField_5);
       
       JSpinner spinner = new JSpinner();
       spinner.setModel(new SpinnerListModel(new String[] {"Ti\u1EC1n m\u1EB7t", "ATM"}));
-      spinner.setBounds(135, 247, 237, 35);
+      spinner.setBounds(135, 305, 237, 35);
       panel.add(spinner);
       
       JLabel lblNewLabel_1_3_1 = new JLabel("Phương thức:");
-      lblNewLabel_1_3_1.setBounds(10, 247, 105, 35);
+      lblNewLabel_1_3_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+      lblNewLabel_1_3_1.setBounds(10, 303, 129, 35);
       panel.add(lblNewLabel_1_3_1);
       
       JLabel lblNewLabel_2 = new JLabel("Tiền khách đưa");
-      lblNewLabel_2.setBounds(10, 306, 79, 27);
+      lblNewLabel_2.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_2.setBounds(10, 363, 129, 34);
       panel.add(lblNewLabel_2);
       
       textField_6 = new JTextField();
+      textField_6.setHorizontalAlignment(SwingConstants.RIGHT);
       textField_6.setColumns(10);
-      textField_6.setBounds(135, 302, 154, 35);
+      textField_6.setBounds(135, 363, 154, 35);
       panel.add(textField_6);
       
       textField_7 = new JTextField();
+      textField_7.setBackground(new Color(255, 255, 255));
       textField_7.setText("000");
       textField_7.setEditable(false);
       textField_7.setColumns(10);
-      textField_7.setBounds(293, 302, 79, 35);
+      textField_7.setBounds(293, 363, 79, 35);
       panel.add(textField_7);
       
       JLabel lblNewLabel_2_1 = new JLabel("Tiền thối");
-      lblNewLabel_2_1.setBounds(10, 364, 79, 27);
+      lblNewLabel_2_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_2_1.setBounds(10, 415, 114, 34);
       panel.add(lblNewLabel_2_1);
       
       textField_8 = new JTextField();
+      textField_8.setHorizontalAlignment(SwingConstants.RIGHT);
+      textField_8.setBackground(new Color(255, 255, 255));
       textField_8.setText("000");
       textField_8.setEditable(false);
       textField_8.setColumns(10);
-      textField_8.setBounds(134, 360, 238, 35);
+      textField_8.setBounds(134, 414, 238, 35);
       panel.add(textField_8);
+      
+      textField_37 = new JTextField();
+      textField_37.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      textField_37.setEditable(false);
+      textField_37.setColumns(10);
+      textField_37.setBackground(Color.WHITE);
+      textField_37.setBounds(135, 80, 237, 35);
+      panel.add(textField_37);
+      
+      JLabel lblNewLabel_1_4 = new JLabel("Mã nhân viên:");
+      lblNewLabel_1_4.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+      lblNewLabel_1_4.setBounds(10, 80, 129, 35);
+      panel.add(lblNewLabel_1_4);
       
       JScrollPane scrollPane = new JScrollPane();
       scrollPane.setBounds(10, 62, 925, 449);
       BanHangPane.add(scrollPane);
       
       table = new JTable();
+      table.setRowSelectionAllowed(false);
+      table.setBackground(new Color(255, 255, 255));
       table.setModel(new DefaultTableModel(
       	new Object[][] {
       		
@@ -333,7 +400,7 @@ public class BanHang_GUI extends JFrame {
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
-      		false, false, true, true, true, true, true
+      		false, false, true, false, false, false, false
       	};
       	public boolean isCellEditable(int row, int column) {
       		return columnEditables[column];
@@ -345,61 +412,84 @@ public class BanHang_GUI extends JFrame {
       table.getColumnModel().getColumn(4).setResizable(false);
       table.getColumnModel().getColumn(5).setResizable(false);
       table.getColumnModel().getColumn(6).setResizable(false);
+      giaoDienTable(table);
       scrollPane.setViewportView(table);
       
       txtNhpMSn = new JTextField();
+      txtNhpMSn.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
       txtNhpMSn.setText("Nhập mã sản phẩm");
       txtNhpMSn.setBounds(10, 11, 565, 40);
       BanHangPane.add(txtNhpMSn);
       txtNhpMSn.setColumns(10);
       
       JButton btnNewButton = new JButton("Thêm");
+      btnNewButton.setForeground(new Color(255, 255, 255));
+      btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnNewButton.setBackground(new Color(26, 133, 94));
       btnNewButton.setBounds(617, 11, 140, 40);
       BanHangPane.add(btnNewButton);
       
       JButton btnXa = new JButton("Xóa");
+      btnXa.setForeground(new Color(255, 255, 255));
+      btnXa.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnXa.setBackground(new Color(26, 133, 94));
       btnXa.setBounds(795, 11, 140, 40);
       BanHangPane.add(btnXa);
       
       JButton btnNewButton_1 = new JButton("Xử lý đơn tạm");
+      btnNewButton_1.setForeground(new Color(255, 255, 255));
+      btnNewButton_1.setBackground(new Color(26, 133, 94));
+      btnNewButton_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
       btnNewButton_1.setBounds(10, 606, 195, 54);
       BanHangPane.add(btnNewButton_1);
    // Thêm sự kiện cho các nút chuyển panel
       btnNewButton_1.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
-          cardLayout.show(panelContent, "DonTamPane"); // Chuyển sang trang Bán Hàng
+          cardLayout.show(panelContent, "DonTamPane"); // Chuyển sang trang Đơn tạm
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(153, 211, 158));
       });
-      
-      JButton btnNewButton_1_1 = new JButton("Lưu đơn tạm");
-      btnNewButton_1_1.setBounds(253, 606, 195, 54);
-      BanHangPane.add(btnNewButton_1_1);
-      
-      JButton btnNewButton_1_2 = new JButton("Khuyến mãi");
-      btnNewButton_1_2.setBounds(495, 606, 195, 54);
-      BanHangPane.add(btnNewButton_1_2);
-   // Thêm sự kiện cho các nút chuyển panel
-      btnNewButton_1_2.addActionListener(e -> {
-          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
-          cardLayout.show(panelContent, "KhuyenMaiPane"); // Chuyển sang trang Bán Hàng
-      });
-      
-      JButton btnNewButton_1_3 = new JButton("Hủy");
-      btnNewButton_1_3.setBounds(740, 606, 195, 54);
-      BanHangPane.add(btnNewButton_1_3);
-      
-      JButton btnNewButton_2 = new JButton("Hoàn thành đơn");
-      btnNewButton_2.setBounds(339, 724, 261, 54);
-      BanHangPane.add(btnNewButton_2);
       
       JLabel lblNewLabel_3 = new JLabel("Tổng tiền:");
+      lblNewLabel_3.setForeground(new Color(26, 133, 94));
+      lblNewLabel_3.setFont(new Font("Leelawadee UI", Font.BOLD, 22));
       lblNewLabel_3.setBounds(604, 522, 153, 40);
       BanHangPane.add(lblNewLabel_3);
       
       textField_9 = new JTextField();
+      textField_9.setBackground(new Color(255, 255, 255));
       textField_9.setEditable(false);
-      textField_9.setBounds(767, 522, 168, 40);
+      textField_9.setBounds(724, 522, 211, 40);
       BanHangPane.add(textField_9);
       textField_9.setColumns(10);
+      
+      JButton btnNewButton_1_1 = new JButton("Lưu đơn tạm");
+      btnNewButton_1_1.setForeground(Color.WHITE);
+      btnNewButton_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnNewButton_1_1.setBackground(new Color(26, 133, 94));
+      btnNewButton_1_1.setBounds(252, 606, 195, 54);
+      BanHangPane.add(btnNewButton_1_1);
+      
+      JButton btnNewButton_1_2 = new JButton("Khuyến mãi");
+      btnNewButton_1_2.setForeground(Color.WHITE);
+      btnNewButton_1_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnNewButton_1_2.setBackground(new Color(26, 133, 94));
+      btnNewButton_1_2.setBounds(496, 606, 195, 54);
+      BanHangPane.add(btnNewButton_1_2);
+      
+      JButton btnNewButton_1_3 = new JButton("Hủy");
+      btnNewButton_1_3.setForeground(Color.WHITE);
+      btnNewButton_1_3.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnNewButton_1_3.setBackground(new Color(26, 133, 94));
+      btnNewButton_1_3.setBounds(740, 606, 195, 54);
+      BanHangPane.add(btnNewButton_1_3);
+      
+      JButton btnNewButton_2 = new JButton("Hoàn thành đơn");
+      btnNewButton_2.setForeground(Color.WHITE);
+      btnNewButton_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnNewButton_2.setBackground(new Color(26, 133, 94));
+      btnNewButton_2.setBounds(343, 710, 270, 54);
+      BanHangPane.add(btnNewButton_2);
 
       // Trang Đơn Hàng
       JPanel DonTamPane = new JPanel();
@@ -946,28 +1036,71 @@ public class BanHang_GUI extends JFrame {
       btnBanHang.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
+          btnBanHang.setBackground(new Color(153, 211, 158));
+          btnDonHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(26, 133, 94));
+          btnDonHoanThanh.setBackground(new Color(26, 133, 94));
+          btnDonTra.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(26, 133, 94));
+          
       });
-
+      btnDonHang.addActionListener(e -> {
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonHang.setBackground(new Color(153, 211, 158));
+          btnDonTam.setBackground(new Color(26, 133, 94));
+          btnDonHoanThanh.setBackground(new Color(26, 133, 94));
+          btnDonTra.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(26, 133, 94));
+      });
       btnDonTam.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "DonTamPane"); // Chuyển sang trang Đơn Hàng
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(153, 211, 158));
+          btnDonHoanThanh.setBackground(new Color(26, 133, 94));
+          btnDonTra.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(26, 133, 94));
       });
       
       btnDonHoanThanh.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "DonHoanThanhPane"); // Chuyển sang trang Đơn Hàng
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(26, 133, 94));
+          btnDonHoanThanh.setBackground(new Color(153, 211, 158));
+          btnDonTra.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(26, 133, 94));
       });
       
       btnDonTra.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "DonTraPane"); // Chuyển sang trang Đơn Hàng
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(26, 133, 94));
+          btnDonHoanThanh.setBackground(new Color(26, 133, 94));
+          btnDonTra.setBackground(new Color(153, 211, 158));
+          btnKhuyenMai.setBackground(new Color(26, 133, 94));
       });
 
       btnKhuyenMai.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "KhuyenMaiPane"); // Chuyển sang trang Khuyến Mãi
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnDonHang.setBackground(new Color(26, 133, 94));
+          btnDonTam.setBackground(new Color(26, 133, 94));
+          btnDonHoanThanh.setBackground(new Color(26, 133, 94));
+          btnDonTra.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(153, 211, 158));
       });
-
+      btnNewButton_1_2.addActionListener(e -> {
+          CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "KhuyenMaiPane"); // Chuyển sang trang Khuyến Mãi
+          btnBanHang.setBackground(new Color(26, 133, 94));
+          btnKhuyenMai.setBackground(new Color(153, 211, 158));
+      });
       // Hiển thị cửa sổ
       setVisible(true);
       
@@ -1042,4 +1175,76 @@ public class BanHang_GUI extends JFrame {
       });
         
     }
+  
+  	public void giaoDienTable (JTable table) {
+  	// Thiết lập font cho table và header
+   		Font headerFont = new Font("Leelawadee UI", Font.BOLD, 18); // Chữ to hơn cho header
+   		table.getTableHeader().setFont(headerFont); // Áp dụng cho header
+   		table.getTableHeader().setPreferredSize(new Dimension(0, 50));
+   		table.getTableHeader().setForeground(new Color(255, 255, 255));
+   		// Thiết lập màu cho header
+           table.getTableHeader().setBackground(new Color(26, 133, 94)); // Màu xanh cho header
+   			table.setFont(new Font("Leelawadee UI", Font.PLAIN, 16)); // Font cho các dòng
+
+   		// Thiết lập chiều cao của các dòng
+   		table.setRowHeight(30); // Đặt chiều cao dòng lớn hơn
+   		// Áp dụng màu xen kẽ cho các dòng
+           table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+               public Component getTableCellRendererComponent(JTable table, Object value,
+                       boolean isSelected, boolean hasFocus, int row, int column) {
+               	Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                   if (row % 2 != 0) {
+                       c.setBackground(new Color(26, 133, 94, 94)); // Màu cho dòng chẵn
+                   } else {
+                       c.setBackground(Color.WHITE); // Màu cho dòng lẻ
+                   }
+                   return c;
+               }
+           });
+        // Ngăn di chuyển cột
+           table.getTableHeader().setReorderingAllowed(false);
+
+           // Ngăn nhấn vào header
+           table.getTableHeader().addMouseListener(new MouseAdapter() {
+               @Override
+               public void mouseClicked(MouseEvent e) {
+                   
+               }
+           });
+        // Thiết lập chế độ chọn hàng
+           table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+           // Thêm MouseListener để chọn toàn bộ hàng khi nhấp vào ô
+           table.addMouseListener(new MouseAdapter() {
+               @Override
+               public void mouseClicked(MouseEvent e) {
+                   int row = table.rowAtPoint(e.getPoint());
+                   if (row >= 0) {
+                   	table.clearSelection(); // Dọn sạch lựa chọn hiện tại
+                       table.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
+                       for (int i = 0; i < table.getColumnCount(); i++) {
+                           table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
+                               public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                                   Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column );
+                                   if (row == table.getSelectedRow()) {
+                                       c.setBackground(new Color(10, 69, 23)); // Màu cho hàng được chọn
+                                       c.setForeground(Color.WHITE);
+                                   } else {
+                                   	if (row % 2 != 0) {
+                                           c.setBackground(new Color(32, 210, 139)); // Màu cho dòng chẵn
+                                           c.setForeground(Color.BLACK);
+                                       } else {
+                                           c.setBackground(Color.WHITE); // Màu cho dòng lẻ
+                                           c.setForeground(Color.BLACK);
+                                       }
+                                   }
+                                   return c;
+                               }
+                           });
+                       } // Màu cho dòng lẻ
+                   }
+               }
+           });
+  	}
 }

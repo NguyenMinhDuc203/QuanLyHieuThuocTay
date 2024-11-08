@@ -72,7 +72,7 @@ public class TrangChu_GUI extends JFrame {
 		menuBar.setBorderPainted(false);
 		menuBar.setOpaque(true);
 		menuBar.setBackground(new Color(26, 133, 94));
-		menuBar.setBounds(0, 0, 1396, 70);
+		menuBar.setBounds(0, 0, 1920, 70);
 		contentPane.add(menuBar);
 		ImageIcon iconBt = new ImageIcon(TrangChu_GUI.class.getResource("/gui/arrow-right-from-bracket-solid.png"));
 		Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);

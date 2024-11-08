@@ -7,23 +7,71 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
 
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 
-
-
 public class KhachHang_DAO {
     private EntityManagerFactory emf;
-
     public KhachHang_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
     }
-    
+    private Connection connection;
+
+    public KhachHang_DAO(Connection connection) {
+        this.connection = connection;
+    }
+
+    public List<String[]> timKiemKhachHang(String maKhachHang, String tenKhachHang, String sdt) {
+        List<String[]> danhSachKhachHang = new ArrayList<>();
+        try {
+            String sql = "SELECT maKhachHang, tenKhachHang, sDT FROM khachhang WHERE 1=1";
+            if (!maKhachHang.isEmpty()) {
+                sql += " AND maKhachHang LIKE ?";
+            }
+            if (!tenKhachHang.isEmpty()) {
+                sql += " AND tenKhachHang LIKE ?";
+            }
+            if (!sdt.isEmpty()) {
+                sql += " AND sDT LIKE ?";
+            }
+            PreparedStatement statement = connection.prepareStatement(sql);
+
+            int index = 1;
+            if (!maKhachHang.isEmpty()) {
+                statement.setString(index++, "%" + maKhachHang + "%");
+            }
+            if (!tenKhachHang.isEmpty()) {
+                statement.setString(index++, "%" + tenKhachHang + "%");
+            }
+            if (!sdt.isEmpty()) {
+                statement.setString(index++, "%" + sdt + "%");
+            }
+
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                String[] khachHang = {
+                    rs.getString("maKhachHang"),
+                    rs.getString("tenKhachHang"),
+                    rs.getString("sDT")
+                };
+                danhSachKhachHang.add(khachHang);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return danhSachKhachHang;
+    }
 
     // Phương thức lấy tổng tiền và số lần mua hàng cho từng khách hàng
     public List<Object[]> danhSachTongTienVaSoLanMuaHangCuaTatCaKhachHang(int thang, int nam) {
@@ -213,7 +261,6 @@ public class KhachHang_DAO {
     }
 
 
-//
 
 
     // Phương thức tìm kiếm khách hàng theo mã khách hàng
