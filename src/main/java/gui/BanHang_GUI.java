@@ -11,6 +11,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
 import gui.TrangChu_GUI;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
@@ -22,9 +25,17 @@ import javax.swing.event.ListSelectionListener;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
+import dao.HoaDonXuat_DAO;
+import dao.KhachHang_DAO;
 import dao.SanPham_DAO;
+import entity.HoaDonXuat;
+import entity.KhachHang;
+import entity.NhanVien;
 import entity.SanPham;
 
 import java.awt.CardLayout;
@@ -301,10 +312,9 @@ public class BanHang_GUI extends JFrame {
       table = new JTable();
       table.setModel(new DefaultTableModel(
       	new Object[][] {
-      		{null, null, null, null, null, null, null},
       	},
       	new String[] {
-      		"Mã sản phẩm", "Tên Sản Phẩm", "Số Lượng", "Giá Bán", "Thuế GTGT", "Giảm Giá", "Thành Tiền"
+      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "S\u1ED1 L\u01B0\u1EE3ng", "Gi\u00E1 B\u00E1n", "Thu\u1EBF GTGT", "Gi\u1EA3m Gi\u00E1", "Th\u00E0nh Ti\u1EC1n"
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
@@ -363,6 +373,10 @@ public class BanHang_GUI extends JFrame {
       BanHangPane.add(btnNewButton_1_3);
       
       JButton btnNewButton_2 = new JButton("New button");
+      btnNewButton_2.addActionListener(new ActionListener() {
+      	public void actionPerformed(ActionEvent e) {
+      	}
+      });
       btnNewButton_2.setBounds(339, 724, 261, 54);
       BanHangPane.add(btnNewButton_2);
       
@@ -680,8 +694,9 @@ public class BanHang_GUI extends JFrame {
                   }
 
                   textField_9.setText(String.format("%.2f", tongThanhTien));
-
-                  JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại: " + sanPham.toString());
+                  double tongTien = Double.parseDouble(textField_9.getText());
+          	    textField_5.setText(0+tongTien+"");
+                  JOptionPane.showMessageDialog(null, "Đã thêm thành công sản phẩm vào đơn hàng ");
               } else {
                   JOptionPane.showMessageDialog(null, "Sản phẩm không tồn tại trong hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
               }
@@ -710,8 +725,139 @@ public class BanHang_GUI extends JFrame {
               }
           }
       });
+      btnNewButton_2.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Lấy thông tin từ các trường nhập liệu
+              String soDienThoai = textField.getText();
+              String hoTen = textField_1.getText();
+//              String loaiKhach = (String) comboBox.getSelectedItem();
+//              boolean suDungMaGiamGia = chckbxNewCheckBox.isSelected();
+
+              // Kiểm tra nếu có thông tin trống
+              if (soDienThoai.isEmpty() || hoTen.isEmpty()) {
+                  JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
+                  return;
+              }
+
+              // Tạo đối tượng khách hàng mới
+              KhachHang khachHang = new KhachHang();
+              khachHang.setSDT(soDienThoai);
+              khachHang.setTenKhachHang(hoTen);
+              khachHang.setMaKhachHang("KH"+soDienThoai);
+              // Lưu khách hàng vào cơ sở dữ liệu (DAO)
+              KhachHang_DAO khachHangDAO = new KhachHang_DAO();
+              boolean isSaved = khachHangDAO.save(khachHang);
+
+              // Kiểm tra kết quả lưu
+              if (isSaved) {
+                  JOptionPane.showMessageDialog(null, "Thông tin khách hàng đã được lưu!");
+                  // Cập nhật giao diện nếu cần
+              } else {
+                  JOptionPane.showMessageDialog(null, "Lỗi khi lưu thông tin khách hàng.");
+              }
+              
+          }
+          
+      });
+   // Thêm ActionListener cho nút NewButton_2
+      btnNewButton_2.addActionListener(e -> {
+          try {
+              // Bước 1: Thu thập dữ liệu từ giao diện
+              String maHoaDon = textField_2.getText();
+              String ngayTaoStr = textField_3.getText();
+              DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");  // Định dạng ngày tháng bạn nhập vào
+              LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);              
+              double tongTien = Double.parseDouble(textField_9.getText());
+              double tienThoi = Double.parseDouble(textField_8.getText());
+              String maKhachHang = "KH"+textField.getText();
+              NhanVien nhanVien = new NhanVien();
+              nhanVien.setMaNhanVien("NVBH103202074405");
+              KhachHang khachHang = new KhachHang();
+              khachHang.setMaKhachHang(maKhachHang);
+              // Bước 2: Tạo đối tượng HoaDonXuat
+              HoaDonXuat hoaDon = new HoaDonXuat();
+              hoaDon.setMaHoaDonXuat(maHoaDon);
+              hoaDon.setNgayTao(ngayTao);
+              hoaDon.setTienKhachDua(tongTien);
+              hoaDon.setTienThoi(tienThoi);
+              hoaDon.setNhanVien(nhanVien);
+              hoaDon.setKhachHang(khachHang);
+              // Bước 3: Gọi DAO để lưu đối tượng vào database
+              HoaDonXuat_DAO hoaDonDAO = new HoaDonXuat_DAO();
+              hoaDonDAO.luuHoaDonXuat(hoaDon);  // Phương thức lưu vào database trong DAO
+
+              JOptionPane.showMessageDialog(null, "Lưu hóa đơn thành công!");
+          } catch (Exception ex) {
+              JOptionPane.showMessageDialog(null, "Lỗi khi lưu hóa đơn: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+          }
+      });
+
+      textField_6.addFocusListener(new FocusAdapter() {
+    	    @Override
+    	    public void focusLost(FocusEvent e) {
+    	        try {
+    	            // Lấy giá trị từ textField_9 và textField_6
+    	            double tongTien = Double.parseDouble(textField_9.getText());
+    	            double tienKhachDua = Double.parseDouble(textField_6.getText());
+    	            
+    	            // Thực hiện phép tính
+    	            double tienThoiLai = tienKhachDua - tongTien;
+    	            
+    	            // Gán kết quả vào textField_8
+    	            textField_8.setText(String.valueOf(tienThoiLai));
+    	        } catch (NumberFormatException ex) {
+    	            // Xử lý ngoại lệ nếu giá trị nhập không phải là số
+    	            JOptionPane.showMessageDialog(null, "Vui lòng nhập số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	            textField_6.setText("");
+    	            textField_8.setText("");
+    	        }
+    	    }
+    	});
+      
+      btnNewButton_1_3.addActionListener(e -> {
+    	    // Xóa trắng thanh nhập mã sản phẩm (ví dụ: textField_5 là mã sản phẩm)
+    	    textField.setText("");
+    	    txtNhpMSn.setText("");
+    	    // Xóa các sản phẩm khỏi bảng (table)
+    	    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    	    model.setRowCount(0); // Xóa tất cả các dòng trong bảng
+
+    	    // Xóa thông tin khách hàng (ví dụ: textField_7 là tên khách hàng)
+    	    textField_1.setText("");
+
+    	    // Xóa tiền khách đưa (ví dụ: textField_6 là tiền khách đưa)
+    	    textField_6.setText("");
+    	});
+
         
+      initComponents();
+      initializeInvoiceFields();
     }
+  protected void initComponents() {
+	// TODO Auto-generated method stub
+	
+}
+
+private void initializeInvoiceFields() {
+	    HoaDonXuat_DAO hoaDonXuatDAO = new HoaDonXuat_DAO();
+	    
+	    // Set mã hóa đơn tự động
+	    String maHoaDonMoi = hoaDonXuatDAO.generateNewInvoiceCode();
+	    textField_2.setText(maHoaDonMoi);
+	    
+	    // Set ngày tạo là ngày hiện tại
+	 // Định dạng ngày
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    textField_3.setText(LocalDate.now().format(formatter));
+
+	    // Set các trường khác mặc định
+	    textField_4.setText("0");
+//	    textField_6.setText(100+"");
+//	    double tongTien = Double.parseDouble(textField_9.getText());
+//	    double tienKhachDua = Double.parseDouble(textField_6.getText());
+//	    textField_8.setText(tienKhachDua-tongTien+"");
+	}
 
  
 

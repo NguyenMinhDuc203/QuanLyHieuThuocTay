@@ -314,8 +314,50 @@ public class HoaDonXuat_DAO {
             return result;
         }
 
+        public String generateNewInvoiceCode() {
+            EntityManager em = emf.createEntityManager();
+            String newCode = "HD001"; // Mã mặc định nếu chưa có hóa đơn nào
 
+            try {
+                // Truy vấn mã hóa đơn cuối cùng trong bảng HoaDonXuat
+                Query query = em.createQuery("SELECT h.maHoaDon FROM HoaDonXuat h ORDER BY h.maHoaDon DESC");
+                query.setMaxResults(1); // Chỉ lấy mã hóa đơn gần nhất
+                String lastCode = (String) query.getSingleResult();
 
+                if (lastCode != null && !lastCode.isEmpty()) {
+                    // Trích xuất phần số từ mã hóa đơn
+                    String numberPart = lastCode.substring(2); // Lấy phần sau "HD"
+                    int number = Integer.parseInt(numberPart); // Chuyển phần số sang integer
+
+                    // Tạo mã mới tăng lên 1
+                    number++;
+                    newCode = "HD" + String.format("%03d", number); // Tạo mã mới với định dạng 3 chữ số
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+            return newCode;
+        }
+
+        public void luuHoaDonXuat(HoaDonXuat hoaDon) {
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                em.persist(hoaDon);
+                em.getTransaction().commit();
+            } catch (Exception e) {
+                if (em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw e;
+            } finally {
+                em.close();
+            }
+        }
+
+        
 
         // Đóng EntityManagerFactory
         public void close() {

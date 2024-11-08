@@ -385,6 +385,32 @@ public class KhachHang_DAO {
 
         return result;
     }
+    
+    // Lưu khách hàng vào cơ sở dữ liệu
+    public boolean save(KhachHang khachHang) {
+        // Tạo EntityManager để thao tác với cơ sở dữ liệu
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        
+        try {
+            transaction.begin();  // Bắt đầu giao dịch
+
+            // Lưu khách hàng vào cơ sở dữ liệu
+            em.persist(khachHang);
+
+            transaction.commit();  // Cam kết giao dịch
+
+            return true;  // Nếu thành công, trả về true
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();  // Nếu có lỗi, hoàn tác giao dịch
+            }
+            e.printStackTrace();  // In ra lỗi
+            return false;  // Nếu có lỗi, trả về false
+        } finally {
+            em.close();  // Đảm bảo EntityManager được đóng sau khi sử dụng
+        }
+    }
     // Đóng EntityManagerFactory
     public void close() {
         if (emf != null) emf.close();
