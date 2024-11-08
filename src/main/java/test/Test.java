@@ -26,8 +26,6 @@ EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyH
 		em.close();
 		emf.close();
 
-
-
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			new TrangChu_GUI().setVisible(true);;

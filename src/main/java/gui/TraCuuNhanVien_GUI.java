@@ -408,8 +408,12 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		searchBtn.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        String searchTerm = search.getText(); // Get the input from the search field
-		        String selectedType = (String) typeSearch.getSelectedItem(); // Get the selected type
+		        // Get the input from the search field
+		        String searchTerm = search.getText(); 
+		        // Get the selected type from the dropdown
+		        String selectedType = (String) typeSearch.getSelectedItem(); 
+		        
+		        // Get the results from the DAO using the search term and selected type
 		        ArrayList<Object[]> results = nhanVienDAO.layDanhSachNhanVien(searchTerm, selectedType);
 
 		        // Clear the existing table data
@@ -427,7 +431,6 @@ public class TraCuuNhanVien_GUI extends JFrame {
 		        }
 		    }
 		});
-
 
 
 		table.addMouseListener(new MouseAdapter() {

@@ -52,6 +52,7 @@ import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
+
 public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -654,7 +655,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				   
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
 				    int rowCount = model.getRowCount(); // Số dòng hiện có
-				    String maKH = String.format("KH%03d", rowCount + 1); // Mã mới: KH001, KH002,...
+				    String maKH = String.format("KH%10d", rowCount + 1); // Mã mới: KH001, KH002,...
 
 				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
@@ -762,10 +763,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			                break; 
 			        }
 
-			        if (!isError) {
+			        
 
 			            JOptionPane.showMessageDialog(null, "Lưu tất cả khách hàng vào cơ sở dữ liệu thành công!");
-			        }
+			        
 			    }}
 
 
@@ -804,8 +805,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			            JOptionPane.showMessageDialog(null, "Không tìm thấy khách hàng với mã: " + maKH, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			    }
-
-
+			    	if(o.equals(btThoat)) {
+			    		openTrangChu();
+			    	}
 			    }
 
 

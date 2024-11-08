@@ -1,25 +1,29 @@
 package dao;
 
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
+
 import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
 
 public class NhanVien_DAO {
+
 	private EntityManagerFactory emf;
 	private Object gioiTinh;
 	private Object trangThai;
@@ -28,12 +32,11 @@ public class NhanVien_DAO {
 	public static final String AUTH_TOKEN = "06377e030ce06f90ef5ae947e4165be8"; // Mã xác thực của bạn
 	public static final String FROM_PHONE_NUMBER = "84969852409"; // Số điện thoại Twilio của bạn (được chuyển sang định dạng quốc tế)
 
-
-
     public NhanVien_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay"); 
-    Twilio.init(ACCOUNT_SID, AUTH_TOKEN); // Khởi tạo Twilio
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN); // Khởi tạo Twilio
     }
+
     public ArrayList<Object[]> layDanhSachNhanVien(String searchTerm, String searchType) {
         EntityManager em = emf.createEntityManager();
         ArrayList<Object[]> result = new ArrayList<>();
@@ -73,16 +76,12 @@ public class NhanVien_DAO {
         return result; // Return the list of found employees
     }
 
-
-
     public NhanVien layThongTinNhanVienTheoMa(String maNhanVien) {
         EntityManager em = emf.createEntityManager();
         NhanVien nhanVien = null; // Initialize the employee object
 
         try {
-            String jpql = "SELECT nv FROM NhanVien nv " +
-                          "WHERE nv.maNhanVien LIKE :maNhanVien";
-
+            String jpql = "SELECT nv FROM NhanVien nv WHERE nv.maNhanVien LIKE :maNhanVien";
             TypedQuery<NhanVien> query = em.createQuery(jpql, NhanVien.class);
             query.setParameter("maNhanVien", "%" + maNhanVien + "%"); // Use wildcards for contains search
 
@@ -98,32 +97,31 @@ public class NhanVien_DAO {
         return nhanVien; // Return the found employee or null if not found
     }
 
-    //
     public String kiemTraDangNhap(String maNhanVien, String matKhau) {
         EntityManager em = emf.createEntityManager();
-        
+
         try {
             String jpqlCheck = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.maNhanVien = :maNhanVien";
             TypedQuery<Long> queryCheck = em.createQuery(jpqlCheck, Long.class);
             queryCheck.setParameter("maNhanVien", maNhanVien);
-            
+
             Long count = queryCheck.getSingleResult();
-            
+
             if (count == 0) {
                 return "Nhân viên không tồn tại.";
             }
-            
+
             String jpqlPassword = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.maNhanVien = :maNhanVien AND nv.matKhau = :matKhau";
             TypedQuery<Long> queryPassword = em.createQuery(jpqlPassword, Long.class);
             queryPassword.setParameter("maNhanVien", maNhanVien);
             queryPassword.setParameter("matKhau", matKhau);
-            
+
             Long passwordCount = queryPassword.getSingleResult();
-            
+
             if (passwordCount == 0) {
                 return "Sai mật khẩu.";
             }
-            
+
             return "Đăng nhập thành công.";
 
         } catch (Exception e) {
@@ -133,21 +131,20 @@ public class NhanVien_DAO {
             em.close();
         }
     }
-    
 
     public String guiMaVeSDT(String maNhanVien) {
         EntityManager em = emf.createEntityManager();
         String responseMessage = "Đã xảy ra lỗi.";
-        
+
         try {
             // Kiểm tra tồn tại nhân viên và lấy số điện thoại
             String jpql = "SELECT nv.sDT FROM NhanVien nv WHERE nv.maNhanVien = :maNhanVien";
             TypedQuery<String> query = em.createQuery(jpql, String.class);
             query.setParameter("maNhanVien", maNhanVien);
-            
+
             // Lấy số điện thoại nhân viên
             String sdt = query.getSingleResult();
-            
+
             if (sdt == null) {
                 return "Nhân viên không tồn tại.";
             }
@@ -160,7 +157,7 @@ public class NhanVien_DAO {
 
             // Tạo mã xác nhận
             String maXacNhan = generateVerificationCode(); // Hàm tạo mã xác nhận
-            
+
             // Gửi tin nhắn SMS
             try {
                 Message message = Message.creator(
@@ -193,7 +190,6 @@ public class NhanVien_DAO {
         return responseMessage; // Trả về thông điệp phản hồi
     }
 
-
     private String formatPhoneNumber(String sdt) {
         if (sdt != null) {
             // Kiểm tra số điện thoại Việt Nam (bắt đầu bằng 0, dài 10 ký tự)
@@ -208,63 +204,69 @@ public class NhanVien_DAO {
         return null; // Trả về null nếu số điện thoại không hợp lệ
     }
 
-
-
     private String generateVerificationCode() {
         SecureRandom random = new SecureRandom();
         int code = 100000 + random.nextInt(900000); // Tạo mã 6 chữ số
         return String.valueOf(code);
     }
+
     //
-    public String maTuSinhNhanVien() {
+    public String maTuSinhNhanVien(String chucVu) {
         EntityManager em = emf.createEntityManager();
         String maNhanVien = null;
 
         try {
-            // Đếm số lượng nhân viên hiện có trong bảng
-            String jpql = "SELECT COUNT(nv) FROM NhanVien nv";
+            // Đếm số lượng nhân viên hiện tại dựa trên chức vụ
+            String jpql = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.chucVu = :chucVu";
             TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("chucVu", chucVu);
             Long count = query.getSingleResult();
 
             // Tạo mã nhân viên mới dựa trên số lượng nhân viên hiện tại
             int nextId = count.intValue() + 1;
-            maNhanVien = String.format("NV%03d", nextId); // Định dạng lại thành "NV001", "NV002", ...
+            String prefix = chucVu.equalsIgnoreCase("QuanLy") ? "QL" : "NV";
+            maNhanVien = String.format("%s%03d", prefix, nextId); // Định dạng thành "NV001", "QL001", ...
 
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã nhân viên: " + e.getMessage());
             e.printStackTrace();
-            maNhanVien = "NV001"; // Trong trường hợp lỗi, bắt đầu lại từ "NV001"
+            maNhanVien = "NV001"; // Bắt đầu lại từ "NV001" nếu có lỗi
         } finally {
             em.close();
         }
 
         return maNhanVien;
     }
+
     public boolean clearAllNhanVien() {
         EntityManager entityManager = emf.createEntityManager();
         boolean isCleared = false;
 
         try {
-            entityManager.getTransaction().begin(); // Bắt đầu giao dịch
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
 
-            // Truy vấn để xóa tất cả khách hàng
+            // Xóa toàn bộ dữ liệu trong bảng NhanVien
             String jpql = "DELETE FROM NhanVien";
             Query query = entityManager.createQuery(jpql);
             query.executeUpdate();
 
-            entityManager.getTransaction().commit(); // Cam kết giao dịch
+            entityManager.getTransaction().commit();
             isCleared = true; // Đánh dấu là xóa thành công
+            //JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ nhân viên thành công!");
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Hoàn tác nếu có lỗi
+                entityManager.getTransaction().rollback();
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Đóng EntityManager
+            entityManager.close();
         }
 
         return isCleared;
     }
+
+
     //
     public List<NhanVien> getAllNhanViens() {
         EntityManager em = emf.createEntityManager();
@@ -282,7 +284,60 @@ public class NhanVien_DAO {
         return nhanViens;
     }
 
-  
+    
+    public boolean saveNhanVien(List<NhanVien> danhSachNhanVien) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isSaved = false;
+        clearAllNhanVien();
+        try {
+          //  JOptionPane.showMessageDialog(null, "Bắt đầu giao dịch", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.getTransaction().begin();
+
+            for (NhanVien nv : danhSachNhanVien) {
+          //      JOptionPane.showMessageDialog(null, "Đang lưu nhân viên: " , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                
+                // Lưu nhân viên vào cơ sở dữ liệu
+                entityManager.persist(nv);
+            }
+
+          //  JOptionPane.showMessageDialog(null, "Giao dịch đã được flush", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.flush();
+
+         //   JOptionPane.showMessageDialog(null, "Cam kết giao dịch", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            entityManager.getTransaction().commit();
+            System.out.println("Giao dịch thành công!");
+
+            isSaved = true; // Đánh dấu là đã lưu thành công
+        } catch (Exception e) {
+            // Hoàn tác giao dịch nếu có lỗi
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace(); // In ra lỗi
+        } finally {
+            // Đảm bảo EntityManager được đóng
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
+
+        return isSaved; // Trả về true nếu lưu thành công
+    }
+ // Phương thức tìm kiếm nhân viên theo mã nhân viên
+    public NhanVien findNhanVienById(String maNhanVien) {
+        EntityManager em = emf.createEntityManager();
+        NhanVien nhanVien = null;
+
+        try {
+            nhanVien = em.find(NhanVien.class, maNhanVien);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return nhanVien;
+    }
 
 }
 

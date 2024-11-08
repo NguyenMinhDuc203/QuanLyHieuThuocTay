@@ -18,5 +18,6 @@ public class LoaiSanPham {
 	private String maLoai;
 	private String tenLoai;
 	
+	
 
 }

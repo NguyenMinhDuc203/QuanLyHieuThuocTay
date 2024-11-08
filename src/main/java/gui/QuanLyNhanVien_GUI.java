@@ -19,30 +19,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
-import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -56,6 +38,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -64,12 +48,17 @@ import java.time.format.DateTimeParseException;
 
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
+import java.sql.*;
+import javax.swing.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;
-	private JTextField txtCMND;
+	
 	private JTextField txtNVL;
 	private JTextField txtNhap;
 	private JTable table;
@@ -103,6 +92,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		private JRadioButton rdbtnNam;
 		private JRadioButton rdbNư;
 		private DateTimeFormatter formatter;
+		private AbstractButton txtCMND;
 		
 		
 	/**
@@ -249,11 +239,11 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 						
 					},
 					new String[] {
-						"M\u00E3 Nh\u00E2n Vi\u00EAn", "T\u00EAn Nh\u00E2n Vi\u00EAn", "SDT", "ng\u00E0y sinh", "ng\u00E0y v\u00E0o l\u00E0m ", "l\u01B0\u01A1ng c\u0103n b\u1EA3n ", "Ch\u1EE9c v\u1EE5", "CMND", "Tr\u00ECnh \u0110\u1ED9 ", "\u0110\u1ECBa Ch\u1EC9", "Gi\u1EDBi T\u00EDnh", "Email", "Tr\u1EA1ng Th\u00E1i ", "M\u1EADt Kh\u1EA9u "
+						"M\u00E3 Nh\u00E2n Vi\u00EAn", "T\u00EAn Nh\u00E2n Vi\u00EAn", "SDT", "Giới Tính ", "Ngày Sinh ", "Ngày Vào làm  ", "Lương căn bản", "chức vụ ", "CMND", "Trình Độ", "Địa Chỉ", "Email ", "Trạng Thái  ","Mật khẩu"
 					}
 				) {
 					Class[] columnTypes = new Class[] {
-						Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, String.class, String.class, String.class, String.class, Integer.class, String.class, Double.class
+						Object.class, Object.class, String.class, Object.class, Object.class, Object.class, Object.class, String.class, Object.class, String.class, String.class, Object.class, String.class, Object.class
 					};
 					public Class getColumnClass(int columnIndex) {
 						return columnTypes[columnIndex];
@@ -658,52 +648,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 
 	    return menuBar;}
 
-	public void displayKhachHangsInTable() {
-	    // Get all customer records from the database
-	    List<KhachHang> khachHangs = dao_kh.getAllKhachHangs();  
-
-	    // Check if the list is empty or null
-	    if (khachHangs == null || khachHangs.isEmpty()) {
-	        System.out.println("Không có khách hàng để hiển thị.");
-	        return; // Exit the method if no customers are found
-	    }
-
-	    // Get the table model
-	    DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-	    // Clear the existing rows in the table before adding new data
-	    model.setRowCount(0);
-
-	    // Loop through the list of customers and add them to the table
-	    for (KhachHang kh : khachHangs) {
-	        try {
-	            // Use reflection to access private fields in the KhachHang class
-	            Field maKhachHangField = KhachHang.class.getDeclaredField("maKhachHang");
-	            maKhachHangField.setAccessible(true);  // Make private fields accessible
-	            Object maKhachHangValue = maKhachHangField.get(kh);  // Get value of maKhachHang
-
-	            Field tenKhachHangField = KhachHang.class.getDeclaredField("tenKhachHang");
-	            tenKhachHangField.setAccessible(true);
-	            Object tenKhachHangValue = tenKhachHangField.get(kh);  // Get value of tenKhachHang
-
-	            Field sdtField = KhachHang.class.getDeclaredField("sDT");
-	            sdtField.setAccessible(true);
-	            Object sdtValue = sdtField.get(kh);  // Get value of sDT
-
-	            Field dtiemTichLuyField = KhachHang.class.getDeclaredField("diemTichLuy");
-	            dtiemTichLuyField.setAccessible(true);
-	            Object diemTichLuyValue = dtiemTichLuyField.get(kh);  // Get value of diemTichLuy
-
-	            // Add the customer data to the table row
-	            model.addRow(new Object[]{
-	                maKhachHangValue, tenKhachHangValue, sdtValue, diemTichLuyValue
-	            });
-	        } catch (NoSuchFieldException | IllegalAccessException e) {
-	            // Handle exceptions related to reflection
-	            e.printStackTrace();
-	        }
-	    }
-	}
+	
 
 
 		public void openTrangChu() {
@@ -791,6 +736,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					
 				}
 				if (o.equals(btnThem)) {
+					
 				    String tenNV = txtTenNV.getText();
 				    String sdt = txtSDT.getText();
 				    String ngaySinh = txtNSNV.getText();
@@ -812,10 +758,18 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				    }
                     if(checkData()) {
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
+				    if(chucVu.equals("Nhân Viên")) {
 				    int rowCount = model.getRowCount();
-				    String maNV = String.format("NV%03d", rowCount + 1);
+				    String maNV = String.format("NVBH%09d", rowCount + 1);
+				    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
+}
+				    else {
+				    	int rowCount = model.getRowCount();
+					    String maNV = String.format("NVQL%09d", rowCount + 1);
+					    model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam,luongCB, chucVu,  cmnd, trinhDo, diaChi, email, trangThai, matKhau });
 
-				    model.addRow(new Object[] { maNV, tenNV, sdt, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, gioiTinh, email, trangThai, matKhau });
+				    }
+
 
 				    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
                     
@@ -929,7 +883,118 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				        cboChucVuNV.setSelectedIndex(0);
 				        rdbtnNam.setSelected(true);  
 				    }
-			
+				 if (o.equals(btnLuu)) {
+					    try {
+					        // Lấy danh sách tất cả nhân viên từ bảng
+					      List  <NhanVien> danhSachNhanVien = getDanhSachNhanVienFromTable(table); // Giả sử bạn có phương thức này để lấy dữ liệu từ bảng
+
+					        boolean isSaved = true;  // Đặt mặc định là đã lưu thành công
+					        
+					        for (NhanVien nv : danhSachNhanVien) {
+					            try {
+					                // Kiểm tra các trường và thông báo lỗi nếu cần
+					                Field maNhanVienField = NhanVien.class.getDeclaredField("maNhanVien");
+					                maNhanVienField.setAccessible(true);
+					                String maNhanVien = (String) maNhanVienField.get(nv);
+					                if (maNhanVien.isEmpty()) throw new Exception("Mã nhân viên không được để trống");
+
+					                Field tenNhanVienField = NhanVien.class.getDeclaredField("tenNhanVien");
+					                tenNhanVienField.setAccessible(true);
+					                String tenNhanVien = (String) tenNhanVienField.get(nv);
+					                if (tenNhanVien.isEmpty()) throw new Exception("Tên nhân viên không được để trống");
+
+					                Field sdtField = NhanVien.class.getDeclaredField("sDT");
+					                sdtField.setAccessible(true);
+					                String sdt = (String) sdtField.get(nv);
+					                if (sdt.isEmpty()) throw new Exception("Số điện thoại không được để trống");
+
+					                Field ngaySinhField = NhanVien.class.getDeclaredField("ngaySinh");
+					                ngaySinhField.setAccessible(true);
+					                LocalDate ngaySinh = (LocalDate) ngaySinhField.get(nv);
+					                if (ngaySinh == null) throw new Exception("Ngày sinh không hợp lệ");
+
+					                Field ngayVaoLamField = NhanVien.class.getDeclaredField("ngayVaoLam");
+					                ngayVaoLamField.setAccessible(true);
+					                LocalDate ngayVaoLam = (LocalDate) ngayVaoLamField.get(nv);
+					                if (ngayVaoLam == null) throw new Exception("Ngày vào làm không hợp lệ");
+
+					                Field luongCanBanField = NhanVien.class.getDeclaredField("luongCanBan");
+					                luongCanBanField.setAccessible(true);
+					                double luongCanBan = (double) luongCanBanField.get(nv);
+					                if (luongCanBan <= 0) throw new Exception("Lương căn bản phải lớn hơn 0");
+
+					                Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
+					                chucVuField.setAccessible(true);
+					                ChucVu chucVu = (ChucVu) chucVuField.get(nv);
+					                if (chucVu == null) throw new Exception("Chức vụ không được để trống");
+
+					                Field cMNDField = NhanVien.class.getDeclaredField("cMND");
+					                cMNDField.setAccessible(true);
+					                String cMND = (String) cMNDField.get(nv);
+					                if (cMND.isEmpty()) throw new Exception("CMND không được để trống");
+
+					                // Lưu nhân viên vào cơ sở dữ liệu
+					                boolean result = dao_nv.saveNhanVien(danhSachNhanVien);
+
+					                if (!result) {
+					                    isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
+					                    JOptionPane.showMessageDialog(null, "Không thể lưu nhân viên: " + maNhanVien);
+					                }
+					                
+					            } catch (Exception e1) {
+					                isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
+					                JOptionPane.showMessageDialog(null, "Lỗi ở nhân viên: " + e1.getMessage());
+					            }
+					        }
+
+					        if (isSaved) {
+					            JOptionPane.showMessageDialog(null, "Tất cả nhân viên đã được lưu thành công!");
+					        } else {
+					            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu nhân viên.");
+					        }
+					    } catch (Exception e1) {
+					        JOptionPane.showMessageDialog(null, "Lỗi chung: " + e1.getMessage());
+					    }
+					}
+				 
+				 if (o.equals(btnTim)) {
+					    String maNV = txtNhap.getText().trim(); // Lấy mã nhân viên từ ô nhập liệu tìm kiếm
+
+					    if (maNV.isEmpty()) {
+					        JOptionPane.showMessageDialog(null, "Vui lòng nhập mã nhân viên cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+					    }
+
+					    NhanVien nhanVien = dao_nv.findNhanVienById(maNV); // Tìm nhân viên theo mã
+
+					    if (nhanVien != null) {
+					        DefaultTableModel model = (DefaultTableModel) table.getModel();
+					        model.setRowCount(0); // Xóa hết các dòng cũ trong bảng
+
+					        try {
+					            Field[] fields = NhanVien.class.getDeclaredFields(); // Lấy tất cả các trường trong lớp NhanVien
+					            Object[] rowData = new Object[fields.length]; // Mảng chứa dữ liệu cho một dòng trong bảng
+
+					            // Lấy giá trị của mỗi trường trong đối tượng nhanVien và thêm vào mảng rowData
+					            for (int i = 0; i < fields.length; i++) {
+					                fields[i].setAccessible(true); // Cho phép truy cập trường private
+					                rowData[i] = fields[i].get(nhanVien); // Lấy giá trị của trường từ đối tượng
+					            }
+
+					            // Thêm dữ liệu vào bảng
+					            model.addRow(rowData);
+
+					            JOptionPane.showMessageDialog(null, "Tìm thấy nhân viên: " + maNV);
+					        } catch (IllegalAccessException e1) {
+					            e1.printStackTrace();
+					        }
+					    } else {
+					        JOptionPane.showMessageDialog(null, "Không tìm thấy nhân viên với mã: " + maNV, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
+					    }
+					}
+				 if(o.equals(btThoat)) {
+					 openTrangChu();
+				 }
 			    }
 		public class DateUtils {
 		    
@@ -953,15 +1018,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		}
 
 
-		 private LocalDate convertStringToDate(String dateStr) {
-		     DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
-		     try {
-		         return LocalDate.parse(dateStr, inputFormatter);
-		     } catch (DateTimeParseException e) {
-		         JOptionPane.showMessageDialog(null, "Ngày không hợp lệ: " + dateStr, "Lỗi", JOptionPane.ERROR_MESSAGE);
-		         return null; // Trả về null nếu ngày không hợp lệ
-		     }
-		 }
+	
 
 
 		@Override
@@ -972,14 +1029,14 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        String maNhanVien = table.getValueAt(selectedRow, 0).toString();
 		        String tenNhanVien = table.getValueAt(selectedRow, 1).toString();
 		        String sDT = table.getValueAt(selectedRow, 2).toString();
-		        String ngaySinh = table.getValueAt(selectedRow, 3).toString();
-		        String ngayVaoLam = table.getValueAt(selectedRow, 4).toString();
-		        String luongCanBan = table.getValueAt(selectedRow, 5).toString();
+		        String ngaySinh = table.getValueAt(selectedRow, 4).toString();
+		        String ngayVaoLam = table.getValueAt(selectedRow, 5).toString();
+		        String luongCanBan = table.getValueAt(selectedRow, 6).toString();
 		        String chucVu = table.getValueAt(selectedRow, 6).toString();
 		        String cMND = table.getValueAt(selectedRow, 7).toString();
 		        String trinhDo = table.getValueAt(selectedRow, 8).toString();
 		        String diaChi = table.getValueAt(selectedRow, 9).toString();
-		        String gioiTinh = table.getValueAt(selectedRow, 10).toString();
+		        String gioiTinh = table.getValueAt(selectedRow, 3).toString();
 		        String email = table.getValueAt(selectedRow, 11).toString();
 		        String trangThai = table.getValueAt(selectedRow, 12).toString();
 		        String matKhau = table.getValueAt(selectedRow, 13).toString();
@@ -995,7 +1052,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        // Set giá trị vào ComboBox "Chức vụ"
 		        cboChucVuNV.setSelectedItem(chucVu);  // comboBoxChucVu là JComboBox cho chức vụ
 		        
-		        txtCMND.setText(cMND);
+		        txtCMNDNV.setText(cMND);
 		        txtTDNV.setText(trinhDo);
 		        txtDiaChiNV.setText(diaChi);
 		       
@@ -1062,7 +1119,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		    }
 
 		    // Kiểm tra ngày vào làm và ngày sinh
-		    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
 		    dateFormat.setLenient(false);
 		    try {
 		        Date ngaySinhDate = dateFormat.parse(ngaySinh);
@@ -1293,5 +1350,62 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        }
 		    }
 		}
+		public List<NhanVien> getDanhSachNhanVienFromTable(JTable table) {
+		    List<NhanVien> danhSachNhanVien = new ArrayList<>();
+
+		    // Lấy model của JTable
+		    DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+		    // Duyệt qua tất cả các dòng trong bảng (bắt đầu từ dòng 0 đến model.getRowCount() - 1)
+		    for (int i = 0; i < model.getRowCount(); i++) {
+		        // Tạo một đối tượng NhanVien mới
+		        NhanVien nv = new NhanVien();
+
+		        try {
+		            // Duyệt qua tất cả các cột trong bảng và gán giá trị vào đối tượng NhanVien
+		            String[] fieldNames = {
+		                "maNhanVien", "tenNhanVien", "sDT", "gioiTinh", "ngaySinh", "ngayVaoLam", 
+		                "luongCanBan", "chucVu", "cMND", "trinhDo", "diaChi", "email", "matKhau", "trangThai"
+		            };
+
+		            for (int j = 0; j < fieldNames.length; j++) {
+		                // Lấy Field của lớp NhanVien
+		                Field field = NhanVien.class.getDeclaredField(fieldNames[j]);
+		                field.setAccessible(true);  // Cho phép truy cập trường private
+
+		                // Lấy giá trị từ bảng và gán vào trường tương ứng
+		                Object value = model.getValueAt(i, j);  // Lấy giá trị tại dòng i, cột j
+
+		                // Xử lý các kiểu dữ liệu đặc biệt trước khi gán giá trị cho trường
+		                if (value != null) {
+		                    value = convertFieldValue(value, field.getType());
+		                    field.set(nv, value);  // Gán giá trị vào trường tương ứng của đối tượng NhanVien
+		                }
+		            }
+		        } catch (NoSuchFieldException | IllegalAccessException e) {
+		            e.printStackTrace(); // Xử lý ngoại lệ khi không thể truy cập trường
+		        }
+
+		        // Thêm đối tượng NhanVien vào danh sách
+		        danhSachNhanVien.add(nv);
+		    }
+
+		    return danhSachNhanVien; // Trả về danh sách nhân viên từ bảng
+		}
+
+		// Phương thức chuyển đổi giá trị theo kiểu dữ liệu của trường
+		private Object convertFieldValue(Object value, Class<?> fieldType) {
+		    if (fieldType == boolean.class || fieldType == Boolean.class) {
+		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
+		    } else if (fieldType == LocalDate.class) {
+		        return value instanceof String ? LocalDate.parse((String) value) : value;
+		    } else if (fieldType == double.class || fieldType == Double.class) {
+		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == ChucVu.class) {
+		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
+		    }
+		    return value;
+		}
+
 
 }

@@ -3,6 +3,8 @@ package entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -27,6 +29,7 @@ public class NhanVien {
 	private LocalDate ngaySinh;
 	private LocalDate ngayVaoLam;
 	private double luongCanBan;
+	@Enumerated(EnumType.STRING)
 	private ChucVu chucVu;
 	private String cMND;
 	private String trinhDo;

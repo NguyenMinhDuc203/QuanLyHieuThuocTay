@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import entity.SanPham;
+import jakarta.persistence.Query;
 public class SanPham_DAO {
     private EntityManagerFactory emf;
 
@@ -225,40 +226,98 @@ public class SanPham_DAO {
         return result;
     }
     
- // Phương thức thống kê sản phẩm đã quá hạn sử dụng
-    public List<SanPham> thongKeSanPhamDaQuaHan() {
-        EntityManager em = emf.createEntityManager();
-        List<SanPham> result = new ArrayList<>();
-        LocalDate currentDate = LocalDate.now(); // Sử dụng LocalDate để lấy ngày hiện tại
+// // Phương thức thống kê sản phẩm đã quá hạn sử dụng
+//    public List<SanPham> thongKeSanPhamDaQuaHan() {
+//        EntityManager em = emf.createEntityManager();
+//        List<SanPham> result = new ArrayList<>();
+//        LocalDate currentDate = LocalDate.now(); // Sử dụng LocalDate để lấy ngày hiện tại
+//
+//        try {
+//            String jpql = "SELECT sp FROM SanPham sp WHERE sp.hanSuDung < :currentDate";
+//            TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
+//            query.setParameter("currentDate", currentDate);
+//            result = query.getResultList();
+//
+//            if (result.isEmpty()) {
+//                System.out.println("Không có sản phẩm nào đã quá hạn sử dụng.");
+//            } else {
+//                System.out.println("Truy vấn thành công, số lượng sản phẩm đã quá hạn: " + result.size());
+//                System.out.printf("%-10s %-20s %-15s %-15s %-15s%n", "Mã", "Tên", "Loại", "Hạn sử dụng", "Số lượng tồn kho");
+//                System.out.println("-----------------------------------------------------------------------");
+//                for (SanPham sp : result) {
+//                    System.out.printf("%-10s %-20s %-15s %-15s %-15d%n", 
+//                        sp.getMaSanPham(), 
+//                        sp.getTenSanPham(), 
+//                        sp.getLoaiSanPham().getTenLoai(),
+//                        sp.getHanSuDung(),
+//                        sp.getSoLuongTonkho());
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace(); // In ra lỗi nếu có
+//        } finally {
+//            em.close();
+//        }
+//
+//        return result;
+//    }
 
+    // save sp
+    public boolean saveSanPham(List<SanPham> danhSachSanPham) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isSaved = false;
+        clearAllSanPham();
         try {
-            String jpql = "SELECT sp FROM SanPham sp WHERE sp.hanSuDung < :currentDate";
-            TypedQuery<SanPham> query = em.createQuery(jpql, SanPham.class);
-            query.setParameter("currentDate", currentDate);
-            result = query.getResultList();
+            entityManager.getTransaction().begin();
 
-            if (result.isEmpty()) {
-                System.out.println("Không có sản phẩm nào đã quá hạn sử dụng.");
-            } else {
-                System.out.println("Truy vấn thành công, số lượng sản phẩm đã quá hạn: " + result.size());
-                System.out.printf("%-10s %-20s %-15s %-15s %-15s%n", "Mã", "Tên", "Loại", "Hạn sử dụng", "Số lượng tồn kho");
-                System.out.println("-----------------------------------------------------------------------");
-                for (SanPham sp : result) {
-                    System.out.printf("%-10s %-20s %-15s %-15s %-15d%n", 
-                        sp.getMaSanPham(), 
-                        sp.getTenSanPham(), 
-                        sp.getLoaiSanPham().getTenLoai(),
-                        sp.getHanSuDung(),
-                        sp.getSoLuongTonkho());
-                }
+            for (SanPham sp : danhSachSanPham) {
+                entityManager.persist(sp);
             }
+
+            entityManager.flush();
+
+            entityManager.getTransaction().commit();
+            System.out.println("Giao dịch thành công!");
+
+            isSaved = true;
         } catch (Exception e) {
-            e.printStackTrace(); // In ra lỗi nếu có
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
         } finally {
-            em.close();
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
 
-        return result;
+        return isSaved;
+    }
+// xóa toàn bộ trong csdl
+    public boolean clearAllSanPham() {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isCleared = false;
+
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+
+            String jpql = "DELETE FROM SanPham";
+            Query query = entityManager.createQuery(jpql);
+            query.executeUpdate();
+
+            entityManager.getTransaction().commit();
+            isCleared = true;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+
+        return isCleared;
     }
 
     
