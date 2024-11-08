@@ -53,9 +53,14 @@ import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
 
+<<<<<<< HEAD
 
 
 public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
+=======
+public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
+
+>>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;
@@ -656,7 +661,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				   
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
 				    int rowCount = model.getRowCount(); // Số dòng hiện có
-				    String maKH = String.format("KH%03d", rowCount + 1); // Mã mới: KH001, KH002,...
+				    String maKH = String.format("KH%10d", rowCount + 1); // Mã mới: KH001, KH002,...
 
 				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
@@ -720,9 +725,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			        model.setValueAt(sdt, row, 2);    // Cập nhật số điện thoại tại cột 2
 			        model.setValueAt(diemTichLuy, row, 3);  // Cập nhật điểm tích lũy tại cột 3
 
-			        // Cập nhật lại cơ sở dữ liệu (nếu cần)
-			        // Ví dụ: dao_kh.suaNhanVien(maNV, tenNV, sdt, diemTichLuy);
-
+			       
 			        JOptionPane.showMessageDialog(null, "Cập nhật thông tin nhân viên thành công!");
 
 			        txtTenNV.setText("");
@@ -766,10 +769,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			                break; 
 			        }
 
-			        if (!isError) {
+			        
 
 			            JOptionPane.showMessageDialog(null, "Lưu tất cả khách hàng vào cơ sở dữ liệu thành công!");
-			        }
+			        
 			    }}
 
 
@@ -808,8 +811,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			            JOptionPane.showMessageDialog(null, "Không tìm thấy khách hàng với mã: " + maKH, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			    }
-
-
+			    	if(o.equals(btThoat)) {
+			    		openTrangChu();
+			    	}
 			    }
 
 
