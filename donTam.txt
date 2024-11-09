@@ -1,0 +1,16 @@
+
+HD001,Nguyễn Văn A,10/11/2024
+
+SP001,Sản phẩm A1,2,100.0
+SP002,Sản phẩm B1,1,150.0
+
+HD002,Nguyễn Văn A,10/11/2024
+
+SP001,Sản phẩm A1,2,100.0
+SP002,Sản phẩm B1,1,150.0
+
+HD003,Nguyễn Văn A,10/11/2024
+
+SP001,Sản phẩm A1,2,100.0
+SP002,Sản phẩm B1,1,150.0
+
