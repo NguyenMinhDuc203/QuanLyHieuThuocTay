@@ -15,28 +15,14 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-=======
-import java.util.logging.Logger;
-import entity.SanPham;
-import jakarta.persistence.Query;
-
-import java.util.logging.Logger;
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 
 import entity.SanPham;
 import jakarta.persistence.Query;
 import java.lang.reflect.Field;
 
-<<<<<<< HEAD
-public class SanPham_DAO {
-//    private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
-=======
-
     
 public class SanPham_DAO {
    // private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
     private EntityManagerFactory emf;
     private Connection connection;
 
@@ -375,11 +361,7 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
-<<<<<<< HEAD
 
-=======
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
-    
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
         try {

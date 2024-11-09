@@ -45,8 +45,6 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/slf4j/slf4j-simple/2.0.7/slf4j-simple-2.0.7.jar" enabled="true" runInBatchMode="false"/>
-<<<<<<< HEAD
-=======
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/barcodes/8.0.5/barcodes-8.0.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/font-asian/8.0.5/font-asian-8.0.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/forms/8.0.5/forms-8.0.5.jar" enabled="true" runInBatchMode="false"/>
@@ -61,6 +59,5 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/svg/8.0.5/svg-8.0.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/bouncy-castle-connector/8.0.5/bouncy-castle-connector-8.0.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/itextpdf/pdfua/8.0.5/pdfua-8.0.5.jar" enabled="true" runInBatchMode="false"/>
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
     <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="false" runInBatchMode="false"/>
 </factorypath>

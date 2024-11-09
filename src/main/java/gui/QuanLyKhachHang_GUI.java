@@ -56,10 +56,6 @@ import java.lang.reflect.Field;
 
 public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;

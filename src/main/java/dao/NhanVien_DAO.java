@@ -337,8 +337,5 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 }
