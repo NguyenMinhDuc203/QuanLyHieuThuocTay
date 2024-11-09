@@ -14,6 +14,9 @@ import jakarta.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import entity.HoaDonNhap;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 public class HoaDonNhap_DAO {
     private EntityManagerFactory emf;
@@ -138,6 +141,22 @@ public class HoaDonNhap_DAO {
         }
 
         return hoaDonNhap;
+    }
+    // Phương thức lưu HoaDonNhap vào cơ sở dữ liệu
+    public boolean save(HoaDonNhap hoaDonNhap) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin(); // Bắt đầu giao dịch
+            em.persist(hoaDonNhap); // Lưu hóa đơn nhập vào cơ sở dữ liệu
+            em.getTransaction().commit(); // Commit giao dịch
+            return true; // Trả về true nếu lưu thành công
+        } catch (Exception e) {
+            e.printStackTrace();
+            em.getTransaction().rollback(); // Rollback giao dịch nếu có lỗi
+        } finally {
+            em.close(); // Đảm bảo đóng EntityManager sau khi hoàn thành
+        }
+        return false; // Trả về false nếu có lỗi
     }
 
 }

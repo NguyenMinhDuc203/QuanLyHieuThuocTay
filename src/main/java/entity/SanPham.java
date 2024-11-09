@@ -42,7 +42,7 @@ public class SanPham {
 	private double thueGTGT;
 	private double giaNhap;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "maLoaiSanPham")  // Đây là tên cột trong bảng SanPham
+	@JoinColumn(name = "maLoai")  // Đây là tên cột trong bảng SanPham
 	private LoaiSanPham loaiSanPham;
 
 
