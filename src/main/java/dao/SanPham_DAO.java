@@ -14,22 +14,18 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
 import java.util.logging.Logger;
 import entity.SanPham;
 import jakarta.persistence.Query;
-=======
 
 import java.util.logging.Logger;
 
 import entity.SanPham;
 import jakarta.persistence.Query;
-
->>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 
     
 public class SanPham_DAO {
-    private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
+   // private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
     private EntityManagerFactory emf;
     private Connection connection;
 
@@ -368,10 +364,6 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
-<<<<<<< HEAD
-=======
-
->>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
     
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
@@ -384,10 +376,6 @@ public class SanPham_DAO {
             return null;  // Trả về null nếu không tìm thấy sản phẩm
         }
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 
     // save sp
     public boolean saveSanPham(List<SanPham> danhSachSanPham) {

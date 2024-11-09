@@ -20,12 +20,15 @@ import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Component;
+import java.awt.Desktop;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -38,6 +41,7 @@ import entity.HoaDonXuat;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
+import gui.DangNhap_GUI;
 
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
@@ -104,6 +108,9 @@ public class BanHang_GUI extends JFrame {
     private JTextField textField_37;
     private JTextField textField_38;
     private JTextField textField_39;
+    private DangNhap_GUI dangNhap;
+    public static String maNVDangNhap;
+    private JTextField txtNhapSL;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -118,6 +125,7 @@ public class BanHang_GUI extends JFrame {
 
   public BanHang_GUI() {
 	  trangChu = new TrangChu_GUI();
+	  dangNhap = new DangNhap_GUI();
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -430,6 +438,8 @@ public class BanHang_GUI extends JFrame {
       textField_37.setColumns(10);
       textField_37.setBackground(Color.WHITE);
       textField_37.setBounds(135, 80, 237, 35);
+      // lấy maNVDangNhap ở đây
+      textField_37.setText(maNVDangNhap);
       panel.add(textField_37);
       
       JLabel lblNewLabel_1_4 = new JLabel("Mã nhân viên:");
@@ -453,7 +463,7 @@ public class BanHang_GUI extends JFrame {
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
-      		false, false, true, false, false, false, false
+      		false, false, false, false, false, false, false
       	};
       	public boolean isCellEditable(int row, int column) {
       		return columnEditables[column];
@@ -471,7 +481,7 @@ public class BanHang_GUI extends JFrame {
       txtNhpMSn = new JTextField();
       txtNhpMSn.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
       txtNhpMSn.setText("Nhập mã sản phẩm");
-      txtNhpMSn.setBounds(10, 11, 565, 40);
+      txtNhpMSn.setBounds(70, 11, 437, 40);
       BanHangPane.add(txtNhpMSn);
       txtNhpMSn.setColumns(10);
       
@@ -479,7 +489,7 @@ public class BanHang_GUI extends JFrame {
       btnNewButton.setForeground(new Color(255, 255, 255));
       btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
       btnNewButton.setBackground(new Color(26, 133, 94));
-      btnNewButton.setBounds(617, 11, 140, 40);
+      btnNewButton.setBounds(645, 11, 140, 40);
       BanHangPane.add(btnNewButton);
       
       JButton btnXa = new JButton("Xóa");
@@ -749,6 +759,32 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_6_1.setBackground(new Color(26, 133, 94));
       btnNewButton_6_1.setBounds(129, 693, 183, 59);
       DonHoanThanhPane.add(btnNewButton_6_1);
+   // Thêm sự kiện ActionListener cho nút
+      btnNewButton_6_1.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Gọi class GeneratePdf để tạo file invoice.pdf
+              try {
+                  GeneratePdf.main(new String[]{});  // Gọi phương thức main của class GeneratePdf
+
+                  // Mở file PDF vừa tạo
+                  File invoiceFile = new File("invoice.pdf");
+                  if (invoiceFile.exists()) {
+                      // Sử dụng Desktop API để mở file PDF
+                      if (Desktop.isDesktopSupported()) {
+                          Desktop desktop = Desktop.getDesktop();
+                          desktop.open(invoiceFile);  // Mở file PDF với ứng dụng mặc định
+                      } else {
+                          JOptionPane.showMessageDialog(null, "Ứng dụng mở PDF không được hỗ trợ.");
+                      }
+                  } else {
+                      JOptionPane.showMessageDialog(null, "Không thể tìm thấy file hóa đơn.");
+                  }
+              } catch (Exception ex) {
+                  JOptionPane.showMessageDialog(null, "Lỗi khi xuất hóa đơn: " + ex.getMessage());
+              }
+          }
+      });
       
       JButton btnNewButton_6_2_1 = new JButton("Đổi/Trả hàng");
       btnNewButton_6_2_1.setForeground(new Color(255, 255, 255));
@@ -1477,6 +1513,27 @@ public class BanHang_GUI extends JFrame {
 
     	    // Xóa tiền khách đưa (ví dụ: textField_6 là tiền khách đưa)
     	    textField_6.setText("");
+    	    
+    	    txtNhapSL = new JTextField();
+    	    txtNhapSL.setBackground(new Color(255, 255, 255));
+    	    txtNhapSL.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
+    	    txtNhapSL.setColumns(10);
+    	    txtNhapSL.setBounds(577, 11, 58, 40);
+    	    BanHangPane.add(txtNhapSL);
+    	    
+    	    JLabel lblSl = new JLabel("SL:");
+    	    lblSl.setBackground(new Color(0, 0, 0));
+    	    lblSl.setForeground(new Color(0, 0, 0));
+    	    lblSl.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+    	    lblSl.setBounds(532, 12, 35, 39);
+    	    BanHangPane.add(lblSl);
+    	    
+    	    JLabel lblMSp = new JLabel("Mã SP:");
+    	    lblMSp.setForeground(new Color(0, 0, 0));
+    	    lblMSp.setBackground(new Color(255, 255, 255));
+    	    lblMSp.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+    	    lblMSp.setBounds(10, 11, 58, 39);
+    	    BanHangPane.add(lblMSp);
     	});
 
         

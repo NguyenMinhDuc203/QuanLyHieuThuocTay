@@ -10,6 +10,7 @@ import javax.swing.border.EmptyBorder;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
+import gui.BanHang_GUI;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -22,18 +23,19 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 
 public class DangNhap_GUI extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textTaiKhoan;
-	private JTextField txtMK;
 	private JButton btnLogIn_1;
 	private JButton btnLogIn_1_1;
 	private NhanVien_DAO dao_nv = new NhanVien_DAO();
 	private JTextField txtMaNhanVien;
-	   private NhanVien nhanVienHienTai;
+	public NhanVien nhanVienHienTai;
+	private JPasswordField txtMK;
 	/**
 	 * Launch the application.
 	 */
@@ -70,7 +72,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(100, 149, 237));
+		panel_1.setBackground(new Color(26, 133, 94));
 		panel_1.setBounds(0, 0, 349, 56);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
@@ -82,16 +84,11 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		panel_1.add(lblNewLabel);
 		
 		textTaiKhoan = new JTextField("");
-		textTaiKhoan.setForeground(Color.LIGHT_GRAY);
+		textTaiKhoan.setToolTipText("Mã nhân viên");
+		textTaiKhoan.setForeground(new Color(0, 0, 0));
 		textTaiKhoan.setBounds(37, 80, 286, 35);
 		panel.add(textTaiKhoan);
 		textTaiKhoan.setColumns(10);
-		
-		txtMK = new JTextField("");
-		txtMK.setForeground(Color.LIGHT_GRAY);
-		txtMK.setColumns(10);
-		txtMK.setBounds(37, 136, 286, 35);
-		panel.add(txtMK);
 		
 		JLabel lblNewLabel_1 = new JLabel("New label");
 		lblNewLabel_1.setBounds(48, 90, 46, 14);
@@ -102,17 +99,23 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		 btnLogIn_1 = new JButton("Đăng Nhập");
 		btnLogIn_1.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnLogIn_1.setForeground(new Color(248, 248, 255));
-		btnLogIn_1.setBackground(new Color(100, 149, 237));
-		btnLogIn_1.setBounds(37, 181, 286, 37);
+		btnLogIn_1.setBackground(new Color(26, 133, 94));
+		btnLogIn_1.setBounds(103, 201, 157, 37);
 		panel.add(btnLogIn_1);
 		
-		 btnLogIn_1_1 = new JButton("Quên Mật Khẩu ");
+		 btnLogIn_1_1 = new JButton("Quên Mật Khẩu? ");
 		btnLogIn_1_1.setForeground(new Color(0, 0, 0));
 		btnLogIn_1_1.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLogIn_1_1.setBackground(new Color(245,245,245));
-		btnLogIn_1_1.setBounds(37, 228, 286, 37);
+		btnLogIn_1_1.setBounds(217, 165, 122, 25);
 		btnLogIn_1_1.setBorder(null);
 		panel.add(btnLogIn_1_1);
+		
+		txtMK = new JPasswordField();
+		txtMK.setToolTipText("Mật khẩu");
+		txtMK.setForeground(new Color(0, 0, 0));
+		txtMK.setBounds(37, 130, 286, 35);
+		panel.add(txtMK);
 		 
 		btnLogIn_1.addActionListener(this);
 		btnLogIn_1_1.addActionListener(this);
@@ -130,6 +133,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	            if (result.equals("Đăng nhập thành công.")) {
 	                // Lưu thông tin nhân viên vào đối tượng nhanVienHienTai
 	                nhanVienHienTai = dao_nv.findNhanVienById(tenTK);
+	                BanHang_GUI.maNVDangNhap = nhanVienHienTai.getMaNhanVien();
 	                openTrangChu();
 	            } else {
 	                JOptionPane.showMessageDialog(this, result);
@@ -146,7 +150,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	private void showMaNhanVienDialog() {
 	    // Tạo dialog
 	    JDialog dialog = new JDialog(this, "Nhập mã nhân viên", true);
-	    dialog.setLayout(new FlowLayout());
+	    dialog.getContentPane().setLayout(new FlowLayout());
 	    
 	    // Tạo label và text field
 	    JLabel lblMaNhanVien = new JLabel("Nhập mã nhân viên:");
@@ -169,9 +173,9 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	    });
 	    
 	    // Thêm các thành phần vào dialog
-	    dialog.add(lblMaNhanVien);
-	    dialog.add(txtMaNhanVien);
-	    dialog.add(btnSubmit);
+	    dialog.getContentPane().add(lblMaNhanVien);
+	    dialog.getContentPane().add(txtMaNhanVien);
+	    dialog.getContentPane().add(btnSubmit);
 	    
 	    // Cài đặt kích thước và hiển thị dialog
 	    dialog.setSize(300, 150);
@@ -184,5 +188,4 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         TrangChu_GUI trangChu = new TrangChu_GUI();
         trangChu.setVisible(true);
 	}
-	
 }

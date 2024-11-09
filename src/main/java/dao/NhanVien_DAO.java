@@ -12,12 +12,6 @@ import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
@@ -343,12 +337,6 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
-=======
-    
-  
 
-
->>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 }
 
