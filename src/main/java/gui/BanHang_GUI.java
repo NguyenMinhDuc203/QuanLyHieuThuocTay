@@ -20,6 +20,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import gui.TrangChu_GUI;
+import local.ChiTietDonTam;
+import local.DonTam;
+
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -35,16 +38,27 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+<<<<<<< HEAD
+=======
+import java.util.Collections;
+import java.util.stream.Collectors;
+>>>>>>> b1833749591cf7a4284ae573dffed48ef759bde3
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import com.itextpdf.layout.element.List;
 
 import dao.HoaDonXuat_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
+import dao_local.DonTam_DAO;
 import entity.HoaDonXuat;
 import entity.KhachHang;
 import entity.NhanVien;
@@ -122,12 +136,16 @@ public class BanHang_GUI extends JFrame {
     private JTextField txtNhapSL;
 	private JLabel lblMSp;
 	private JLabel lblSl;
+<<<<<<< HEAD
 	private KhachHang khachHang;
 	private ChiTietHoaDon chiTietHoaDon;
 	private HoaDonXuat hoaDonXuat;
 	private KhachHang_DAO khachHangDAO;
 	private HoaDonXuat_DAO hoaDonXuatDAO;
 
+=======
+    private DonTam_DAO donTamDAO;  // DAO để lấy và lưu dữ liệu
+>>>>>>> b1833749591cf7a4284ae573dffed48ef759bde3
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
@@ -586,6 +604,17 @@ public class BanHang_GUI extends JFrame {
       ));
       giaoDienTable(table_1);
       scrollPane_1.setViewportView(table_1);
+      
+     
+    	
+
+
+
+      
+      
+      
+      
+      
       
       JScrollPane scrollPane_1_1 = new JScrollPane();
       scrollPane_1_1.setBounds(607, 11, 740, 671);
@@ -1612,9 +1641,123 @@ public class BanHang_GUI extends JFrame {
     	    textField_6.setText("");
     	   
     	});
+      
 
+      loadDonTamData();
+
+      // Lắng nghe sự kiện chọn dòng trong table_1
+   // Lắng nghe sự kiện chọn dòng trên table_1
+      table_1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+          @Override
+          public void valueChanged(ListSelectionEvent e) {
+              if (!e.getValueIsAdjusting()) { // Đảm bảo chỉ xử lý khi người dùng thực sự thay đổi dòng
+                  int selectedRow = table_1.getSelectedRow();
+                  if (selectedRow != -1) {
+                      String maHoaDon = table_1.getValueAt(selectedRow, 0).toString(); // Lấy mã hóa đơn từ dòng được chọn
+                      
+                      // Gọi lại phương thức getDonTamByMaHoaDon để lấy đơn tạm mới
+                      DonTam donTam = donTamDAO.getDonTamByMaHoaDon(maHoaDon);  // Gọi lại mỗi lần chọn dòng mới
+                      
+                      // Xóa hết các dòng trong table_2 trước khi cập nhật
+                      DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+                      model.setRowCount(0);
+
+                      // Kiểm tra nếu donTam có dữ liệu chi tiết
+                      if (donTam != null && donTam.getDonHang() != null && !donTam.getDonHang().isEmpty()) {
+                          loadChiTietDonTam(donTam.getDonHang());  // Cập nhật chi tiết vào table_2
+                      } else {
+                          loadChiTietDonTam(Collections.emptyList());  // Nếu không có dữ liệu, để bảng trống
+                          System.out.println("Không tìm thấy đơn hàng hoặc danh sách chi tiết rỗng cho mã hóa đơn: " + maHoaDon);
+                      }
+                  }
+              }
+          }
+      });
+
+     
+   // Lắng nghe sự kiện khi người dùng nhấn nút tìm kiếm
+      btnNewButton_3.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Lấy giá trị mã hóa đơn từ ô nhập liệu
+              String maHoaDon = txtMHan.getText().trim();
+              
+              // Kiểm tra xem mã hóa đơn có trống không
+              if (maHoaDon.isEmpty()) {
+                  JOptionPane.showMessageDialog(null, "Vui lòng nhập mã hóa đơn!");
+                  return;
+              }
+
+              // Tìm kiếm mã hóa đơn trong table_1
+              boolean found = false;
+              for (int row = 0; row < table_1.getRowCount(); row++) {
+                  String maHoaDonTrongTable = table_1.getValueAt(row, 0).toString(); // Giả sử cột mã hóa đơn là cột đầu tiên (index 0)
+
+                  if (maHoaDonTrongTable.equals(maHoaDon)) {
+                      // Nếu tìm thấy mã hóa đơn, chọn dòng đó trong table_1
+                      table_1.setRowSelectionInterval(row, row);
+                      found = true;
+                      break;
+                  }
+              }
+
+              if (found) {
+                  // Hiển thị thông báo nếu tìm thấy mã hóa đơn và dòng đã được chọn
+                  JOptionPane.showMessageDialog(null, "Đã chọn mã hóa đơn: " + maHoaDon);
+              } else {
+                  // Thông báo nếu không tìm thấy mã hóa đơn trong bảng
+                  JOptionPane.showMessageDialog(null, "Không tìm thấy mã hóa đơn: " + maHoaDon);
+              }
+          }
+      });
+
+      btnNewButton_4.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Xóa tất cả các hàng trong table_1
+    	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+    	        model.setRowCount(0);  // Đặt số lượng hàng bằng 0, điều này sẽ xóa tất cả các hàng trong bảng
+    	        
+    	        // Thông báo cho người dùng
+    	        JOptionPane.showMessageDialog(null, "Đã xóa tất cả các đơn trong bảng.");
+    	    }
+    	});
+      btnNewButton_4_1.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Lấy mã hóa đơn từ cột đầu tiên trong bảng
+    	        int selectedRow = table_1.getSelectedRow(); // Lấy dòng được chọn trong bảng
+    	        if (selectedRow != -1) { // Nếu có dòng được chọn
+    	            String maHoaDon = table_1.getValueAt(selectedRow, 0).toString(); // Lấy mã hóa đơn
+
+    	            // Tạo đối tượng DonTamDAO để gọi phương thức xóa
+    	            DonTam_DAO donTamDAO = new DonTam_DAO();
+    	            boolean success = donTamDAO.xoaDonTam(maHoaDon); // Gọi phương thức xóa
+
+    	            // Thông báo kết quả xóa
+    	            if (success) {
+    	                JOptionPane.showMessageDialog(null, "Đã xóa đơn tạm với mã hóa đơn: " + maHoaDon);
+
+    	                // Cập nhật lại bảng (xóa dòng trong bảng)
+    	                DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+    	                model.removeRow(selectedRow); // Xóa dòng đã chọn trong bảng
+    	            } else {
+    	                JOptionPane.showMessageDialog(null, "Không tìm thấy mã hóa đơn " + maHoaDon + " trong file.");
+    	            }
+    	        } else {
+    	            JOptionPane.showMessageDialog(null, "Vui lòng chọn một đơn hàng trong bảng.");
+    	        }
+    	    }
+    	});
+
+
+
+<<<<<<< HEAD
         
       //initComponents();
+=======
+      initComponents();
+>>>>>>> b1833749591cf7a4284ae573dffed48ef759bde3
       initializeInvoiceFields();
     }
   
@@ -1688,6 +1831,11 @@ public class BanHang_GUI extends JFrame {
                    }
                }
            });
+           
+           
+           
+         
+           donTamDAO = new DonTam_DAO();
   	}
   	
  // Hàm xóa listener để tránh trùng lặp
@@ -1769,6 +1917,7 @@ private void initializeInvoiceFields() {
 //	    double tienKhachDua = Double.parseDouble(textField_6.getText());
 //	    textField_8.setText(tienKhachDua-tongTien+"");
 	}
+<<<<<<< HEAD
 // Hàm xử lý khi lựa chọn là "Khách Vãng Lai"
 private void handleKhachVangLai() {
     // Khách vãng lai, không thể chỉnh sửa số điện thoại và họ tên
@@ -1838,6 +1987,40 @@ private void handleThanhVien() {
 //            updateData();
 //        }
 //    });
+=======
+//Phương thức để tải DonTam vào table_1
+private void loadDonTamData() {
+    java.util.List<DonTam> donTamList = donTamDAO.getAllDonTam();  // Lấy toàn bộ DonTam từ DAO
+
+    DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+    for (DonTam donTam : donTamList) {
+        model.addRow(new Object[] {
+            donTam.getMaHoaDon(),
+            donTam.getTenKhachHang(),
+            donTam.getNgayTaoHoaDon().toString()
+        });
+    }
+}
+// Phương thức để thêm chi tiết đơn hàng vào table_2
+private void loadChiTietDonTam(java.util.List<ChiTietDonTam> donHang) {
+    DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+    
+    // Kiểm tra danh sách chi tiết và thêm vào table_2
+    if (donHang != null && !donHang.isEmpty()) {
+        for (ChiTietDonTam chiTiet : donHang) {
+            model.addRow(new Object[] {
+                chiTiet.getMaSanPham(),
+                chiTiet.getTenSanPham(),
+                chiTiet.getSoLuong(),
+                chiTiet.getDonGia()
+            });
+            System.out.println("Đã thêm vào table_2: " + chiTiet.getMaSanPham());
+        }
+    } else {
+        // Trường hợp không có chi tiết đơn hàng
+        System.out.println("Danh sách chi tiết đơn hàng là null hoặc rỗng!");
+    }
+>>>>>>> b1833749591cf7a4284ae573dffed48ef759bde3
 }
 
 }
