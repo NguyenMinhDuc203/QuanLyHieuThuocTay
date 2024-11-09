@@ -111,6 +111,8 @@ public class BanHang_GUI extends JFrame {
     private DangNhap_GUI dangNhap;
     public static String maNVDangNhap;
     private JTextField txtNhapSL;
+	private JLabel lblMSp;
+	private JLabel lblSl;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -478,13 +480,33 @@ public class BanHang_GUI extends JFrame {
       giaoDienTable(table);
       scrollPane.setViewportView(table);
       
+      
+      lblMSp = new JLabel("Mã SP:");
+	    lblMSp.setForeground(new Color(0, 0, 0));
+	    lblMSp.setBackground(new Color(255, 255, 255));
+	    lblMSp.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+	    lblMSp.setBounds(10, 11, 58, 39);
+	    BanHangPane.add(lblMSp);
+
       txtNhpMSn = new JTextField();
       txtNhpMSn.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
       txtNhpMSn.setText("Nhập mã sản phẩm");
       txtNhpMSn.setBounds(70, 11, 437, 40);
       BanHangPane.add(txtNhpMSn);
       txtNhpMSn.setColumns(10);
-      
+      txtNhapSL = new JTextField();
+	    txtNhapSL.setBackground(new Color(255, 255, 255));
+	    txtNhapSL.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
+	    txtNhapSL.setColumns(10);
+	    txtNhapSL.setBounds(577, 11, 58, 40);
+	    BanHangPane.add(txtNhapSL);
+	    
+	    lblSl = new JLabel("SL:");
+	    lblSl.setBackground(new Color(0, 0, 0));
+	    lblSl.setForeground(new Color(0, 0, 0));
+	    lblSl.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
+	    lblSl.setBounds(532, 12, 35, 39);
+	    BanHangPane.add(lblSl);
       JButton btnNewButton = new JButton("Thêm");
       btnNewButton.setForeground(new Color(255, 255, 255));
       btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
@@ -1513,27 +1535,7 @@ public class BanHang_GUI extends JFrame {
 
     	    // Xóa tiền khách đưa (ví dụ: textField_6 là tiền khách đưa)
     	    textField_6.setText("");
-    	    
-    	    txtNhapSL = new JTextField();
-    	    txtNhapSL.setBackground(new Color(255, 255, 255));
-    	    txtNhapSL.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
-    	    txtNhapSL.setColumns(10);
-    	    txtNhapSL.setBounds(577, 11, 58, 40);
-    	    BanHangPane.add(txtNhapSL);
-    	    
-    	    JLabel lblSl = new JLabel("SL:");
-    	    lblSl.setBackground(new Color(0, 0, 0));
-    	    lblSl.setForeground(new Color(0, 0, 0));
-    	    lblSl.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-    	    lblSl.setBounds(532, 12, 35, 39);
-    	    BanHangPane.add(lblSl);
-    	    
-    	    JLabel lblMSp = new JLabel("Mã SP:");
-    	    lblMSp.setForeground(new Color(0, 0, 0));
-    	    lblMSp.setBackground(new Color(255, 255, 255));
-    	    lblMSp.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-    	    lblMSp.setBounds(10, 11, 58, 39);
-    	    BanHangPane.add(lblMSp);
+    	   
     	});
 
         
