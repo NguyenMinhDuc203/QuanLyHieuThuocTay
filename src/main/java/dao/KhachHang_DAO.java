@@ -8,6 +8,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -77,36 +78,45 @@ public class KhachHang_DAO {
         return isSuccess;
     }
     //
+   
+
     public String maTuSinhKhachHang() {
         EntityManager em = emf.createEntityManager();
         String maKhachHang = null;
+        Random random = new Random();
 
         try {
-            // Tìm mã khách hàng hiện có lớn nhất
-            String jpql = "SELECT MAX(kh.maKhachHang) FROM KhachHang kh";
-            TypedQuery<String> query = em.createQuery(jpql, String.class);
-            String maxMaKhachHang = query.getSingleResult();
+            boolean unique = false;
 
-            if (maxMaKhachHang != null) {
-                // Lấy phần số của mã khách hàng lớn nhất hiện tại và tăng lên 1
-                long currentMax = Long.parseLong(maxMaKhachHang.substring(2)); // Bỏ "KH" và chuyển phần số sang long
-                long nextId = currentMax + 1;
-                maKhachHang = String.format("KH%010d", nextId); // Định dạng lại thành "KH0123456789", "KH0234567890", ...
-            } else {
-                // Nếu không có khách hàng nào trong bảng, bắt đầu từ mã đầu tiên
-                maKhachHang = "KH0123456789";
+            // Lặp cho đến khi tìm được mã khách hàng ngẫu nhiên không trùng
+            while (!unique) {
+                // Tạo mã ngẫu nhiên "KH" + 10 chữ số
+                long randomId = Math.abs(random.nextLong() % 10000000000L);
+                maKhachHang = String.format("KH%010d", randomId);
+
+                // Kiểm tra mã khách hàng ngẫu nhiên có trùng không
+                String jpql = "SELECT COUNT(kh) FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang";
+                TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+                query.setParameter("maKhachHang", maKhachHang);
+                long count = query.getSingleResult();
+
+                // Nếu không trùng, thì chấp nhận mã này
+                if (count == 0) {
+                    unique = true;
+                }
             }
 
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã khách hàng: " + e.getMessage());
             e.printStackTrace();
-            maKhachHang = "KH0123456789"; // Trong trường hợp lỗi, bắt đầu lại từ "KH0123456789"
+            maKhachHang = "KH0123456789"; // Trong trường hợp lỗi, dùng mã mặc định
         } finally {
             em.close();
         }
 
         return maKhachHang;
     }
+
 
 //
     public boolean delete(String maKhachHang) {
@@ -474,7 +484,7 @@ public class KhachHang_DAO {
 
             entityManager.getTransaction().commit();
             isCleared = true; // Đánh dấu là xóa thành công
-            JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ khách hàng thành công!");
+           // JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ khách hàng thành công!");
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
