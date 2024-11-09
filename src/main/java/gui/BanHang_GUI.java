@@ -14,6 +14,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import gui.TrangChu_GUI;
 import java.awt.FlowLayout;
@@ -23,6 +27,8 @@ import java.awt.Component;
 import java.awt.Desktop;
 
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -31,16 +37,19 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import dao.HoaDonXuat_DAO;
 import dao.KhachHang_DAO;
+import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
 import entity.HoaDonXuat;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
+import entity.ChiTietHoaDon;
 import gui.DangNhap_GUI;
 
 import java.awt.CardLayout;
@@ -71,7 +80,7 @@ public class BanHang_GUI extends JFrame {
     private JTable table_1;
     private JTextField txtMHan;
     private JTable table_2;
-    private JTextField textField_10;
+    private JTextField search;
     private JTable table_3;
     private JTable table_4;
     private JTextField txtLoiKhchHng;
@@ -113,6 +122,11 @@ public class BanHang_GUI extends JFrame {
     private JTextField txtNhapSL;
 	private JLabel lblMSp;
 	private JLabel lblSl;
+	private KhachHang khachHang;
+	private ChiTietHoaDon chiTietHoaDon;
+	private HoaDonXuat hoaDonXuat;
+	private KhachHang_DAO khachHangDAO;
+	private HoaDonXuat_DAO hoaDonXuatDAO;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
@@ -126,8 +140,14 @@ public class BanHang_GUI extends JFrame {
     }
 
   public BanHang_GUI() {
+	  //Khai báo DAO
 	  trangChu = new TrangChu_GUI();
 	  dangNhap = new DangNhap_GUI();
+	  khachHang = new KhachHang();
+	  chiTietHoaDon = new ChiTietHoaDon();
+	  hoaDonXuat = new HoaDonXuat();
+	  khachHangDAO = new KhachHang_DAO();
+	  hoaDonXuatDAO = new HoaDonXuat_DAO();
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -297,42 +317,6 @@ public class BanHang_GUI extends JFrame {
       textField_1.setEditable(false);
       textField_1.setBounds(126, 150, 246, 39);
       panel_2.add(textField_1);
-      
-      // Thêm Listener cho JComboBox
-      comboBox.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              // Lấy lựa chọn của JComboBox
-              String selectedOption = (String) comboBox.getSelectedItem();
-
-              // Kiểm tra và cập nhật khả năng chỉnh sửa của các trường
-              switch (selectedOption) {
-                  case "Khách Vãng Lai":
-                      // Khách vãng lai, không thể chỉnh sửa số điện thoại và họ tên
-                      textField.setEditable(false);
-                      textField.setBackground(new Color(239, 239, 239));
-                      textField_1.setEditable(false);
-                      textField_1.setBackground(new Color(239, 239, 239));
-                      break;
-                  case "Thành Viên":
-                      // Thành viên, có thể sửa số điện thoại, không thể sửa họ tên
-                      textField.setEditable(true);
-                      textField.setBackground(new Color(255, 255, 255));
-                      textField_1.setEditable(false);
-                      textField_1.setBackground(new Color(239, 239, 239));
-                      break;
-                  case "Khách Mới":
-                      // Khách mới, có thể sửa cả số điện thoại và họ tên
-                      textField.setEditable(true);
-                      textField.setBackground(new Color(255, 255, 255));
-                      textField_1.setEditable(true);
-                      textField_1.setBackground(new Color(255, 255, 255));
-                      break;
-                  default:
-                      break;
-              }
-          }
-      });
 
       JPanel panel = new JPanel();
       panel.setBackground(new Color(255, 255, 255));
@@ -353,7 +337,7 @@ public class BanHang_GUI extends JFrame {
       textField_2.setBounds(135, 25, 237, 35);
       panel.add(textField_2);
       textField_2.setColumns(10);
-      
+ 
       JLabel lblNewLabel_1_1 = new JLabel("Ngày tạo:");
       lblNewLabel_1_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       lblNewLabel_1_1.setBounds(10, 137, 105, 35);
@@ -763,17 +747,17 @@ public class BanHang_GUI extends JFrame {
       textField_14.setBounds(484, 210, 143, 41);
       panel_3.add(textField_14);
       
-      textField_10 = new JTextField();
-      textField_10.setBounds(195, 11, 345, 51);
-      DonHoanThanhPane.add(textField_10);
-      textField_10.setColumns(10);
+      search = new JTextField();
+      search.setBounds(195, 11, 345, 51);
+      DonHoanThanhPane.add(search);
+      search.setColumns(10);
       
-      JButton btnNewButton_5 = new JButton("Tìm kiếm");
-      btnNewButton_5.setForeground(new Color(255, 255, 255));
-      btnNewButton_5.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-      btnNewButton_5.setBackground(new Color(26, 133, 94));
-      btnNewButton_5.setBounds(550, 11, 124, 51);
-      DonHoanThanhPane.add(btnNewButton_5);
+      JButton btnSearch = new JButton("Tìm kiếm");
+      btnSearch.setForeground(new Color(255, 255, 255));
+      btnSearch.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      btnSearch.setBackground(new Color(26, 133, 94));
+      btnSearch.setBounds(550, 11, 124, 51);
+      DonHoanThanhPane.add(btnSearch);
       
       JButton btnNewButton_6_1 = new JButton("Xuất hóa đơn");
       btnNewButton_6_1.setForeground(new Color(255, 255, 255));
@@ -819,13 +803,13 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_6_2_1.setBounds(412, 693, 183, 59);
       DonHoanThanhPane.add(btnNewButton_6_2_1);
       
-      JComboBox comboBox_1 = new JComboBox();
-      comboBox_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-      comboBox_1.setForeground(new Color(255, 255, 255));
-      comboBox_1.setBackground(new Color(26, 133, 94));
-      comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Mã hóa đơn", "Mã nhân viên", "Mã khách hàng", "Ngày mua"}));
-      comboBox_1.setBounds(30, 11, 155, 51);
-      DonHoanThanhPane.add(comboBox_1);
+      JComboBox typeSearch = new JComboBox();
+      typeSearch.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+      typeSearch.setForeground(new Color(255, 255, 255));
+      typeSearch.setBackground(new Color(26, 133, 94));
+      typeSearch.setModel(new DefaultComboBoxModel(new String[] {"Mã hóa đơn", "Mã nhân viên", "Mã khách hàng", "Ngày mua"}));
+      typeSearch.setBounds(30, 11, 155, 51);
+      DonHoanThanhPane.add(typeSearch);
       
       JPanel DonTraPane = new JPanel();
       DonTraPane.setBackground(new Color(255, 255, 255));
@@ -1361,55 +1345,110 @@ public class BanHang_GUI extends JFrame {
       });
       // Hiển thị cửa sổ
       setVisible(true);
-      
-      
+      // Thêm Listener cho JComboBox
+      comboBox.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Lấy lựa chọn của JComboBox
+    	        String selectedOption = (String) comboBox.getSelectedItem();
+    	        textField.setText("");  // Reset textField khi thay đổi lựa chọn
+
+    	        // Kiểm tra và cập nhật khả năng chỉnh sửa của các trường
+    	        if (selectedOption.equals("Khách Vãng Lai")) {
+    	            handleKhachVangLai();
+    	        } else if (selectedOption.equals("Khách Mới")) {
+    	            handleKhachMoi();
+    	        } else if (selectedOption.equals("Thành Viên")) {
+    	            handleThanhVien();
+    	        }
+    	    }
+    	});
+
+    
    // Xử lý sự kiện thêm sản phẩm
       btnNewButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-              String maSanPham = txtNhpMSn.getText().trim(); // Giả sử bạn có một text field nhập mã sản phẩm
+    	    public void actionPerformed(ActionEvent e) {
+    	        String maSanPham = txtNhpMSn.getText().trim(); // Giả sử bạn có một text field nhập mã sản phẩm
 
-              if (maSanPham.isEmpty()) {
-                  JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                  return;
-              }
+    	        if (maSanPham.isEmpty()) {
+    	            JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	            return;
+    	        }
 
-              SanPham_DAO sanPhamDAO = new SanPham_DAO();
-              SanPham sanPham = sanPhamDAO.getSanPhamByMaSanPham(maSanPham);
+    	        SanPham_DAO sanPhamDAO = new SanPham_DAO();
+    	        SanPham sanPham = sanPhamDAO.getSanPhamByMaSanPham(maSanPham);
 
-              if (sanPham != null) {
-                  double giaBan = sanPham.getGiaBan();
-                  double thueGTGT = giaBan * sanPham.getThueGTGT() / 100;
-                  double giamGia = giaBan * 0 / 100; // Giả sử không có giảm giá
-                  double thanhTien = giaBan + thueGTGT - giamGia;
+    	        if (sanPham != null) {
+    	            // Lấy giá bán và các thông tin cần thiết từ sản phẩm
+    	            double giaBan = sanPham.getGiaBan();
+    	            double thueGTGT = giaBan * sanPham.getThueGTGT() / 100;
+    	            double giamGia = giaBan * 0 / 100; // Giả sử không có giảm giá
+    	            double thanhTien = giaBan + thueGTGT - giamGia;
 
-                  DefaultTableModel model = (DefaultTableModel) table.getModel();
-                  model.addRow(new Object[]{
-                      sanPham.getMaSanPham(),
-                      sanPham.getTenSanPham(),
-                      txtNhapSL.getText(),  // Số lượng mặc định là 1
-                      giaBan,
-                      thueGTGT,
-                      giamGia,
-                      thanhTien
-                  });
+    	            // Kiểm tra xem sản phẩm đã tồn tại trong bảng chưa
+    	            DefaultTableModel model = (DefaultTableModel) table.getModel();
+    	            boolean found = false;  // Biến kiểm tra xem sản phẩm đã có trong bảng
 
-                  // Tính và cập nhật tổng thành tiền
-                  double tongThanhTien = 0.0;
-                  for (int i = 0; i < model.getRowCount(); i++) {
-                      double thanhTienRow = (double) model.getValueAt(i, 6); // Cột "Thành Tiền"
-                      tongThanhTien += thanhTienRow;
-                  }
+    	            for (int i = 0; i < model.getRowCount(); i++) {
+    	                String maSPInTable = (String) model.getValueAt(i, 0); // Cột mã sản phẩm
 
-                  textField_9.setText(String.format("%.2f", tongThanhTien));
-                  double tongTien = Double.parseDouble(textField_9.getText());
-          	    textField_5.setText(0+tongTien+"");
-                  JOptionPane.showMessageDialog(null, "Đã thêm thành công sản phẩm vào đơn hàng ");
-              } else {
-                  JOptionPane.showMessageDialog(null, "Sản phẩm không tồn tại trong hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-              }
-          }
-      });
+    	                if (maSPInTable.equals(maSanPham)) {
+    	                    // Nếu sản phẩm đã tồn tại trong bảng, cập nhật số lượng và tính lại thành tiền
+    	                    int currentQuantity = 0;
 
+    	                    try {
+    	                        // Kiểm tra và lấy số lượng hiện tại từ bảng (chắc chắn là Integer)
+    	                        currentQuantity = Integer.parseInt(model.getValueAt(i, 2).toString());
+    	                    } catch (NumberFormatException ex) {
+    	                        // Nếu số lượng không phải là số nguyên hợp lệ, thông báo lỗi
+    	                        JOptionPane.showMessageDialog(null, "Số lượng không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	                        return;
+    	                    }
+
+    	                    int newQuantity = currentQuantity + Integer.parseInt(txtNhapSL.getText()); // Cập nhật số lượng mới
+
+    	                    model.setValueAt(newQuantity, i, 2); // Cập nhật số lượng trong bảng
+
+    	                    // Tính lại thành tiền cho sản phẩm
+    	                    double newThanhTien = (giaBan + thueGTGT - giamGia) * newQuantity;
+    	                    model.setValueAt(newThanhTien, i, 6); // Cập nhật lại thành tiền
+
+    	                    found = true; // Đánh dấu là đã tìm thấy và cập nhật
+    	                    break; // Thoát vòng lặp
+    	                }
+    	            }
+
+    	            if (!found) {
+    	                // Nếu sản phẩm chưa có trong bảng, thêm mới sản phẩm vào bảng
+    	                model.addRow(new Object[]{
+    	                    sanPham.getMaSanPham(),
+    	                    sanPham.getTenSanPham(),
+    	                    txtNhapSL.getText(),  // Số lượng mặc định là giá trị trong text field
+    	                    giaBan,
+    	                    thueGTGT,
+    	                    giamGia,
+    	                    thanhTien
+    	                });
+    	            }
+
+    	            // Tính và cập nhật tổng thành tiền
+    	            double tongThanhTien = 0.0;
+    	            for (int i = 0; i < model.getRowCount(); i++) {
+    	                double thanhTienRow = (double) model.getValueAt(i, 6); // Cột "Thành Tiền"
+    	                tongThanhTien += thanhTienRow;
+    	            }
+
+    	            textField_9.setText(String.format("%.2f", tongThanhTien)); // Cập nhật tổng thành tiền
+    	            double tongTien = Double.parseDouble(textField_9.getText());
+    	            textField_5.setText(0 + tongTien + ""); // Cập nhật giá trị tổng tiền
+    	        } else {
+    	            JOptionPane.showMessageDialog(null, "Sản phẩm không tồn tại trong hệ thống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	        }
+    	    }
+    	});
+
+
+      
       // Xử lý sự kiện xóa sản phẩm
       btnXa.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -1432,41 +1471,41 @@ public class BanHang_GUI extends JFrame {
               }
           }
       });
-      btnNewButton_2.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              // Lấy thông tin từ các trường nhập liệu
-              String soDienThoai = textField.getText();
-              String hoTen = textField_1.getText();
-//              String loaiKhach = (String) comboBox.getSelectedItem();
-//              boolean suDungMaGiamGia = chckbxNewCheckBox.isSelected();
-
-              // Kiểm tra nếu có thông tin trống
-              if (soDienThoai.isEmpty() || hoTen.isEmpty()) {
-                  JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
-                  return;
-              }
-
-              // Tạo đối tượng khách hàng mới
-              KhachHang khachHang = new KhachHang();
-              khachHang.setSDT(soDienThoai);
-              khachHang.setTenKhachHang(hoTen);
-              khachHang.setMaKhachHang("KH"+soDienThoai);
-              // Lưu khách hàng vào cơ sở dữ liệu (DAO)
-              KhachHang_DAO khachHangDAO = new KhachHang_DAO();
-              boolean isSaved = khachHangDAO.save(khachHang);
-
-              // Kiểm tra kết quả lưu
-              if (isSaved) {
-                  JOptionPane.showMessageDialog(null, "Thông tin khách hàng đã được lưu!");
-                  // Cập nhật giao diện nếu cần
-              } else {
-                  JOptionPane.showMessageDialog(null, "Lỗi khi lưu thông tin khách hàng.");
-              }
-              
-          }
-          
-      });
+//      btnNewButton_2.addActionListener(new ActionListener() {
+//          @Override
+//          public void actionPerformed(ActionEvent e) {
+//              // Lấy thông tin từ các trường nhập liệu
+//              String soDienThoai = textField.getText();
+//              String hoTen = textField_1.getText();
+////              String loaiKhach = (String) comboBox.getSelectedItem();
+////              boolean suDungMaGiamGia = chckbxNewCheckBox.isSelected();
+//
+//              // Kiểm tra nếu có thông tin trống
+//              if (soDienThoai.isEmpty() || hoTen.isEmpty()) {
+//                  JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
+//                  return;
+//              }
+//
+//              // Tạo đối tượng khách hàng mới
+//              KhachHang khachHang = new KhachHang();
+//              khachHang.setSDT(soDienThoai);
+//              khachHang.setTenKhachHang(hoTen);
+//              khachHang.setMaKhachHang("KH"+soDienThoai);
+//              // Lưu khách hàng vào cơ sở dữ liệu (DAO)
+//              KhachHang_DAO khachHangDAO = new KhachHang_DAO();
+//              boolean isSaved = khachHangDAO.save(khachHang);
+//
+//              // Kiểm tra kết quả lưu
+//              if (isSaved) {
+//                  JOptionPane.showMessageDialog(null, "Thông tin khách hàng đã được lưu!");
+//                  // Cập nhật giao diện nếu cần
+//              } else {
+//                  JOptionPane.showMessageDialog(null, "Lỗi khi lưu thông tin khách hàng.");
+//              }
+//              
+//          }
+//          
+//      });
    // Thêm ActionListener cho nút NewButton_2
       btnNewButton_2.addActionListener(e -> {
           try {
@@ -1477,29 +1516,65 @@ public class BanHang_GUI extends JFrame {
               LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);              
               double tongTien = Double.parseDouble(textField_9.getText());
               double tienThoi = Double.parseDouble(textField_8.getText());
-              String maKhachHang = "KH"+textField.getText();
-              NhanVien nhanVien = new NhanVien();
-              nhanVien.setMaNhanVien("NVBH103202074405");
-              KhachHang khachHang = new KhachHang();
-              khachHang.setMaKhachHang(maKhachHang);
+              int diemCong = (int) (tongTien/1000);
+              if (comboBox.getSelectedItem().equals("Thành Viên")) {
+            	  updateData();
+            	  khachHang = khachHangDAO.layKhachHangTheoSDT(textField.getText());
+            	  int diemTichLuy = khachHangDAO.layDiemTichLuyTheoSDT(textField.getText());
+            	  khachHang.setDiemTichLuy(diemTichLuy+diemCong);
+            	  khachHangDAO.updateKhachHang(khachHang.getMaKhachHang(), textField_1.getText(), textField.getText(), diemTichLuy);
+              }
+              if (comboBox.getSelectedItem().equals("Khách Mới")) {
+            	  updateData2();
+            	  khachHangDAO.saveKhachHang(khachHang.getMaKhachHang(),textField_1.getText(), textField.getText(), diemCong);
+              }
               // Bước 2: Tạo đối tượng HoaDonXuat
               HoaDonXuat hoaDon = new HoaDonXuat();
               hoaDon.setMaHoaDonXuat(maHoaDon);
               hoaDon.setNgayTao(ngayTao);
               hoaDon.setTienKhachDua(tongTien);
               hoaDon.setTienThoi(tienThoi);
-              hoaDon.setNhanVien(nhanVien);
+              NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
+              hoaDon.setNhanVien(nhanVienDAO .layThongTinNhanVienTheoMa(maNVDangNhap));
               hoaDon.setKhachHang(khachHang);
               // Bước 3: Gọi DAO để lưu đối tượng vào database
               HoaDonXuat_DAO hoaDonDAO = new HoaDonXuat_DAO();
-              hoaDonDAO.luuHoaDonXuat(hoaDon);  // Phương thức lưu vào database trong DAO
-
-              JOptionPane.showMessageDialog(null, "Lưu hóa đơn thành công!");
+              DefaultTableModel model = (DefaultTableModel) table.getModel();
+              hoaDonDAO.luuHoaDonXuat(hoaDon, model);  // Phương thức lưu vào database trong DAO
+              
+              //Chuyển trang
+              DefaultTableModel model_1 = (DefaultTableModel) table_3.getModel();
+              String maKH = "KH"+textField.getText();
+              model_1.addRow(new Object[] {hoaDon.getMaHoaDonXuat(), maNVDangNhap, maKH,LocalDate.now(), tongTien });
+              table_3.setModel(model_1);
+              CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+              cardLayout.show(panelContent, "DonHoanThanhPane"); // Chuyển sang trang Khuyến Mãi
           } catch (Exception ex) {
               JOptionPane.showMessageDialog(null, "Lỗi khi lưu hóa đơn: " + ex.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
           }
       });
-
+      btnSearch.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        String searchTerm = search.getText(); // Get the input from the search field
+		        String selectedType = (String) typeSearch.getSelectedItem();
+		        DefaultTableModel model_4 = (DefaultTableModel) table_4.getModel();
+		        table_4.setModel(model_4);
+		        // Clear the existing table data
+		        model_4.setRowCount(0);
+		        ArrayList<Object[]> results;
+		            results = hoaDonXuatDAO.layDanhSachHoaDonTheoNgay(searchTerm, selectedType, LocalDate.now());
+		       
+		        // Check if results are empty
+		        if (results.isEmpty()) {
+		            // Show message when no results are found
+		            JOptionPane.showMessageDialog(panel, "Không tìm thấy", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+		        } else {
+		        	for (Object[] row : results) {
+	        			model_4.addRow(row);
+		        	}
+		    }}
+		});
       textField_6.addFocusListener(new FocusAdapter() {
     	    @Override
     	    public void focusLost(FocusEvent e) {
@@ -1509,7 +1584,7 @@ public class BanHang_GUI extends JFrame {
     	            double tienKhachDua = Double.parseDouble(textField_6.getText());
     	            
     	            // Thực hiện phép tính
-    	            double tienThoiLai = tienKhachDua - tongTien;
+    	            double tienThoiLai = tienKhachDua*1000 - tongTien;
     	            
     	            // Gán kết quả vào textField_8
     	            textField_8.setText(String.valueOf(tienThoiLai));
@@ -1539,7 +1614,7 @@ public class BanHang_GUI extends JFrame {
     	});
 
         
-      initComponents();
+      //initComponents();
       initializeInvoiceFields();
     }
   
@@ -1614,17 +1689,73 @@ public class BanHang_GUI extends JFrame {
                }
            });
   	}
-  protected void initComponents() {
-	// TODO Auto-generated method stub
-	
-}
+  	
+ // Hàm xóa listener để tránh trùng lặp
+  	private void removeTextFieldListeners() {
+  	    // Xóa các KeyListener và FocusListener cũ của textField
+  	    for (KeyListener kl : textField.getKeyListeners()) {
+  	        textField.removeKeyListener(kl);
+  	    }
+  	    for (FocusListener fl : textField.getFocusListeners()) {
+  	        textField.removeFocusListener(fl);
+  	    }
+  	}
 
+  	// Hàm cập nhật dữ liệu cho khách mới
+  	private void updateData2() {
+  	    // Lấy số điện thoại người dùng nhập
+  	    String SDT = textField.getText().trim();
+
+  	    if (!SDT.isEmpty()) {
+  	        // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
+  	        String maKH = "KH" + SDT;
+  	        System.out.print(SDT);
+  	        // Kiểm tra khách hàng có tồn tại trong hệ thống không
+  	        if (khachHangDAO.kiemTraKHTonTai(SDT) == false) {
+  	            // Nếu khách hàng không tồn tại, cập nhật mã khách hàng vào textField_1
+  	            khachHang.setMaKhachHang(maKH); // Cập nhật thông tin khách hàng (nếu cần thiết)
+  	            khachHang.setTenKhachHang(textField_1.getText().trim());
+  	            setMaHD();
+  	        } else {
+  	            // Nếu khách hàng tồn tại, thông báo lỗi
+  	            JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " đã tồn tại trong hệ thống.");
+  	        }
+  	    }
+  	}
+
+  	// Hàm cập nhật dữ liệu cho thành viên
+  	private void updateData() {
+  	    // Lấy số điện thoại người dùng nhập
+  	    String SDT = textField.getText().trim();
+
+  	    if (!SDT.isEmpty()) {
+  	        // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
+  	        String maKH = "KH" + SDT;
+  	        System.out.print(SDT);
+  	        // Kiểm tra khách hàng có tồn tại trong hệ thống không
+  	        if (khachHangDAO.kiemTraKHTonTai(SDT) == true) {
+  	            // Nếu khách hàng tồn tại, cập nhật mã khách hàng vào textField_1
+  	            khachHang.setMaKhachHang(maKH); // Cập nhật thông tin khách hàng (nếu cần thiết)
+  	            setMaHD();
+  	        } else {
+  	            // Nếu khách hàng không tồn tại, thông báo lỗi
+  	            JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " chưa tồn tại trong hệ thống.");
+  	        }
+  	    }
+  	}
+  private void setMaHD() {
+	//Tạo mã hóa đơn
+      LocalDate currentDate = LocalDate.now();
+      String maHD = hoaDonXuatDAO.taoMaHD(currentDate, maNVDangNhap, khachHang.getMaKhachHang(), "BH");
+      hoaDonXuat.setMaHoaDonXuat(maHD);
+      textField_2.setText(hoaDonXuat.getMaHoaDonXuat());
+  }
 private void initializeInvoiceFields() {
 	    HoaDonXuat_DAO hoaDonXuatDAO = new HoaDonXuat_DAO();
 	    
 	    // Set mã hóa đơn tự động
-	    String maHoaDonMoi = hoaDonXuatDAO.generateNewInvoiceCode();
-	    textField_2.setText(maHoaDonMoi);
+//	    String maHoaDonMoi = hoaDonXuatDAO.generateNewInvoiceCode();
+//	    textField_2.setText(maHoaDonMoi);
 	    
 	    // Set ngày tạo là ngày hiện tại
 	 // Định dạng ngày
@@ -1638,4 +1769,75 @@ private void initializeInvoiceFields() {
 //	    double tienKhachDua = Double.parseDouble(textField_6.getText());
 //	    textField_8.setText(tienKhachDua-tongTien+"");
 	}
+// Hàm xử lý khi lựa chọn là "Khách Vãng Lai"
+private void handleKhachVangLai() {
+    // Khách vãng lai, không thể chỉnh sửa số điện thoại và họ tên
+    textField.setEditable(false);
+    textField.setBackground(new Color(239, 239, 239));
+    textField_1.setEditable(false);
+    textField_1.setBackground(new Color(239, 239, 239));
+
+    // Cập nhật mã khách hàng là "KH0000000000" cho khách vãng lai
+    khachHang.setMaKhachHang("KH0000000000");
+    setMaHD();
+}
+
+// Hàm xử lý khi lựa chọn là "Khách Mới"
+private void handleKhachMoi() {
+    // Khách mới, có thể sửa cả số điện thoại và họ tên
+    textField.setEditable(true);
+    textField.setBackground(new Color(255, 255, 255));
+    textField_1.setEditable(true);
+    textField_1.setBackground(new Color(255, 255, 255));
+
+//    // Đăng ký KeyListener cho textField (số điện thoại)
+//    textField.addKeyListener(new KeyAdapter() {
+//        @Override
+//        public void keyPressed(KeyEvent e) {
+//            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                // Người dùng nhấn Enter
+//                updateData2();
+//            }
+//        }
+//    });
+//
+//    // Đăng ký FocusListener để xử lý khi người dùng rời khỏi ô nhập (blur event)
+//    textField.addFocusListener(new FocusAdapter() {
+//        @Override
+//        public void focusLost(FocusEvent e) {
+//            // Khi mất focus (rời khỏi ô nhập), thực hiện kiểm tra
+//            updateData2();
+//        }
+//    });
+}
+
+// Hàm xử lý khi lựa chọn là "Thành Viên"
+private void handleThanhVien() {
+    // Thành viên, có thể sửa số điện thoại, không thể sửa họ tên
+    textField.setEditable(true);
+    textField.setBackground(new Color(255, 255, 255));
+    textField_1.setEditable(false);
+    textField_1.setBackground(new Color(239, 239, 239));
+
+//    // Đăng ký KeyListener cho textField (số điện thoại)
+//    textField.addKeyListener(new KeyAdapter() {
+//        @Override
+//        public void keyPressed(KeyEvent e) {
+//            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//                // Người dùng nhấn Enter
+//                updateData();
+//            }
+//        }
+//    });
+//
+//    // Đăng ký FocusListener để xử lý khi người dùng rời khỏi ô nhập (blur event)
+//    textField.addFocusListener(new FocusAdapter() {
+//        @Override
+//        public void focusLost(FocusEvent e) {
+//            // Khi mất focus (rời khỏi ô nhập), thực hiện kiểm tra
+//            updateData();
+//        }
+//    });
+}
+
 }

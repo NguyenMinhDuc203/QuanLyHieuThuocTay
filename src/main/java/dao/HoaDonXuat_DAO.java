@@ -5,20 +5,77 @@ import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
 import entity.ChiTietHoaDon;
+import dao.SanPham_DAO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 public class HoaDonXuat_DAO {
     private EntityManagerFactory emf;
 
     public HoaDonXuat_DAO() {
         emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
+    }
+    
+    public String taoMaHD(LocalDate date, String maNV, String maKH, String loaiHD ) {
+    	// Lấy ngày lập hóa đơn theo định dạng DDMMYY (ngày, tháng, năm)
+        String ngayLapHD = date.format(DateTimeFormatter.ofPattern("ddMMyy")); // Ví dụ: 051123 cho ngày 5 tháng 11 năm 2023
+        
+        // Lấy 4 chữ số cuối của năm hiện tại (XXXX)
+        String namLapHD = date.format(DateTimeFormatter.ofPattern("yyyy")); // Ví dụ: 23 cho năm 2023
+        String thangLapHD = date.format(DateTimeFormatter.ofPattern("MM")); // Ví dụ: 11 cho tháng 11
+        String ngayLapHD_full = date.format(DateTimeFormatter.ofPattern("dd")); // Ví dụ: 05 cho ngày 5
+        
+        // Lấy 5 số cuối của mã nhân viên (ZZZZZ)
+        String maNVCuoi = maNV.length() >= 5 ? maNV.substring(maNV.length() - 5) : maNV;
+        
+        // Lấy 4 ký tự cuối của mã khách hàng (BBBB)
+        String bbbb = maKH.length() >= 4 ? maKH.substring(maKH.length() - 4) : "0000";  // Nếu mã khách hàng nhỏ hơn 4 ký tự, ta gán "0000"
+        
+        // Lấy số thứ tự hóa đơn trong ngày (AAAA)
+        int soThuTuHD = getSoThuTuHoaDon(date);  // Giả lập hàm lấy số thứ tự hóa đơn
+        
+        // Chuyển số thứ tự hóa đơn thành chuỗi 4 ký tự (ví dụ: 0001, 0012)
+        String aaaa = String.format("%04d", soThuTuHD);
+        
+        // Tạo mã hóa đơn với định dạng: HDXXDDMMYYXXXXZZZZZBBBBAAAA
+        String maHD = "HD" + loaiHD + ngayLapHD_full + thangLapHD + namLapHD + maNVCuoi + bbbb + aaaa;
+        
+        return maHD;
+    }
+    public int getSoThuTuHoaDon(LocalDate ngayTao) {
+        EntityManager em = emf.createEntityManager();
+        int result = 0;
+
+        try {
+            // Xây dựng câu truy vấn SQL chỉ để đếm số lượng hóa đơn theo ngày
+            String sql = "SELECT COUNT(hdx.maHoaDonXuat) " +
+                         "FROM HoaDonXuat hdx " +
+                         "WHERE hdx.ngayTao = :ngayTao";
+
+            // Tạo truy vấn
+            Query query = em.createNativeQuery(sql);
+            query.setParameter("ngayTao", java.sql.Date.valueOf(ngayTao));  // Chuyển LocalDate sang java.sql.Date
+
+            // Thực hiện truy vấn và lấy kết quả (số lượng hóa đơn)
+            result = ((Number) query.getSingleResult()).intValue();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result; // Trả về số lượng hóa đơn trong ngày
     }
 
     // Phương thức thêm mới hóa đơn
@@ -164,6 +221,74 @@ public class HoaDonXuat_DAO {
 
                 // Tạo truy vấn
                 Query query = em.createNativeQuery(sql); // Sử dụng createNativeQuery cho SQLquery.setParameter("searchTerm", "%" + searchTerm + "%"); // Thêm ký tự đại diện cho tìm kiếm chứa
+
+                // Thực hiện truy vấn và lấy kết quả
+                result = new ArrayList<>(query.getResultList());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+
+            return result; // Trả về danh sách các hóa đơn tìm thấy
+        }
+        public ArrayList<Object[]> layDanhSachHoaDonTheoNgay(String searchTerm, String searchType, LocalDate date) {
+            EntityManager em = emf.createEntityManager();
+            ArrayList<Object[]> result = new ArrayList<>();
+
+            try {
+                // Bắt đầu xây dựng câu truy vấn SQL
+                String sql = "SELECT " +
+                             "hdx.maHoaDonXuat, " +
+                             "hdx.maNhanVien, " +
+                             "hdx.maKhachHang, " +
+                             "hdx.ngayTao, " +
+                             "hdx.maGiamGia, " +
+                             "ROUND(SUM((cthd.soLuong * sp.giaBan) * (1 + sp.thueGTGT * 0.01)), 2) AS tongTien " +
+                             "FROM HoaDonXuat hdx " +
+                             "JOIN chitiethoadon cthd ON hdx.maHoaDonXuat = cthd.maHoaDonXuat " +
+                             "JOIN SanPham sp ON cthd.maSanPham = sp.maSanPham " +
+                             "WHERE ";
+
+                // Xây dựng điều kiện tìm kiếm theo loại tìm kiếm
+                switch (searchType) {
+                    case "Mã nhân viên":
+                        sql += "hdx.maNhanVien LIKE :searchTerm";
+                        break;
+                    case "Mã hóa đơn":
+                        sql += "hdx.maHoaDonXuat LIKE :searchTerm";
+                        break;
+                    case "Mã khách hàng":
+                        sql += "hdx.maKhachHang LIKE :searchTerm";
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Loại tìm kiếm không hợp lệ");
+                }
+
+                // Nếu có ngày tìm kiếm, thêm điều kiện lọc theo ngày
+                if (date != null) {
+                    sql += " AND hdx.ngayTao = :date";
+                }
+
+                sql += " GROUP BY " +
+                       "hdx.maHoaDonXuat, " +
+                       "hdx.maNhanVien, " +
+                       "hdx.maKhachHang, " +
+                       "hdx.ngayTao, " +
+                       "hdx.maGiamGia";  // Sửa lại tên cột ở đây
+
+                // Tạo truy vấn
+                Query query = em.createNativeQuery(sql);
+
+                // Thêm tham số tìm kiếm
+                query.setParameter("searchTerm", "%" + searchTerm + "%");  // Thêm ký tự đại diện cho tìm kiếm chứa
+
+                // Nếu có ngày tìm kiếm, thêm tham số ngày vào truy vấn
+                if (date != null) {
+                    // Chuyển LocalDate thành java.sql.Date
+                    query.setParameter("date", java.sql.Date.valueOf(date));
+                }
 
                 // Thực hiện truy vấn và lấy kết quả
                 result = new ArrayList<>(query.getResultList());
@@ -341,21 +466,54 @@ public class HoaDonXuat_DAO {
             return newCode;
         }
 
-        public void luuHoaDonXuat(HoaDonXuat hoaDon) {
+        public void luuHoaDonXuat(HoaDonXuat hoaDon, DefaultTableModel model) {
             EntityManager em = emf.createEntityManager();
+
             try {
+                // Bắt đầu giao dịch
                 em.getTransaction().begin();
+
+                // Lưu hóa đơn chính vào bảng HoaDonXuat
                 em.persist(hoaDon);
+
+                 // Giả sử bạn có một JTable với DefaultTableModel
+                String maHoaDonXuat = hoaDon.getMaHoaDonXuat();
+
+                // Lặp qua từng dòng trong bảng JTable và lưu vào ChiTietHoaDon
+                for (int i = 0; i < model.getRowCount(); i++) {
+                    String maSanPham = (String) model.getValueAt(i, 0);  // Mã sản phẩm từ cột 0
+                    SanPham_DAO sanPhamDAO = new SanPham_DAO();
+                    SanPham sanPham = sanPhamDAO.findSanPhamById(maSanPham);
+                    int soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());  // Số lượng từ cột 2
+
+                    // Tạo đối tượng ChiTietHoaDon
+                    ChiTietHoaDon chiTiet = new ChiTietHoaDon();
+                    chiTiet.setHoaDonXuat(hoaDon);
+                    chiTiet.setSanPham(sanPham);
+                    chiTiet.setSoLuong(soLuong);
+
+                    // Persist chi tiết vào cơ sở dữ liệu
+                    em.persist(chiTiet);
+                }
+
+                // Commit giao dịch sau khi tất cả đều thành công
                 em.getTransaction().commit();
+                JOptionPane.showMessageDialog(null, "Hóa đơn và chi tiết đã được lưu thành công!");
+
             } catch (Exception e) {
+                // Nếu có lỗi, rollback giao dịch
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }
-                throw e;
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Lỗi khi lưu dữ liệu: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+
             } finally {
+                // Đảm bảo đóng EntityManager sau khi hoàn thành
                 em.close();
             }
         }
+
 
         
 

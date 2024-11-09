@@ -193,7 +193,7 @@ public class KhachHang_DAO {
         return isDeleted; // Trả về true nếu đã xóa thành công
     }
 //
-    public boolean updateKhachHang(String maKhachHang, String tenKhachHang, String sDT) {
+    public boolean updateKhachHang(String maKhachHang, String tenKhachHang, String sDT, int diemTichLuy) {
         EntityManager em = emf.createEntityManager();
         boolean isUpdated = false;
 
@@ -202,10 +202,11 @@ public class KhachHang_DAO {
             
             // Truy vấn JPQL để cập nhật thông tin khách hàng
             int updatedCount = em.createQuery(
-                    "UPDATE KhachHang kh SET kh.tenKhachHang = :tenKhachHang, kh.sDT = :sDT WHERE kh.maKhachHang = :maKhachHang")
+                    "UPDATE KhachHang kh SET kh.tenKhachHang = :tenKhachHang, kh.sDT = :sDT, kh.diemTichLuy = :diemTichLuy WHERE kh.sDT = :sDT")
                 .setParameter("tenKhachHang", tenKhachHang)
                 .setParameter("sDT", sDT)
                 .setParameter("maKhachHang", maKhachHang)
+                .setParameter("diemTichLuy", diemTichLuy)
                 .executeUpdate();
 
             em.getTransaction().commit();
@@ -326,6 +327,80 @@ public class KhachHang_DAO {
 
         return result;
     }
+ // Phương thức tìm kiếm khách hàng theo số điện thoại
+    public boolean kiemTraKHTonTai(String soDienThoai) {
+        EntityManager em = emf.createEntityManager();
+        boolean result = false;
+
+        try {
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.sDT = :phone";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("phone", soDienThoai);
+
+            // Kiểm tra xem kết quả trả về có rỗng không
+            if (!query.getResultList().isEmpty()) {
+                result = true;  // Nếu danh sách không rỗng, có khách hàng tồn tại
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return result;  // Trả về true nếu khách hàng tồn tại, false nếu không
+    }
+    public int layDiemTichLuyTheoSDT(String soDienThoai) {
+        EntityManager em = emf.createEntityManager();
+        int diemTichLuy = 0;  // Giá trị mặc định khi không tìm thấy khách hàng
+
+        try {
+            // Truy vấn JPQL để lấy điểm tích lũy (kiểu int)
+            String jpql = "SELECT kh.diemTichLuy FROM KhachHang kh WHERE kh.sDT = :phone";
+            TypedQuery<Integer> query = em.createQuery(jpql, Integer.class);
+            query.setParameter("phone", soDienThoai);
+
+            // Lấy kết quả điểm tích lũy
+            diemTichLuy = query.getSingleResult();  // Kết quả sẽ là một giá trị kiểu int
+
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy khách hàng, trả về 0
+            diemTichLuy = 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            diemTichLuy = 0;  // Mặc định trả về 0 nếu có lỗi
+        } finally {
+            em.close();
+        }
+
+        return diemTichLuy;  // Trả về điểm tích lũy của khách hàng
+    }
+    public KhachHang layKhachHangTheoSDT(String soDienThoai) {
+        EntityManager em = emf.createEntityManager();
+        KhachHang khachHang = null;  // Biến mặc định khi không tìm thấy khách hàng
+
+        try {
+            // Truy vấn JPQL để lấy khách hàng theo số điện thoại
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.sDT = :phone";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("phone", soDienThoai);
+
+            // Lấy kết quả khách hàng
+            khachHang = query.getSingleResult();  // Kết quả là đối tượng KhachHang
+
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy khách hàng, trả về null
+            khachHang = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            khachHang = null;  // Mặc định trả về null nếu có lỗi
+        } finally {
+            em.close();
+        }
+
+        return khachHang;  // Trả về đối tượng KhachHang hoặc null nếu không tìm thấy
+    }
+
 
     // Phương thức tìm kiếm khách hàng theo giới tính
     public List<KhachHang> findKhachHangByGender(String gioiTinh) {
