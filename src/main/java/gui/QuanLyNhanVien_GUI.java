@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -248,6 +249,11 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					public Class getColumnClass(int columnIndex) {
 						return columnTypes[columnIndex];
 					}
+					// Ghi đè phương thức isCellEditable để tất cả các ô không thể chỉnh sửa
+				    @Override
+				    public boolean isCellEditable(int row, int column) {
+				        return false; // Không cho phép chỉnh sửa ô
+				    }
 				});
 				table.getColumnModel().getColumn(1).setPreferredWidth(92);
 				table.getColumnModel().getColumn(5).setPreferredWidth(91);
@@ -339,16 +345,15 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 btnTim.setBackground(new Color(46, 139, 87));
 								 
-								 
-								 				// Nút "Xóa Trắng"
-								 			btnXoaTrang = new JButton("Xóa Trắng");
-								 			btnXoaTrang.setBounds(195, 89, 167, 35);
-								 			panel_2.add(btnXoaTrang);
-								 			btnXoaTrang.setOpaque(true);
-								 			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			btnXoaTrang.setBackground(new Color(46, 139, 87));
-								 			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
+								  btThoat = new JButton("Thoát");
+								  btThoat.setBounds(195, 89, 159, 35);
+								  panel_2.add(btThoat);
+								  btThoat.setOpaque(true);
+								  btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								  btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								  btThoat.setBackground(new Color(46, 139, 87));
+								  btThoat.setIcon(new ImageIcon(scaledImageThoat));
+								  btThoat.addActionListener(this);
 								 			
 								 			JPanel panel_2_1 = new JPanel();
 								 			panel_2_1.setLayout(null);
@@ -360,15 +365,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			
 								 			panel_2_1.setBounds(1165, 246, 372, 206);
 								 			panel.add(panel_2_1);
-								 			
-								 			 btThoat = new JButton("Thoát");
-								 			 btThoat.setBounds(91, 150, 206, 39);
-								 			 panel_2_1.add(btThoat);
-								 			 btThoat.setOpaque(true);
-								 			 btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			 btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			 btThoat.setBackground(new Color(46, 139, 87));
-								 			 btThoat.setIcon(new ImageIcon(scaledImageThoat));
 								 			 
 								 			 				// Nút "Lưu"
 								 			 				 btnLuu = new JButton("Lưu");
@@ -411,6 +407,18 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			 				 				 				  btnThem.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 			 				 				 				  btnThem.setBackground(new Color(46, 139, 87));
 								 			 				 				 				  btnThem.setIcon(new ImageIcon(scaledImageThem));
+								 			 				 				 				  
+								 			 				 				 				  
+								 			 				 				 				  				// Nút "Xóa Trắng"
+								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
+								 			 				 				 				  			btnXoaTrang.setBounds(85, 146, 211, 39);
+								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
+								 			 				 				 				  			btnXoaTrang.setOpaque(true);
+								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 				  			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 				 				  			btnXoaTrang.setBackground(new Color(46, 139, 87));
+								 			 				 				 				  			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
+								 			 				 				 				  			btnXoaTrang.addActionListener(this);
 								 			 				 				 				  
 								 			 				 				 				  JPanel panel_1 = new JPanel();
 								 			 				 				 				  panel_1.setLayout(null);
@@ -563,8 +571,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			 				 				 				 btnXoa.addActionListener(this);
 								 			 				 				 btnSua.addActionListener(this);
 								 			 				 btnLuu.addActionListener(this);
-								 			 btThoat.addActionListener(this);
-								 			btnXoaTrang.addActionListener(this);
 								 btnTim.addActionListener(this);
 				
 				//Actions Menu
@@ -758,34 +764,29 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				    }
                     if(checkData()) {
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
-				    if(chucVu.equals("NhanVien")) {
-				    int rowCount = model.getRowCount();
-				    String maNV = String.format("NVBH%09d", rowCount + 1);
-				    boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt);
-				    if (isExist) {
-					    JOptionPane.showMessageDialog(null, "nhân viên đã tồn tại");
-				        
+				    if (chucVu.equals("NhanVien")) {
+				        String maNV = taoMaNhanVien("NVBH");
+				        boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt, cmnd);
+
+				        if (isExist) {
+				            JOptionPane.showMessageDialog(null, "Nhân viên đã tồn tại");
+				        } else {
+				            model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau });
+				            model.fireTableDataChanged();
+				            JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
+				        }
 				    } else {
-					    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
+				        String maNV = taoMaNhanVien("NVQL");
+				        boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt, cmnd);
 
-					    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
+				        if (isExist) {
+				            JOptionPane.showMessageDialog(null, "Nhân viên đã tồn tại");
+				        } else {
+				            model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau });
+				            model.fireTableDataChanged();
+				            JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
+				        }
 				    }
-
-}
-				    else {
-				    	int rowCount = model.getRowCount();
-					    String maNV = String.format("NVQL%09d", rowCount + 1);
-					    boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt);
-					    if (isExist) {
-						    JOptionPane.showMessageDialog(null, "nhân viên đã tồn tại");
-					        
-					    } else {
-						    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
-
-						    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
-					    }
-				    }
-
 
                     
 				    txtTenNV.setText("");
@@ -904,7 +905,13 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					      List  <NhanVien> danhSachNhanVien = getDanhSachNhanVienFromTable(table); // Giả sử bạn có phương thức này để lấy dữ liệu từ bảng
 
 					        boolean isSaved = true;  // Đặt mặc định là đã lưu thành công
-					        
+					        int confirmation = JOptionPane.showConfirmDialog(
+					        	    null,
+					        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
+					        	    "Xác nhận",  
+					        	    JOptionPane.YES_NO_OPTION
+					        	);
+					        if (confirmation == JOptionPane.YES_OPTION) {
 					        for (NhanVien nv : danhSachNhanVien) {
 					            try {
 					                // Kiểm tra các trường và thông báo lỗi nếu cần
@@ -973,7 +980,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					            JOptionPane.showMessageDialog(null, "Tất cả nhân viên đã được lưu thành công!");
 					        } else {
 					            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu nhân viên.");
-					        }
+					        }}
 
 					    } catch (Exception e1) {
 					        JOptionPane.showMessageDialog(null, "Lỗi chung: " + e1.getMessage());
@@ -1016,7 +1023,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					    }
 					}
 				 if(o.equals(btThoat)) {
-					 openTrangChu();
+					 displayNhanViensInTable();
 				 }
 			    }
 		public class DateUtils {
@@ -1165,7 +1172,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        }
 
 		    } catch (ParseException e) {
-		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập lại theo định dạng dd/MM/yyyy.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập lại theo định dạng yyyy-mm-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		        return false;
 		    }
 
@@ -1178,8 +1185,8 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		    }
 
 		    // Kiểm tra CMND
-		    if (cmnd.length() != 9) {
-		        JOptionPane.showMessageDialog(null, "CMND phải có 9 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		    if (cmnd.length() != 12) {
+		        JOptionPane.showMessageDialog(null, "CCCD phải có 12 chữ số!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 		        return false;
 		    }
 
@@ -1388,7 +1395,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		            // Duyệt qua tất cả các cột trong bảng và gán giá trị vào đối tượng NhanVien
 		            String[] fieldNames = {
 		                "maNhanVien", "tenNhanVien", "sDT", "gioiTinh", "ngaySinh", "ngayVaoLam", 
-		                "luongCanBan", "chucVu", "cMND", "trinhDo", "diaChi", "email", "matKhau", "trangThai"
+		                "luongCanBan", "chucVu", "cMND", "trinhDo", "diaChi", "email", "trangThai", "matKhau"
 		            };
 
 		            for (int j = 0; j < fieldNames.length; j++) {
@@ -1431,28 +1438,46 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		}
 
 //
-		public boolean kiemTraNhanVienTonTai(String tenNhanVien, String sdt) {
-		    EntityManager em = emf.createEntityManager();
-		    try {
-		        // Câu truy vấn kiểm tra nếu có nhân viên trùng tên và số điện thoại
-		        String jpqlCheck = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.tenNhanVien = :tenNhanVien AND nv.sDT = :sDT";
+		
+
+		// Thêm phương thức kiểm tra sự tồn tại của nhân viên trong bảng
+		private boolean kiemTraNhanVienTonTai(String tenNV, String sdt, String cmnd) {
+		    DefaultTableModel model = (DefaultTableModel) table.getModel();
+		    for (int i = 0; i < model.getRowCount(); i++) {
+		        String tenTrongBang = model.getValueAt(i, 1).toString();
+		        String sdtTrongBang = model.getValueAt(i, 2).toString();
+		        String cmndTrongBang = model.getValueAt(i, 8).toString();
 		        
-		        TypedQuery<Long> queryCheck = em.createQuery(jpqlCheck, Long.class);
+		        if (tenNV.equals(tenTrongBang) && (sdt.equals(sdtTrongBang) )) {
+		            return true; // Nhân viên đã tồn tại
+		        }
 		        
-		        // Thiết lập tham số cho câu truy vấn
-		        queryCheck.setParameter("tenNhanVien", tenNhanVien);
-		        queryCheck.setParameter("sDT", sdt);
-		        
-		        Long count = queryCheck.getSingleResult();
-		        
-		        // Trả về true nếu có bản ghi trùng khớp, false nếu không có bản ghi nào
-		        return count > 0;
-		    } catch (Exception e) {
-		        e.printStackTrace();
-		        return false;  // Trả về false nếu có lỗi xảy ra
-		    } finally {
-		        em.close();
+		        if(cmnd.equals(cmndTrongBang)) {
+		        	 return true;
+		        }
 		    }
+		    return false; // Nhân viên chưa tồn tại
+		}
+		private String taoMaNhanVien(String tienTo) {
+		    Random random = new Random();
+		    String maNV;
+		    boolean isUnique;
+
+		    do {
+		        // Sinh mã ngẫu nhiên với tiền tố và 9 chữ số
+		        maNV = String.format("%s%09d", tienTo, random.nextInt(1000000000));
+		        
+		        // Kiểm tra tính duy nhất của mã trong bảng
+		        isUnique = true;
+		        for (int i = 0; i < table.getRowCount(); i++) {
+		            if (maNV.equals(table.getValueAt(i, 0))) {
+		                isUnique = false;
+		                break;
+		            }
+		        }
+		    } while (!isUnique);
+
+		    return maNV;
 		}
 
 

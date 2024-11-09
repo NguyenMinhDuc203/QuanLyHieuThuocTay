@@ -255,29 +255,39 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				JScrollPane scrollPane = new JScrollPane();
 				scrollPane.setBounds(10, 355, 1073, 426);
 				panel.add(scrollPane);
+
 				table = new JTable();
 				table.setFont(new Font("Tahoma", Font.BOLD, 13));
 				table.setBackground(new Color(220, 220, 220));
 				table.setRowHeight(40);
 				table.setModel(new DefaultTableModel(
-					new Object[][] {
+				    new Object[][] {
 
-					},
-					new String[] {
-						"M\u00E3 Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "\u00F3 \u0111i\u1EC7n tho\u1EA1i", "Điểm Tích Lũy"
-					}
+				    },
+				    new String[] {
+				        "Mã Khách Hàng", "Tên Khách Hàng", "Số điện thoại", "Điểm Tích Lũy"
+				    }
 				) {
-					Class[] columnTypes = new Class[] {
-						Object.class, String.class, String.class, String.class
-					};
-					public Class getColumnClass(int columnIndex) {
-						return columnTypes[columnIndex];
-					}
+				    Class[] columnTypes = new Class[] {
+				        Object.class, String.class, String.class, String.class
+				    };
+
+				    public Class getColumnClass(int columnIndex) {
+				        return columnTypes[columnIndex];
+				    }
+
+				    // Ghi đè phương thức isCellEditable để tất cả các ô không thể chỉnh sửa
+				    @Override
+				    public boolean isCellEditable(int row, int column) {
+				        return false;
+				    }
 				});
+
 				table.getColumnModel().getColumn(2).setPreferredWidth(99);
 				table.getColumnModel().getColumn(3).setPreferredWidth(91);
 
 				scrollPane.setViewportView(table);
+
 
 				// Tạo renderer cho tất cả các cột
 				DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
@@ -357,17 +367,16 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
 								 btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 btnTim.setBackground(new Color(46, 139, 87));
-								 
-								 
-								 				// Nút "Xóa Trắng"
-								 			btnXoaTrang = new JButton("Xóa Trắng");
-								 			btnXoaTrang.setBounds(215, 140, 166, 47);
-								 			panel_2.add(btnXoaTrang);
-								 			btnXoaTrang.setOpaque(true);
-								 			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			btnXoaTrang.setBackground(new Color(46, 139, 87));
-								 			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
+								 			
+								 			 btThoat = new JButton("Thoát");
+								 			 btThoat.setBounds(216, 141, 161, 45);
+								 			 panel_2.add(btThoat);
+								 			 btThoat.setOpaque(true);
+								 			 btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 btThoat.setBackground(new Color(46, 139, 87));
+								 			 btThoat.setIcon(new ImageIcon(scaledImageThoat));
+								 			 btThoat.addActionListener(this);
 								 			
 								 			JPanel panel_2_1 = new JPanel();
 								 			panel_2_1.setLayout(null);
@@ -379,19 +388,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			
 								 			panel_2_1.setBounds(1105, 362, 407, 291);
 								 			panel.add(panel_2_1);
-								 			
-								 			 btThoat = new JButton("Thoát");
-								 			 btThoat.setBounds(212, 37, 144, 45);
-								 			 panel_2_1.add(btThoat);
-								 			 btThoat.setOpaque(true);
-								 			 btThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			 btThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			 btThoat.setBackground(new Color(46, 139, 87));
-								 			 btThoat.setIcon(new ImageIcon(scaledImageThoat));
 								 			 
 								 			 				// Nút "Lưu"
 								 			 				 btnLuu = new JButton("Lưu");
-								 			 				 btnLuu.setBounds(35, 126, 144, 45);
+								 			 				 btnLuu.setBounds(35, 126, 161, 45);
 								 			 				 panel_2_1.add(btnLuu);
 								 			 				 btnLuu.setOpaque(true);
 								 			 				 btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -412,7 +412,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 
 								 			 				 				 				// Nút "Xóa"
 								 			 				 				 				 btnXoa = new JButton("Xóa");
-								 			 				 				 				 btnXoa.setBounds(212, 126, 144, 45);
+								 			 				 				 				 btnXoa.setBounds(222, 126, 161, 45);
 								 			 				 				 				 panel_2_1.add(btnXoa);
 								 			 				 				 				 btnXoa.setOpaque(true);
 								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -423,19 +423,29 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 				 
 								 			 				 				 				 // Nút "Thêm"
 								 			 				 				 				  btnThem = new JButton("Thêm");
-								 			 				 				 				  btnThem.setBounds(35, 37, 144, 45);
+								 			 				 				 				  btnThem.setBounds(35, 37, 161, 45);
 								 			 				 				 				  panel_2_1.add(btnThem);
 								 			 				 				 				  btnThem.setOpaque(true);
 								 			 				 				 				  btnThem.setForeground(new Color(255, 255, 255));
 								 			 				 				 				  btnThem.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 			 				 				 				  btnThem.setBackground(new Color(46, 139, 87));
 								 			 				 				 				  btnThem.setIcon(new ImageIcon(scaledImageThem));
+								 			 				 				 				  
+								 			 				 				 				  
+								 			 				 				 				  				// Nút "Xóa Trắng"
+								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
+								 			 				 				 				  			btnXoaTrang.setBounds(222, 36, 161, 47);
+								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
+								 			 				 				 				  			btnXoaTrang.setOpaque(true);
+								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 				  			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+								 			 				 				 				  			btnXoaTrang.setBackground(new Color(46, 139, 87));
+								 			 				 				 				  			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
+								 			 				 				 				  			btnXoaTrang.addActionListener(this);
 								 			 				 				 				  btnThem.addActionListener(this);
 								 			 				 				 				 btnXoa.addActionListener(this);
 								 			 				 				 btnSua.addActionListener(this);
 								 			 				 btnLuu.addActionListener(this);
-								 			 btThoat.addActionListener(this);
-								 			btnXoaTrang.addActionListener(this);
 								 btnTim.addActionListener(this);
 				
 				//Actions Menu
@@ -638,6 +648,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				if(o.equals(btnXoaTrang)) {
 					txtTenNV.setText("");
 					txtSDT.setText("");
+					txtDTL.setText("");
 					
 				}
 
@@ -653,11 +664,29 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				        return; 
 				    }
 
-				   
+				 
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
 				    
+				    // Kiểm tra xem tên khách hàng và số điện thoại đã tồn tại chưa
+				    boolean isDuplicate = false;
+				    for (int i = 0; i < model.getRowCount(); i++) {
+				        String existingTenKH = model.getValueAt(i, 1).toString();
+				        String existingSDT = model.getValueAt(i, 2).toString();
+
+				        if (existingTenKH.equals(tenKH) && existingSDT.equals(sdt)) {
+				            isDuplicate = true;
+				            break;
+				        }
+				    }
+
+				    if (isDuplicate) {
+				        JOptionPane.showMessageDialog(null, "Khách hàng này đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				        return;
+				    }
+
+				    
 				    int rowCount = model.getRowCount(); // Số dòng hiện có
-				    String maKH =dao_kh.maTuSinhKhachHang();
+				    String maKH =dao_kh.maTuSinhKhachHang(sdt);
 
 				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
@@ -810,7 +839,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			        }
 			    }
 			    	if(o.equals(btThoat)) {
-			    		openTrangChu();
+			    		displayKhachHangsInTable();
 			    	}
 			    }
 
@@ -820,7 +849,21 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
-			
+			  int selectedRow = table.getSelectedRow();
+			    
+			    if (selectedRow != -1) {
+			        String tenKH = table.getValueAt(selectedRow, 1).toString();
+			        String sdtKH = table.getValueAt(selectedRow, 2).toString();
+			        String dtlKH = table.getValueAt(selectedRow, 3).toString();
+			       
+			        // Hiển thị thông tin lên các trường trong form
+			      
+			        txtTenNV.setText(tenKH);
+			        txtSDT.setText(sdtKH);
+			        txtDTL.setText(dtlKH);
+			       
+			       
+			    }
 		}
 
 		@Override

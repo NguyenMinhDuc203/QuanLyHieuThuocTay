@@ -7,10 +7,12 @@ import entity.SanPham;
 import entity.ChiTietHoaDon;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,5 +160,75 @@ public class HoaDonNhap_DAO {
         }
         return false; // Trả về false nếu có lỗi
     }
+
+    public HoaDonNhap getHoaDonNhapByMa(String maHoaDonNhapMoi) {
+        EntityManager em = emf.createEntityManager();
+        HoaDonNhap hoaDonNhap = null;
+
+        try {
+            // Tìm kiếm HoaDonNhap bằng maHoaDonNhapMoi
+            hoaDonNhap = em.find(HoaDonNhap.class, maHoaDonNhapMoi);
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi nếu có
+        } finally {
+            em.close(); // Đảm bảo đóng EntityManager sau khi sử dụng
+        }
+
+        return hoaDonNhap; // Trả về đối tượng HoaDonNhap hoặc null nếu không tìm thấy
+    }
+
+
+    public boolean checkHoaDonNhapExists(String maHoaDonNhapMoi) {
+        EntityManager em = emf.createEntityManager();
+        boolean exists = false;
+
+        try {
+            // Sử dụng phương thức find để tìm HoaDonNhap theo maHoaDonNhapMoi
+            HoaDonNhap hoaDonNhap = em.find(HoaDonNhap.class, maHoaDonNhapMoi);
+            
+            // Nếu hoaDonNhap không phải null, nghĩa là hóa đơn nhập đã tồn tại
+            if (hoaDonNhap != null) {
+                exists = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi nếu có
+        } finally {
+            em.close(); // Đảm bảo đóng EntityManager sau khi sử dụng
+        }
+
+        return exists; // Trả về true nếu tồn tại, false nếu không
+    }
+    public boolean addHoaDonNhap(HoaDonNhap hoaDonNhap) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        boolean isSuccess = false;
+
+        try {
+            transaction.begin();
+            
+            // Sử dụng reflection để truy cập và kiểm tra mã hóa đơn nhập
+            Field maHoaDonField = HoaDonNhap.class.getDeclaredField("maHoaDonNhap");
+            maHoaDonField.setAccessible(true);
+            String maHoaDonNhap = (String) maHoaDonField.get(hoaDonNhap);
+
+            // Kiểm tra nếu mã hóa đơn nhập chưa tồn tại trong cơ sở dữ liệu
+            if (!checkHoaDonNhapExists(maHoaDonNhap)) {
+                em.persist(hoaDonNhap);  // Lưu đối tượng HoaDonNhap vào cơ sở dữ liệu
+                isSuccess = true;
+            }
+            
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+        } finally {
+            em.close();
+        }
+
+        return isSuccess;
+    }
+
 
 }
