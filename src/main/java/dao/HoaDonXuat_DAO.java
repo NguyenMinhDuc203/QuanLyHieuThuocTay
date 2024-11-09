@@ -320,7 +320,7 @@ public class HoaDonXuat_DAO {
 
             try {
                 // Truy vấn mã hóa đơn cuối cùng trong bảng HoaDonXuat
-                Query query = em.createQuery("SELECT h.maHoaDon FROM HoaDonXuat h ORDER BY h.maHoaDon DESC");
+                Query query = em.createQuery("SELECT h.maHoaDonXuat FROM HoaDonXuat h ORDER BY h.maHoaDonXuat DESC");
                 query.setMaxResults(1); // Chỉ lấy mã hóa đơn gần nhất
                 String lastCode = (String) query.getSingleResult();
 
