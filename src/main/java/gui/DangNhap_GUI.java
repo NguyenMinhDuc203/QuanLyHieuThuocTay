@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
+import entity.NhanVien;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -32,7 +33,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	private JButton btnLogIn_1_1;
 	private NhanVien_DAO dao_nv = new NhanVien_DAO();
 	private JTextField txtMaNhanVien;
-
+	   private NhanVien nhanVienHienTai;
 	/**
 	 * Launch the application.
 	 */
@@ -117,25 +118,30 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 		btnLogIn_1_1.addActionListener(this);
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-	    Object o = e.getSource();
-	    if (o.equals(btnLogIn_1)) {
-	        String tenTK = textTaiKhoan.getText().trim();
-	        String sdt = txtMK.getText().trim();
-	        
-	        String result = dao_nv.kiemTraDangNhap(tenTK, sdt);
-	        
-	        if (result.equals("Đăng nhập thành công.")) {
-	            openTrangChu();
-	        } else {
-	            JOptionPane.showMessageDialog(this, result);
+	 @Override
+	    public void actionPerformed(ActionEvent e) {
+	        Object o = e.getSource();
+	        if (o.equals(btnLogIn_1)) {
+	            String tenTK = textTaiKhoan.getText().trim();
+	            String sdt = txtMK.getText().trim();
+
+	            String result = dao_nv.kiemTraDangNhap(tenTK, sdt);
+
+	            if (result.equals("Đăng nhập thành công.")) {
+	                // Lưu thông tin nhân viên vào đối tượng nhanVienHienTai
+	                nhanVienHienTai = dao_nv.findNhanVienById(tenTK);
+	                openTrangChu();
+	            } else {
+	                JOptionPane.showMessageDialog(this, result);
+	            }
+	        }
+	        if (o.equals(btnLogIn_1_1)) {
+	            showMaNhanVienDialog(); // Gọi hàm hiển thị dialog
 	        }
 	    }
-	    if (o.equals(btnLogIn_1_1)) {
-	        showMaNhanVienDialog(); // Gọi hàm hiển thị dialog
-	    }
-	}
+
+	    
+	
 
 	private void showMaNhanVienDialog() {
 	    // Tạo dialog

@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
+
+import entity.NhanVien;
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -35,6 +38,8 @@ public class TrangChu_GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JFrame frame;
+    private NhanVien nhanVienHienTai;
+
 
 	/**
 	 * Launch the application.
@@ -51,6 +56,11 @@ public class TrangChu_GUI extends JFrame {
 			}
 		});
 	}
+	 public TrangChu_GUI(NhanVien nhanVienHienTai) {
+	        this.nhanVienHienTai = nhanVienHienTai;
+	        // Các thành phần khác của giao diện và logic
+	    }
+
 
 	/**
 	 * Create the frame.
@@ -291,7 +301,7 @@ public class TrangChu_GUI extends JFrame {
     searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
     searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
     
-    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+  //  salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
     homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
     
     manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));

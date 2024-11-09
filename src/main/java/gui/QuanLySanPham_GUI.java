@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+import java.lang.reflect.Field;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -334,7 +334,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								
 												
 												txtNhap = new JTextField();
-												txtNhap.setBounds(71, 49, 240, 30);
+												txtNhap.setBounds(71, 49, 270, 30);
 												panel_2.add(txtNhap);
 												txtNhap.setColumns(10);
 				
@@ -675,7 +675,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
 	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
 	    
-	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	   // salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
 	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
 	    
 	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
@@ -713,9 +713,9 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	        this.setVisible(false);
 	    }
 		public void openBanHang() {
-	        BanHang_GUI banHang = new BanHang_GUI();
-	        banHang.setVisible(true);
-	        this.setVisible(false);
+	//        BanHang_GUI banHang = new BanHang_GUI();
+	  //      banHang.setVisible(true);
+	    //    this.setVisible(false);
 	    }
 		public void openThongKeDoanhSo() {
 	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
@@ -1109,142 +1109,89 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		        cboDVTSP.setSelectedIndex(0);
 		        txtNSXSP.setText("");
 		    }
-			
 			if (o.equals(btnLuu)) {
 			    try {
-			        // Lấy danh sách tất cả sản phẩm từ bảng
-			        List<SanPham> danhSachSanPham = getDanhSachSanPhamFromTable(table); // Giả sử bạn có phương thức này để lấy dữ liệu từ bảng
+			        List<SanPham> danhSachSanPham = getDanhSachSanPhamFromTable(table); // Lấy danh sách sản phẩm từ bảng
 
 			        boolean isSaved = true;  // Đặt mặc định là đã lưu thành công
-			        
+
 			        for (SanPham sp : danhSachSanPham) {
 			            try {
-			                // Kiểm tra các trường và thông báo lỗi nếu cần
-			                Field maSanPhamField = SanPham.class.getDeclaredField("maSanPham");
-			                maSanPhamField.setAccessible(true);
-			                String maSanPham = (String) maSanPhamField.get(sp);
-			                if (maSanPham.isEmpty()) throw new Exception("Mã sản phẩm không được để trống");
+			            	Field loaiSanPhamField = SanPham.class.getDeclaredField("loaiSanPham"); // Lấy trường loaiSanPham
+			                loaiSanPhamField.setAccessible(true); // Cho phép truy cập trường private
+			                Object loaiSanPham = loaiSanPhamField.get(sp); // Lấy giá trị của loaiSanPham từ sp
 
-			                Field tenSanPhamField = SanPham.class.getDeclaredField("tenSanPham");
-			                tenSanPhamField.setAccessible(true);
-			                String tenSanPham = (String) tenSanPhamField.get(sp);
-			                if (tenSanPham.isEmpty()) throw new Exception("Tên sản phẩm không được để trống");
-
-			                Field giaBanField = SanPham.class.getDeclaredField("giaBan");
-			                giaBanField.setAccessible(true);
-			                double giaBan = (double) giaBanField.get(sp);
-			                if (giaBan <= 0) throw new Exception("Giá bán phải lớn hơn 0");
-
-			                Field congDungField = SanPham.class.getDeclaredField("congDung");
-			                congDungField.setAccessible(true);
-			                String congDung = (String) congDungField.get(sp);
-			                if (congDung.isEmpty()) throw new Exception("Công dụng không được để trống");
-
-			                Field hanSuDungField = SanPham.class.getDeclaredField("hanSuDung");
-			                hanSuDungField.setAccessible(true);
-			                LocalDate hanSuDung = (LocalDate) hanSuDungField.get(sp);
-			                if (hanSuDung == null) throw new Exception("Hạn sử dụng không hợp lệ");
-
-			                Field baoQuanField = SanPham.class.getDeclaredField("baoQuan");
-			                baoQuanField.setAccessible(true);
-			                String baoQuan = (String) baoQuanField.get(sp);
-			                if (baoQuan.isEmpty()) throw new Exception("Bảo quản không được để trống");
-
-			                Field chongChiDinhField = SanPham.class.getDeclaredField("chongChiDinh");
-			                chongChiDinhField.setAccessible(true);
-			                String chongChiDinh = (String) chongChiDinhField.get(sp);
-			                if (chongChiDinh.isEmpty()) throw new Exception("Chống chỉ định không được để trống");
-
-			                Field ngaySanXuatField = SanPham.class.getDeclaredField("ngaySanXuat");
-			                ngaySanXuatField.setAccessible(true);
-			                LocalDate ngaySanXuat = (LocalDate) ngaySanXuatField.get(sp);
-			                if (ngaySanXuat == null) throw new Exception("Ngày sản xuất không hợp lệ");
-
-			                Field thanhPhanField = SanPham.class.getDeclaredField("thanhPhan");
-			                thanhPhanField.setAccessible(true);
-			                String thanhPhan = (String) thanhPhanField.get(sp);
-			                if (thanhPhan.isEmpty()) throw new Exception("Thành phần không được để trống");
-
-			                Field soLuongTonKhoField = SanPham.class.getDeclaredField("soLuongTonkho");
-			                soLuongTonKhoField.setAccessible(true);
-			                int soLuongTonKho = (int) soLuongTonKhoField.get(sp);
-			                if (soLuongTonKho < 0) throw new Exception("Số lượng tồn kho không hợp lệ");
-
-			                Field ghiChuField = SanPham.class.getDeclaredField("ghiChu");
-			                ghiChuField.setAccessible(true);
-			                String ghiChu = (String) ghiChuField.get(sp);
-			                if (ghiChu.isEmpty()) throw new Exception("Ghi chú không được để trống");
-
-			                Field nhaSanXuatField = SanPham.class.getDeclaredField("nhaSanXuat");
-			                nhaSanXuatField.setAccessible(true);
-			                String nhaSanXuat = (String) nhaSanXuatField.get(sp);
-			                if (nhaSanXuat.isEmpty()) throw new Exception("Nhà sản xuất không được để trống");
-
-			                Field donViTinhField = SanPham.class.getDeclaredField("donViTinh");
-			                donViTinhField.setAccessible(true);
-			                DonViTinh donViTinh = (DonViTinh) donViTinhField.get(sp);
-			                if (donViTinh == null) throw new Exception("Đơn vị tính không được để trống");
-
-			                Field thueGTGTField = SanPham.class.getDeclaredField("thueGTGT");
-			                thueGTGTField.setAccessible(true);
-			                double thueGTGT = (double) thueGTGTField.get(sp);
-			                if (thueGTGT < 0) throw new Exception("Thuế GTGT không hợp lệ");
-
-			                Field giaNhapField = SanPham.class.getDeclaredField("giaNhap");
-			                giaNhapField.setAccessible(true);
-			                double giaNhap = (double) giaNhapField.get(sp);
-			                if (giaNhap <= 0) throw new Exception("Giá nhập phải lớn hơn 0");
-
-			                try {
-			                    // Kiểm tra Loại sản phẩm
-			                    Field loaiSanPhamField = SanPham.class.getDeclaredField("loaiSanPham");
-			                    loaiSanPhamField.setAccessible(true);
-			                    LoaiSanPham loaiSanPham = (LoaiSanPham) loaiSanPhamField.get(sp);
-			                    if (loaiSanPham == null) throw new Exception("Loại sản phẩm không được để trống");
-			                    
-			                } catch (Exception e1) {
-			                    e1.printStackTrace();
+			                // Ép nạp loaiSanPham nếu nó chưa được nạp
+			                if (loaiSanPham != null) {
+			                    Hibernate.initialize(loaiSanPham);
 			                }
-
-			                try {
-			                    // Kiểm tra Hóa đơn nhập
-			                    Field hoaDonNhapField = SanPham.class.getDeclaredField("hoaDonNhap");
-			                    hoaDonNhapField.setAccessible(true);
-			                    HoaDonNhap hoaDonNhap = (HoaDonNhap) hoaDonNhapField.get(sp);
-			                    if (hoaDonNhap == null) throw new Exception("Hóa đơn nhập không được để trống");
-
-			                } catch (Exception e1) {
-			                    e1.printStackTrace();
-			                }
+			                // Kiểm tra tính hợp lệ của từng sản phẩm
+			            //    validateSanPham(sp);
 
 			                // Lưu sản phẩm vào cơ sở dữ liệu
-			                boolean result = dao_sp.saveSanPham(danhSachSanPham);  // Lưu vào cơ sở dữ liệu
+			                boolean result = dao_sp.addSanPham(sp);  // Lưu từng sản phẩm
 
 			                if (!result) {
-			                    isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
-			                    JOptionPane.showMessageDialog(null, "Không thể lưu sản phẩm: " + maSanPham);
+			                    isSaved = false;
+			                    JOptionPane.showMessageDialog(null, "Không thể lưu sản phẩm: " );
 			                }
 
 			            } catch (Exception e1) {
-			                isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
-			                JOptionPane.showMessageDialog(null, "Lỗi ở sản phẩm: " + e1.getMessage());
+			                isSaved = false;
+			                JOptionPane.showMessageDialog(null, "Lỗi khi lưu sản phẩm "  + ": " + e1.getMessage());
 			            }
 			        }
 
-			        // Hiển thị thông báo kết quả
+			        // Thông báo kết quả
 			        if (isSaved) {
 			            JOptionPane.showMessageDialog(null, "Tất cả sản phẩm đã được lưu thành công!");
 			        } else {
 			            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu sản phẩm.");
 			        }
+
 			    } catch (Exception e1) {
-			        JOptionPane.showMessageDialog(null, "Lỗi chung: " + e1.getMessage());
+			      //  isSaved = false;
+			        System.out.println("Lỗi chi tiết: " + e1.getMessage());  // In chi tiết lỗi ra console
+			        JOptionPane.showMessageDialog(null, "Lỗi khi lưu sản phẩm "  + e1.getMessage());
+			    }
+
+			}
+			if (o.equals(btnTim)) {
+			    String maSP = txtNhap.getText().trim();
+
+			    if (maSP.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Thực hiện truy vấn để lấy sản phẩm cùng với thuộc tính loaiSanPham
+			    SanPham sanPham = dao_sp.findSanPhamById(maSP); // Dùng truy vấn JOIN FETCH
+			  
+			    if (sanPham != null) {
+			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        model.setRowCount(0);
+
+			        try {
+			            Field[] fields = SanPham.class.getDeclaredFields();
+			            Object[] rowData = new Object[fields.length];
+
+			            for (int i = 0; i < fields.length; i++) {
+			                fields[i].setAccessible(true);
+			                rowData[i] = fields[i].get(sanPham);
+			            }
+
+			            model.addRow(rowData);
+
+			            JOptionPane.showMessageDialog(null, "Tìm thấy sản phẩm: " + maSP);
+			        } catch (IllegalAccessException e1) {
+			            e1.printStackTrace();
+			        }
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm với mã: " + maSP, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 			    }
 			}
 
-
 		}
-			
 
 		
 
@@ -1316,108 +1263,120 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			
 		}
 		public void displaySanPhamsInTable() {
-		    List<SanPham> sanPhams = entityManager.createQuery(
-		        "SELECT sp FROM SanPham sp LEFT JOIN FETCH sp.loaiSanPham LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
-		        .getResultList();
+			List<SanPham> sanPhams = entityManager.createQuery(
+			        "SELECT sp FROM SanPham sp " +
+			        "LEFT JOIN FETCH sp.loaiSanPham " +  // Đảm bảo loaiSanPham được tải
+			        "LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
+			        .getResultList();
 
 		    if (sanPhams == null || sanPhams.isEmpty()) {
 		        System.out.println("Không có sản phẩm để hiển thị.");
 		        return;
 		    }
 
+		    System.out.println("Số lượng sản phẩm lấy về: " + sanPhams.size());  // Gỡ lỗi: kiểm tra số lượng sản phẩm
+
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
-		    model.setRowCount(0);
+		    model.setRowCount(0);  // Xóa tất cả dòng trước khi thêm mới
 
 		    for (SanPham sp : sanPhams) {
 		        try {
-		            Field maSanPhamField = SanPham.class.getDeclaredField("maSanPham");
-		            maSanPhamField.setAccessible(true);
-		            Object maSanPhamValue = maSanPhamField.get(sp);
+		            // Truy xuất các trường trong lớp SanPham và gỡ lỗi chi tiết
+		            Object maSanPham = getFieldValue(sp, "maSanPham");
+		            Object tenSanPham = getFieldValue(sp, "tenSanPham");
+		            Object giaBan = getFieldValue(sp, "giaBan");
+		            Object congDung = getFieldValue(sp, "congDung");
+		            Object hanSuDung = getFieldValue(sp, "hanSuDung");
+		            Object baoQuan = getFieldValue(sp, "baoQuan");
+		            Object chongChiDinh = getFieldValue(sp, "chongChiDinh");
+		            Object ngaySanXuat = getFieldValue(sp, "ngaySanXuat");
+		            Object thanhPhan = getFieldValue(sp, "thanhPhan");
+		            Object soLuongTonkho = getFieldValue(sp, "soLuongTonkho");
+		            Object ghiChu = getFieldValue(sp, "ghiChu", "Không có ghi chú");
+		            Object nhaSanXuat = getFieldValue(sp, "nhaSanXuat");
+		            Object donViTinh = getFieldValue(sp, "donViTinh");
+		            Object thueGTGT = getFieldValue(sp, "thueGTGT");
+		            Object giaNhap = getFieldValue(sp, "giaNhap");
 
-		            Field tenSanPhamField = SanPham.class.getDeclaredField("tenSanPham");
-		            tenSanPhamField.setAccessible(true);
-		            Object tenSanPhamValue = tenSanPhamField.get(sp);
+		            // Truy xuất thông tin liên quan đến loại sản phẩm và hóa đơn nhập
+		            String loaiSanPham = getLoaiSanPham(sp);
+		            String hoaDonNhap = getHoaDonNhap(sp);
 
-		            Field giaBanField = SanPham.class.getDeclaredField("giaBan");
-		            giaBanField.setAccessible(true);
-		            Object giaBanValue = giaBanField.get(sp);
+		            System.out.println("Thêm sản phẩm: " + tenSanPham + " - " + loaiSanPham);  // Gỡ lỗi: xem thông tin sản phẩm thêm vào
 
-		            Field congDungField = SanPham.class.getDeclaredField("congDung");
-		            congDungField.setAccessible(true);
-		            Object congDungValue = congDungField.get(sp);
-
-		            Field hanSuDungField = SanPham.class.getDeclaredField("hanSuDung");
-		            hanSuDungField.setAccessible(true);
-		            Object hanSuDungValue = hanSuDungField.get(sp);
-
-		            Field baoQuanField = SanPham.class.getDeclaredField("baoQuan");
-		            baoQuanField.setAccessible(true);
-		            Object baoQuanValue = baoQuanField.get(sp);
-
-		            Field chongChiDinhField = SanPham.class.getDeclaredField("chongChiDinh");
-		            chongChiDinhField.setAccessible(true);
-		            Object chongChiDinhValue = chongChiDinhField.get(sp);
-
-		            Field ngaySanXuatField = SanPham.class.getDeclaredField("ngaySanXuat");
-		            ngaySanXuatField.setAccessible(true);
-		            Object ngaySanXuatValue = ngaySanXuatField.get(sp);
-
-		            Field thanhPhanField = SanPham.class.getDeclaredField("thanhPhan");
-		            thanhPhanField.setAccessible(true);
-		            Object thanhPhanValue = thanhPhanField.get(sp);
-
-		            Field soLuongTonkhoField = SanPham.class.getDeclaredField("soLuongTonkho");
-		            soLuongTonkhoField.setAccessible(true);
-		            Object soLuongTonkhoValue = soLuongTonkhoField.get(sp);
-
-		            Field ghiChuField = SanPham.class.getDeclaredField("ghiChu");
-		            ghiChuField.setAccessible(true);
-		            Object ghiChuValue = ghiChuField.get(sp);
-		            // Kiểm tra ghiChuValue có null không trước khi hiển thị
-		            if (ghiChuValue == null) {
-		                ghiChuValue = "Không có ghi chú";  // Thêm giá trị mặc định nếu ghiChu là null
-		            }
-
-		            Field nhaSanXuatField = SanPham.class.getDeclaredField("nhaSanXuat");
-		            nhaSanXuatField.setAccessible(true);
-		            Object nhaSanXuatValue = nhaSanXuatField.get(sp);
-
-		            Field donViTinhField = SanPham.class.getDeclaredField("donViTinh");
-		            donViTinhField.setAccessible(true);
-		            Object donViTinhValue = donViTinhField.get(sp);
-
-		            Field thueGTGTField = SanPham.class.getDeclaredField("thueGTGT");
-		            thueGTGTField.setAccessible(true);
-		            Object thueGTGTValue = thueGTGTField.get(sp);
-
-		            Field giaNhapField = SanPham.class.getDeclaredField("giaNhap");
-		            giaNhapField.setAccessible(true);
-		            Object giaNhapValue = giaNhapField.get(sp);
-
-		            Field loaiSanPhamField = SanPham.class.getDeclaredField("loaiSanPham");
-		            loaiSanPhamField.setAccessible(true);
-		            LoaiSanPham loaiSanPhamValue = (LoaiSanPham) loaiSanPhamField.get(sp);
-		            String loaiSanPham = (loaiSanPhamValue != null) ? loaiSanPhamValue.toString() : "Không xác định";
-
-		            Field hoaDonNhapField = SanPham.class.getDeclaredField("hoaDonNhap");
-		            hoaDonNhapField.setAccessible(true);
-		            HoaDonNhap hoaDonNhapValue = (HoaDonNhap) hoaDonNhapField.get(sp);
-		            String hoaDonNhap = (hoaDonNhapValue != null) ? hoaDonNhapValue.toString() : "Không xác định";
-
+		            // Thêm dữ liệu vào model của JTable
 		            model.addRow(new Object[]{
-		                maSanPhamValue, tenSanPhamValue, baoQuanValue, chongChiDinhValue, congDungValue, donViTinhValue, ghiChuValue, giaBanValue, giaNhapValue, hanSuDungValue,
-		                ngaySanXuatValue, nhaSanXuatValue, soLuongTonkhoValue, thanhPhanValue,
-		                thueGTGTValue, hoaDonNhap, loaiSanPham
+		                maSanPham, tenSanPham, baoQuan, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung,
+		                ngaySanXuat, nhaSanXuat, soLuongTonkho, thanhPhan, thueGTGT, hoaDonNhap, loaiSanPham
 		            });
-		        } catch (NoSuchFieldException | IllegalAccessException e) {
+
+		        } catch (Exception e) {
+		            System.err.println("Lỗi khi xử lý sản phẩm: " + e.getMessage());
 		            e.printStackTrace();
 		        }
 		    }
-		    
-		    
-		    
+
+		    // Kiểm tra nếu JTable đã được cập nhật
+		    System.out.println("Cập nhật JTable xong.");
 		}
-		
+
+		// Phương thức hỗ trợ lấy giá trị trường và xử lý lỗi
+		private Object getFieldValue(Object obj, String fieldName) {
+		    return getFieldValue(obj, fieldName, null);  // Trả về null nếu không tìm thấy
+		}
+
+		// Phương thức hỗ trợ lấy giá trị trường với giá trị mặc định
+		private Object getFieldValue(Object obj, String fieldName, Object defaultValue) {
+		    try {
+		        Field field = obj.getClass().getDeclaredField(fieldName);
+		        field.setAccessible(true);
+		        Object value = field.get(obj);
+		        return value != null ? value : defaultValue;
+		    } catch (NoSuchFieldException e) {
+		        System.err.println("Lỗi: Không tìm thấy trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
+		    } catch (IllegalAccessException e) {
+		        System.err.println("Lỗi: Không thể truy cập trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
+		    }
+		    return defaultValue;  // Nếu không tìm thấy trường hoặc có lỗi, trả về giá trị mặc định
+		}
+
+		// Lấy loaiSanPham từ đối tượng loaiSanPham
+		private String getLoaiSanPham(SanPham sp) {
+		    try {
+		        Object loaiSanPhamObj = getFieldValue(sp, "loaiSanPham");
+		        if (loaiSanPhamObj != null) {
+		            // Lấy giá trị maLoai từ đối tượng loaiSanPham
+		            Object maLoaiValue = getFieldValue(loaiSanPhamObj, "maLoai");  // Sửa tên trường này
+		            return maLoaiValue != null ? maLoaiValue.toString() : "Không xác định";
+		        } else {
+		            return "Không xác định";
+		        }
+		    } catch (Exception e) {
+		        System.err.println("Lỗi khi truy xuất trường 'maLoai' từ đối tượng loaiSanPham");
+		        e.printStackTrace();
+		        return "Không xác định";
+		    }
+		}
+
+
+		// Lấy hoaDonNhap từ đối tượng hoaDonNhap
+		private String getHoaDonNhap(SanPham sp) {
+		    try {
+		        Object hoaDonNhapObj = getFieldValue(sp, "hoaDonNhap");
+		        if (hoaDonNhapObj != null) {
+		            // Lấy giá trị maHoaDonNhap từ đối tượng hoaDonNhap
+		            Object maHoaDonNhapValue = getFieldValue(hoaDonNhapObj, "maHoaDonNhap");
+		            return maHoaDonNhapValue != null ? maHoaDonNhapValue.toString() : "Không xác định";
+		        } else {
+		            return "Không xác định";
+		        }
+		    } catch (Exception e) {
+		        System.err.println("Lỗi khi truy xuất trường 'maHoaDonNhap' từ đối tượng hoaDonNhap");
+		        e.printStackTrace();
+		        return "Không xác định";
+		    }
+		}
+
 		//
 		public List<SanPham> getDanhSachSanPhamFromTable(JTable table) {
 		    List<SanPham> danhSachSanPham = new ArrayList<>();
@@ -1464,18 +1423,153 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		    return danhSachSanPham; // Trả về danh sách sản phẩm từ bảng
 		}
 
-		// Phương thức chuyển đổi giá trị theo kiểu dữ liệu của trường
 		private Object convertFieldValue1(Object value, Class<?> fieldType) {
+		    if (value == null) {
+		        return null;
+		    }
+		    
 		    if (fieldType == boolean.class || fieldType == Boolean.class) {
 		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
 		    } else if (fieldType == LocalDate.class) {
 		        return value instanceof String ? LocalDate.parse((String) value) : value;
 		    } else if (fieldType == double.class || fieldType == Double.class) {
 		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == int.class || fieldType == Integer.class) {
+		        return value instanceof Integer ? value : Integer.parseInt(value.toString());
+		    } else if (fieldType == float.class || fieldType == Float.class) {
+		        return value instanceof Float ? value : Float.parseFloat(value.toString());
 		    } else if (fieldType == ChucVu.class) {
 		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
 		    }
 		    return value;
+		}
+
+		private String getLoaiSanPham1(SanPham sp) {
+		    try {
+		        // Lấy trường maLoaiSanPham trong SanPham
+		        Field maLoaiSanPhamField = SanPham.class.getDeclaredField("maLoaiSanPham");
+		        maLoaiSanPhamField.setAccessible(true);
+		        Object maLoaiSanPhamValue = maLoaiSanPhamField.get(sp);
+
+		        return maLoaiSanPhamValue != null ? (String) maLoaiSanPhamValue : "Không xác định";
+		    } catch (NoSuchFieldException | IllegalAccessException e) {
+		        System.err.println("Lỗi khi truy xuất trường maLoaiSanPham");
+		        return "Không xác định";
+		    }
+		}
+
+		private String getHoaDonNhap1(SanPham sp) {
+		    try {
+		        // Lấy trường maHoaDonNhap trong SanPham
+		        Field maHoaDonNhapField = SanPham.class.getDeclaredField("maHoaDonNhap");
+		        maHoaDonNhapField.setAccessible(true);
+		        Object maHoaDonNhapValue = maHoaDonNhapField.get(sp);
+
+		        return maHoaDonNhapValue != null ? (String) maHoaDonNhapValue : "Không xác định";
+		    } catch (NoSuchFieldException | IllegalAccessException e) {
+		        System.err.println("Lỗi khi truy xuất trường maHoaDonNhap");
+		        return "Không xác định";
+		    }
+		}
+		private void validateSanPham(SanPham sp) throws Exception {
+			// Sử dụng reflection để truy cập các trường của đối tượng SanPham
+		    Field[] fields = SanPham.class.getDeclaredFields();
+
+		    for (Field field : fields) {
+		        field.setAccessible(true); // Cho phép truy cập vào các trường private
+
+		        // Kiểm tra và gán giá trị cho các trường
+		        if (field.getName().equals("hoaDonNhap")) {
+		            // Kiểm tra xem hoaDonNhap có null không, nếu có thì khởi tạo
+		            if (field.get(sp) == null) {
+		                field.set(sp, new HoaDonNhap());
+		            }
+		        }
+		        // Kiểm tra từng trường và thực hiện xác thực
+		        switch (field.getName()) {
+		            case "maSanPham":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Mã sản phẩm không được để trống");
+		                }
+		                break;
+		            case "tenSanPham":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Tên sản phẩm không được để trống");
+		                }
+		                break;
+		            case "giaBan":
+		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
+		                    throw new Exception("Giá bán phải lớn hơn 0");
+		                }
+		                break;
+		            case "congDung":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Công dụng không được để trống");
+		                }
+		                break;
+		            case "hanSuDung":
+		                if (field.get(sp) == null) {
+		                    throw new Exception("Hạn sử dụng không hợp lệ");
+		                }
+		                break;
+		            case "baoQuan":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Bảo quản không được để trống");
+		                }
+		                break;
+		            case "chongChiDinh":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Chống chỉ định không được để trống");
+		                }
+		                break;
+		            case "ngaySanXuat":
+		                if (field.get(sp) == null) {
+		                    throw new Exception("Ngày sản xuất không hợp lệ");
+		                }
+		                break;
+		            case "thanhPhan":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Thành phần không được để trống");
+		                }
+		                break;
+		            case "soLuongTonkho":
+		                if (field.get(sp) == null || (int) field.get(sp) < 0) {
+		                    throw new Exception("Số lượng tồn kho không hợp lệ");
+		                }
+		                break;
+		            case "ghiChu":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Ghi chú không được để trống");
+		                }
+		                break;
+		            case "nhaSanXuat":
+		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
+		                    throw new Exception("Nhà sản xuất không được để trống");
+		                }
+		                break;
+		            case "donViTinh":
+		                if (field.get(sp) == null) {
+		                    throw new Exception("Đơn vị tính không được để trống");
+		                }
+		                break;
+		            case "thueGTGT":
+		                if (field.get(sp) == null || (double) field.get(sp) < 0) {
+		                    throw new Exception("Thuế GTGT không hợp lệ");
+		                }
+		                break;
+		            case "giaNhap":
+		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
+		                    throw new Exception("Giá nhập phải lớn hơn 0");
+		                }
+		                break;
+		            default:
+		                break;
+		        }
+		    }
+
+		    // Kiểm tra Loại sản phẩm và Hóa đơn nhập
+		   // if (sp.loaiSanPham == null) sp.loaiSanPham = new LoaiSanPham("Không xác định");
+		  //  if (sp.hoaDonNhap == null) sp.hoaDonNhap = new HoaDonNhap("Không xác định");
 		}
 
 }

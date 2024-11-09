@@ -14,9 +14,18 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
 import java.util.logging.Logger;
 import entity.SanPham;
 import jakarta.persistence.Query;
+=======
+
+import java.util.logging.Logger;
+
+import entity.SanPham;
+import jakarta.persistence.Query;
+
+>>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 
     
 public class SanPham_DAO {
@@ -179,18 +188,20 @@ public class SanPham_DAO {
     }
 
     // Phương thức thêm sản phẩm
-    public void addSanPham(SanPham sp) {
+    public boolean addSanPham(SanPham sp) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(sp);
             em.getTransaction().commit();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             em.getTransaction().rollback();
         } finally {
             em.close();
         }
+        return false;
     }
 
     // Phương thức cập nhật sản phẩm
@@ -357,6 +368,10 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
     
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
@@ -369,6 +384,10 @@ public class SanPham_DAO {
             return null;  // Trả về null nếu không tìm thấy sản phẩm
         }
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
 
     // save sp
     public boolean saveSanPham(List<SanPham> danhSachSanPham) {
@@ -428,4 +447,22 @@ public class SanPham_DAO {
         return isCleared;
     }
     
+    //
+    public SanPham findSanPhamWithLoaiSanPham(String maSP) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            return em.createQuery("SELECT sp FROM SanPham sp JOIN FETCH sp.loaiSanPham WHERE sp.maSanPham = :maSP", SanPham.class)
+                     .setParameter("maSP", maSP)
+                     .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+
 }
+    
+
