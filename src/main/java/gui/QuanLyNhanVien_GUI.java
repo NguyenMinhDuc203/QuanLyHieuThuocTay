@@ -452,9 +452,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			 				 				 			panel_1.add(cboChucVuNV);
 
 								 			 				 				 			// Thêm các tùy chọn chức vụ vào JComboBox
-								 			 				 				 			cboChucVuNV.addItem("Nhân Viên");
+								 			 				 				 			cboChucVuNV.addItem("NhanVien");
 								 			 				 				 			
-								 			 				 				 			cboChucVuNV.addItem("Quản Lý");
+								 			 				 				 			cboChucVuNV.addItem("QuanLy");
 								 			 				 				 			
 								 			 				 				 			// Bạn có thể thêm các chức vụ khác nếu cần
 								 			 				 				 				  
@@ -634,7 +634,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
 	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
 	    
-	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	 //   salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
 	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
 	    
 	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
@@ -672,9 +672,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 	        this.setVisible(false);
 	    }
 		public void openBanHang() {
-	        BanHang_GUI banHang = new BanHang_GUI();
-	        banHang.setVisible(true);
-	        this.setVisible(false);
+	  //      BanHang_GUI banHang = new BanHang_GUI();
+	    //    banHang.setVisible(true);
+	      //  this.setVisible(false);
 	    }
 		public void openThongKeDoanhSo() {
 	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
@@ -758,20 +758,35 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				    }
                     if(checkData()) {
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
-				    if(chucVu.equals("Nhân Viên")) {
+				    if(chucVu.equals("NhanVien")) {
 				    int rowCount = model.getRowCount();
 				    String maNV = String.format("NVBH%09d", rowCount + 1);
-				    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
+				    boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt);
+				    if (isExist) {
+					    JOptionPane.showMessageDialog(null, "nhân viên đã tồn tại");
+				        
+				    } else {
+					    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
+
+					    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
+				    }
+
 }
 				    else {
 				    	int rowCount = model.getRowCount();
 					    String maNV = String.format("NVQL%09d", rowCount + 1);
-					    model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam,luongCB, chucVu,  cmnd, trinhDo, diaChi, email, trangThai, matKhau });
+					    boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt);
+					    if (isExist) {
+						    JOptionPane.showMessageDialog(null, "nhân viên đã tồn tại");
+					        
+					    } else {
+						    model.addRow(new Object[] {  maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau  });
 
+						    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
+					    }
 				    }
 
 
-				    JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
                     
 				    txtTenNV.setText("");
 				    txtSDT.setText("");
@@ -923,10 +938,18 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					                double luongCanBan = (double) luongCanBanField.get(nv);
 					                if (luongCanBan <= 0) throw new Exception("Lương căn bản phải lớn hơn 0");
 
-					                Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
-					                chucVuField.setAccessible(true);
-					                ChucVu chucVu = (ChucVu) chucVuField.get(nv);
-					                if (chucVu == null) throw new Exception("Chức vụ không được để trống");
+					                // Lấy giá trị chức vụ từ JComboBox và chuyển đổi
+					                String chucVuText = (String) cboChucVuNV.getSelectedItem();
+					                ChucVu chucVuEnum;
+					                try {
+					                    chucVuEnum = ChucVu.valueOf(chucVuText); // Chuyển đổi giá trị string thành enum
+					                    // Sử dụng Reflection để gán giá trị cho thuộc tính chucVu
+					                    Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
+					                    chucVuField.setAccessible(true);
+					                    chucVuField.set(nv, chucVuEnum); // Gán giá trị trực tiếp vào thuộc tính
+					                } catch (IllegalArgumentException e1) {
+					                    throw new Exception("Chức vụ không hợp lệ: " + chucVuText);
+					                }
 
 					                Field cMNDField = NhanVien.class.getDeclaredField("cMND");
 					                cMNDField.setAccessible(true);
@@ -935,12 +958,11 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 
 					                // Lưu nhân viên vào cơ sở dữ liệu
 					                boolean result = dao_nv.saveNhanVien(danhSachNhanVien);
-
 					                if (!result) {
 					                    isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
 					                    JOptionPane.showMessageDialog(null, "Không thể lưu nhân viên: " + maNhanVien);
 					                }
-					                
+
 					            } catch (Exception e1) {
 					                isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
 					                JOptionPane.showMessageDialog(null, "Lỗi ở nhân viên: " + e1.getMessage());
@@ -952,6 +974,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					        } else {
 					            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu nhân viên.");
 					        }
+
 					    } catch (Exception e1) {
 					        JOptionPane.showMessageDialog(null, "Lỗi chung: " + e1.getMessage());
 					    }
@@ -1032,10 +1055,10 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        String ngaySinh = table.getValueAt(selectedRow, 4).toString();
 		        String ngayVaoLam = table.getValueAt(selectedRow, 5).toString();
 		        String luongCanBan = table.getValueAt(selectedRow, 6).toString();
-		        String chucVu = table.getValueAt(selectedRow, 6).toString();
-		        String cMND = table.getValueAt(selectedRow, 7).toString();
-		        String trinhDo = table.getValueAt(selectedRow, 8).toString();
-		        String diaChi = table.getValueAt(selectedRow, 9).toString();
+		        //String chucVu = table.getValueAt(selectedRow, ).toString();
+		        String cMND = table.getValueAt(selectedRow, 8).toString();
+		        String trinhDo = table.getValueAt(selectedRow, 9).toString();
+		        String diaChi = table.getValueAt(selectedRow, 10).toString();
 		        String gioiTinh = table.getValueAt(selectedRow, 3).toString();
 		        String email = table.getValueAt(selectedRow, 11).toString();
 		        String trangThai = table.getValueAt(selectedRow, 12).toString();
@@ -1050,7 +1073,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        txtLuong.setText(luongCanBan);
 		        
 		        // Set giá trị vào ComboBox "Chức vụ"
-		        cboChucVuNV.setSelectedItem(chucVu);  // comboBoxChucVu là JComboBox cho chức vụ
+		     //   cboChucVuNV.setSelectedItem(chucVu);  // comboBoxChucVu là JComboBox cho chức vụ
 		        
 		        txtCMNDNV.setText(cMND);
 		        txtTDNV.setText(trinhDo);
@@ -1405,6 +1428,31 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
 		    }
 		    return value;
+		}
+
+//
+		public boolean kiemTraNhanVienTonTai(String tenNhanVien, String sdt) {
+		    EntityManager em = emf.createEntityManager();
+		    try {
+		        // Câu truy vấn kiểm tra nếu có nhân viên trùng tên và số điện thoại
+		        String jpqlCheck = "SELECT COUNT(nv) FROM NhanVien nv WHERE nv.tenNhanVien = :tenNhanVien AND nv.sDT = :sDT";
+		        
+		        TypedQuery<Long> queryCheck = em.createQuery(jpqlCheck, Long.class);
+		        
+		        // Thiết lập tham số cho câu truy vấn
+		        queryCheck.setParameter("tenNhanVien", tenNhanVien);
+		        queryCheck.setParameter("sDT", sdt);
+		        
+		        Long count = queryCheck.getSingleResult();
+		        
+		        // Trả về true nếu có bản ghi trùng khớp, false nếu không có bản ghi nào
+		        return count > 0;
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return false;  // Trả về false nếu có lỗi xảy ra
+		    } finally {
+		        em.close();
+		    }
 		}
 
 

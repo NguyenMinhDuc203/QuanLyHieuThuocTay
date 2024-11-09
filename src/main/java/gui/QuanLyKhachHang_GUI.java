@@ -53,8 +53,23 @@ import java.lang.reflect.Field;
 import javax.swing.table.DefaultTableModel;
 import java.lang.reflect.Field;
 
+<<<<<<< HEAD
 public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
 
+=======
+<<<<<<< HEAD
+
+public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
+
+=======
+
+
+
+public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionListener{
+
+
+>>>>>>> 8427965b06a27e25a6cff323cdc9f0755dce9a26
+>>>>>>> b08ac0036e569c02a7c67272d2ade245f1705136
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtNgaySinh;
@@ -504,7 +519,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
 	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
 	    
-	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	//    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
 	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
 	    
 	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
@@ -587,9 +602,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 	        this.setVisible(false);
 	    }
 		public void openBanHang() {
-	        BanHang_GUI banHang = new BanHang_GUI();
-	        banHang.setVisible(true);
-	        this.setVisible(false);
+	  //      BanHang_GUI banHang = new BanHang_GUI();
+	     //   banHang.setVisible(true);
+	   //     this.setVisible(false);
 	    }
 		public void openThongKeDoanhSo() {
 	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
@@ -654,12 +669,14 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 
 				   
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
+				    
 				    int rowCount = model.getRowCount(); // Số dòng hiện có
-				    String maKH = String.format("KH%10d", rowCount + 1); // Mã mới: KH001, KH002,...
+				    String maKH =dao_kh.maTuSinhKhachHang();
 
 				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
-
+				    model.fireTableDataChanged();
+				    table.repaint();
 				   
 				        JOptionPane.showMessageDialog(null, "Thêm khách hàng vào bảng thành công!");
 				    
@@ -765,9 +782,10 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 
 			        
 
-			            JOptionPane.showMessageDialog(null, "Lưu tất cả khách hàng vào cơ sở dữ liệu thành công!");
 			        
-			    }}
+			    }			            JOptionPane.showMessageDialog(null, "Lưu tất cả khách hàng vào cơ sở dữ liệu thành công!");
+
+			        }
 
 
 			    if (o.equals(btnTim)) {

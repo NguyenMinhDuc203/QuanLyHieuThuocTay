@@ -207,6 +207,6 @@ public class TraCuuSanPham_GUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new TraCuuSanPham1();
+        new TraCuuSanPham_GUI();
     }
 }
