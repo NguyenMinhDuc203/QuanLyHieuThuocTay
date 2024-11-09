@@ -9,21 +9,16 @@ import jakarta.persistence.TypedQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.lang.System.Logger;
 import java.sql.Connection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
-import entity.SanPham;
-import jakarta.persistence.Query;
-
-import java.util.logging.Logger;
 
 import entity.SanPham;
 import jakarta.persistence.Query;
 import java.lang.reflect.Field;
-
 
     
 public class SanPham_DAO {
@@ -366,7 +361,7 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
-    
+
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
         try {
@@ -459,7 +454,7 @@ public class SanPham_DAO {
 
         return isCleared;
     }
-    
+
     //
     public SanPham findSanPhamWithLoaiSanPham(String maSP) {
         EntityManager em = emf.createEntityManager();
@@ -477,5 +472,4 @@ public class SanPham_DAO {
 
 
 }
-    
-
+ 

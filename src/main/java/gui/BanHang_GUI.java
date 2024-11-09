@@ -1386,7 +1386,7 @@ public class BanHang_GUI extends JFrame {
                   model.addRow(new Object[]{
                       sanPham.getMaSanPham(),
                       sanPham.getTenSanPham(),
-                      1,  // Số lượng mặc định là 1
+                      txtNhapSL.getText(),  // Số lượng mặc định là 1
                       giaBan,
                       thueGTGT,
                       giamGia,
