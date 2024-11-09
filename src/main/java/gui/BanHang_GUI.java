@@ -336,13 +336,9 @@ public class BanHang_GUI extends JFrame {
       
       table = new JTable();
       table.setModel(new DefaultTableModel(
-      	new Object[][] {
-<<<<<<< HEAD
-=======
-      		
->>>>>>> 2661db7a3dab1ac412d132c165542aab51d5e9f6
-      	},
-      	new String[] {
+      	
+
+      	null, new String[] {
       		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "S\u1ED1 L\u01B0\u1EE3ng", "Gi\u00E1 B\u00E1n", "Thu\u1EBF GTGT", "Gi\u1EA3m Gi\u00E1", "Th\u00E0nh Ti\u1EC1n"
       	}
       ) {
@@ -401,15 +397,12 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_1_3.setBounds(740, 606, 195, 54);
       BanHangPane.add(btnNewButton_1_3);
       
-<<<<<<< HEAD
       JButton btnNewButton_2 = new JButton("New button");
       btnNewButton_2.addActionListener(new ActionListener() {
       	public void actionPerformed(ActionEvent e) {
       	}
       });
-=======
       JButton btnNewButton_2 = new JButton("Hoàn thành đơn");
->>>>>>> 2661db7a3dab1ac412d132c165542aab51d5e9f6
       btnNewButton_2.setBounds(339, 724, 261, 54);
       BanHangPane.add(btnNewButton_2);
       
@@ -1172,7 +1165,6 @@ public class BanHang_GUI extends JFrame {
       initComponents();
       initializeInvoiceFields();
     }
-<<<<<<< HEAD
   protected void initComponents() {
 	// TODO Auto-generated method stub
 	
@@ -1200,6 +1192,4 @@ private void initializeInvoiceFields() {
 
  
 
-=======
->>>>>>> 2661db7a3dab1ac412d132c165542aab51d5e9f6
 }

@@ -11,11 +11,7 @@ import javax.swing.JOptionPane;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
-<<<<<<< HEAD
-=======
 
-
->>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
@@ -341,9 +337,4 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 }
-

@@ -9,22 +9,18 @@ import jakarta.persistence.TypedQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.lang.System.Logger;
 import java.sql.Connection;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-<<<<<<< HEAD
-import java.util.logging.Logger;
-=======
+
 import entity.SanPham;
 import jakarta.persistence.Query;
 public class SanPham_DAO {
-    private EntityManagerFactory emf;
->>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
 
-public class SanPham_DAO {
-    private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
+//    private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
     private EntityManagerFactory emf;
     private Connection connection;
 
@@ -361,7 +357,6 @@ public class SanPham_DAO {
 //
 //        return result;
 //    }
-<<<<<<< HEAD
     
     public SanPham getSanPhamByMaSanPham(String maSanPham) {
     	EntityManager em = emf.createEntityManager();
@@ -374,7 +369,6 @@ public class SanPham_DAO {
             return null;  // Trả về null nếu không tìm thấy sản phẩm
         }
     }
-=======
 
     // save sp
     public boolean saveSanPham(List<SanPham> danhSachSanPham) {
@@ -434,6 +428,5 @@ public class SanPham_DAO {
         return isCleared;
     }
 
->>>>>>> b6f2eacea31474d320cce9437a1e1cc54cb5e84c
-    
-}
+}    
+
