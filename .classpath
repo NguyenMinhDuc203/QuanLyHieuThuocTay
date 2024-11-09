@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+<<<<<<< HEAD
 	<classpathentry including="**/*.java" kind="src" output="target/classes" path="src/main/java">
+=======
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" output="target/classes" path="src/main/java">
+>>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -32,12 +41,27 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
+=======
+	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dell/Downloads/jcalendar-1.4/lib/jcalendar-1.4.jar"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="optional" value="true"/>
+		</attributes>
+	</classpathentry>
+>>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 	<classpathentry kind="src" path="target/generated-sources/annotations">
 		<attributes>
 			<attribute name="ignore_optional_problems" value="true"/>
 			<attribute name="optional" value="true"/>
+<<<<<<< HEAD
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="m2e-apt" value="true"/>
+=======
+>>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">
@@ -45,8 +69,12 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 			<attribute name="test" value="true"/>
 			<attribute name="optional" value="true"/>
+<<<<<<< HEAD
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="m2e-apt" value="true"/>
+=======
+			<attribute name="test" value="true"/>
+>>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>

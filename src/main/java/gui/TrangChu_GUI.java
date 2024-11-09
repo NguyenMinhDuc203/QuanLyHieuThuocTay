@@ -303,6 +303,7 @@ public class TrangChu_GUI extends JFrame {
     
   //  salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
     homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
+    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
     
     manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
     manageMenuItem2.addActionListener(createMenuActionListener(this, QuanLyNhanVien_GUI.class));

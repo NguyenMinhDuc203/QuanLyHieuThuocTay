@@ -6,7 +6,8 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import gui.DangNhap_GUI;
-import gui.TrangChu_GUI;
+import dao.NhanVien_DAO;
+import entity.NhanVien;
 public class Test {
 	public static void main(String[] args) {
 EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
@@ -25,7 +26,17 @@ EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyH
 		
 		em.close();
 		emf.close();
+<<<<<<< HEAD
 
+=======
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			new DangNhap_GUI().setVisible(true);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+>>>>>>> 67bc86e8b5e75a66a3f8f4711599cebb9e8c8c8a
 	}
 
 }
