@@ -128,42 +128,34 @@ public class KhachHang_DAO {
     //
    
 
-    public String maTuSinhKhachHang() {
+    public String maTuSinhKhachHang(String sdtKH) {
         EntityManager em = emf.createEntityManager();
-        String maKhachHang = null;
-        Random random = new Random();
+        String maKhachHang = "KH" + sdtKH;
 
         try {
-            boolean unique = false;
+            // Kiểm tra xem mã khách hàng với số điện thoại đã tồn tại chưa
+            String jpql = "SELECT COUNT(kh) FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang";
+            TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+            query.setParameter("maKhachHang", maKhachHang);
+            long count = query.getSingleResult();
 
-            // Lặp cho đến khi tìm được mã khách hàng ngẫu nhiên không trùng
-            while (!unique) {
-                // Tạo mã ngẫu nhiên "KH" + 10 chữ số
-                long randomId = Math.abs(random.nextLong() % 10000000000L);
-                maKhachHang = String.format("KH%010d", randomId);
-
-                // Kiểm tra mã khách hàng ngẫu nhiên có trùng không
-                String jpql = "SELECT COUNT(kh) FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang";
-                TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-                query.setParameter("maKhachHang", maKhachHang);
-                long count = query.getSingleResult();
-
-                // Nếu không trùng, thì chấp nhận mã này
-                if (count == 0) {
-                    unique = true;
-                }
+            // Nếu mã khách hàng đã tồn tại, thêm hậu tố số ngẫu nhiên để tránh trùng lặp
+            if (count > 0) {
+                Random random = new Random();
+                maKhachHang = maKhachHang + random.nextInt(100); // Thêm số ngẫu nhiên từ 0 đến 99
             }
 
         } catch (Exception e) {
             System.err.println("Lỗi khi tự sinh mã khách hàng: " + e.getMessage());
             e.printStackTrace();
-            maKhachHang = "KH0123456789"; // Trong trường hợp lỗi, dùng mã mặc định
+            maKhachHang = "KH" + sdtKH + "01"; // Trong trường hợp lỗi, thêm hậu tố mặc định
         } finally {
             em.close();
         }
 
         return maKhachHang;
     }
+
 
 
 //

@@ -15,6 +15,9 @@ import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import entity.SanPham;
 import jakarta.persistence.Query;
@@ -374,46 +377,36 @@ public class SanPham_DAO {
         }
     }
 
-    // save sp
     public boolean saveSanPham(List<SanPham> danhSachSanPham) {
         EntityManager entityManager = emf.createEntityManager();
-        boolean isSaved = false;
-        
-        // Xóa tất cả các sản phẩm cũ (nếu cần)
-        clearAllSanPham();
+        boolean isSaved = true;
 
         try {
+            // Xóa toàn bộ sản phẩm cũ trong cơ sở dữ liệu
+            clearAllSanPham();
+
+            // Bắt đầu giao dịch
             entityManager.getTransaction().begin();
 
             // Duyệt qua từng sản phẩm và lưu vào cơ sở dữ liệu
             for (SanPham sp : danhSachSanPham) {
-                try {
-                    // Sử dụng Reflection để kiểm tra maSanPham
-                    Field maSanPhamField = SanPham.class.getDeclaredField("maSanPham"); // Truy cập trường maSanPham
-                    maSanPhamField.setAccessible(true); // Cho phép truy cập trường private
-
-                    // Kiểm tra giá trị của maSanPham
-                    Object maSanPham = maSanPhamField.get(sp);
-                    
-                    // Nếu maSanPham là null, sử dụng persist, nếu không dùng merge
-                    if (maSanPham == null) {
-                        entityManager.persist(sp); // Lưu sản phẩm mới
-                    } else {
-                        entityManager.merge(sp); // Cập nhật sản phẩm đã tồn tại
-                    }
-                } catch (NoSuchFieldException | IllegalAccessException e) {
-                    System.err.println("Lỗi khi truy xuất trường maSanPham: " + e.getMessage());
-                    e.printStackTrace();
+                // Gọi phương thức addSanPham1 để thêm sản phẩm vào cơ sở dữ liệu
+                boolean result = addSanPham1(sp);
+                if (!result) {
+                    // Nếu có lỗi khi lưu một sản phẩm, set isSaved = false và tiếp tục với sản phẩm tiếp theo
+                    isSaved = false;
+                    break;
                 }
             }
 
-            // Commit giao dịch
-            entityManager.getTransaction().commit();
-            System.out.println("Giao dịch thành công!");
+            // Commit giao dịch nếu tất cả sản phẩm đã được lưu
+            if (isSaved) {
+                entityManager.getTransaction().commit();
+                System.out.println("Giao dịch thành công!");
+            }
 
-            isSaved = true;
         } catch (Exception e) {
-            // Rollback nếu có lỗi xảy ra
+            // Nếu có lỗi, rollback giao dịch
             if (entityManager.getTransaction().isActive()) {
                 entityManager.getTransaction().rollback();
             }
@@ -423,10 +416,9 @@ public class SanPham_DAO {
                 entityManager.close();
             }
         }
-
+        
         return isSaved;
     }
-
 
 // xóa toàn bộ trong csdl
     public boolean clearAllSanPham() {
@@ -441,6 +433,7 @@ public class SanPham_DAO {
             Query query = entityManager.createQuery(jpql);
             query.executeUpdate();
 
+            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
             entityManager.getTransaction().commit();
             isCleared = true;
         } catch (Exception e) {
@@ -454,6 +447,7 @@ public class SanPham_DAO {
 
         return isCleared;
     }
+
 
     //
     public SanPham findSanPhamWithLoaiSanPham(String maSP) {
@@ -469,7 +463,29 @@ public class SanPham_DAO {
             em.close();
         }
     }
+   
+    public boolean addSanPham1(SanPham sp) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean result = false;
 
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(sp);
+            entityManager.getTransaction().commit();
+            result = true;
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
+        }
 
+        return result;
+    }
+    
 }
  
