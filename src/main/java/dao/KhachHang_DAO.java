@@ -636,6 +636,30 @@ public class KhachHang_DAO {
     }
     
     
+    public String layTenKhachHangByMa(String maKhachHang) {
+        EntityManager em = emf.createEntityManager();
+        String tenKhachHang = null;
 
+        try {
+            // Sử dụng HQL để truy vấn tên khách hàng từ mã khách hàng
+            String jpql = "SELECT k.tenKhachHang FROM KhachHang k WHERE k.maKhachHang = :maKhachHang";
+            TypedQuery<String> query = em.createQuery(jpql, String.class);
+            query.setParameter("maKhachHang", maKhachHang);
 
+            // Lấy kết quả
+            tenKhachHang = query.getSingleResult();
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
+            System.out.println("Không tìm thấy khách hàng với mã: " + maKhachHang);
+        } catch (Exception e) {
+            // Xử lý các lỗi khác nếu có
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return tenKhachHang;
+    }
+    
+    
 }

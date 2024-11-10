@@ -16,6 +16,7 @@ import entity.ChucVu;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -336,6 +337,33 @@ public class NhanVien_DAO {
         }
 
         return nhanVien;
+    }
+    
+    
+ // Hàm lấy tên nhân viên theo mã nhân viên
+    public String layTenNhanVienByMa(String maNhanVien) {
+        EntityManager em = emf.createEntityManager();
+        String tenNhanVien = null;
+
+        try {
+            // Sử dụng HQL để truy vấn tên nhân viên từ mã nhân viên
+            String jpql = "SELECT n.tenNhanVien FROM NhanVien n WHERE n.maNhanVien = :maNhanVien";
+            TypedQuery<String> query = em.createQuery(jpql, String.class);
+            query.setParameter("maNhanVien", maNhanVien);
+
+            // Lấy kết quả
+            tenNhanVien = query.getSingleResult();
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
+            System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
+        } catch (Exception e) {
+            // Xử lý các lỗi khác nếu có
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return tenNhanVien;
     }
 
 }

@@ -64,6 +64,7 @@ import org.eclipse.wb.swing.FocusTraversalOnArray;
 
 import com.itextpdf.layout.element.List;
 
+import dao.HoaDonDoiTra_DAO;
 import dao.HoaDonXuat_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
@@ -71,9 +72,11 @@ import dao.SanPham_DAO;
 import dao_local.DonTam_DAO;
 import entity.HoaDonXuat;
 import entity.KhachHang;
+import entity.LoaiHoaDon;
 import entity.NhanVien;
 import entity.SanPham;
 import entity.ChiTietHoaDon;
+import entity.HoaDonDoiTra;
 import gui.DangNhap_GUI;
 
 import java.awt.CardLayout;
@@ -152,6 +155,7 @@ public class BanHang_GUI extends JFrame {
 	private static KhachHang_DAO khachHangDAO;
 	private HoaDonXuat_DAO hoaDonXuatDAO;
 	private SanPham sanPham;
+	private NhanVien_DAO nhanVienDAO;
 
     private DonTam_DAO donTamDAO;  // DAO để lấy và lưu dữ liệu
     public static void main(String[] args) {
@@ -174,6 +178,7 @@ public class BanHang_GUI extends JFrame {
 	  hoaDonXuat = new HoaDonXuat();
 	  khachHangDAO = new KhachHang_DAO();
 	  hoaDonXuatDAO = new HoaDonXuat_DAO();
+	  nhanVienDAO = new NhanVien_DAO();
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -716,7 +721,7 @@ public class BanHang_GUI extends JFrame {
       		{null, null, "", null, null, null},
       	},
       	new String[] {
-      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1", "Thu\u1EBF GTGT", "Th\u00E0nh Ti\u1EC1n"
+      		"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng", "Đơn giá", "Thuế GTGT", "Thành Tiền"
       	}
       ));
       giaoDienTable(table_4);
@@ -999,18 +1004,25 @@ public class BanHang_GUI extends JFrame {
       lblNewLabel_5_1_1_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       lblNewLabel_5_1_1_1.setBounds(25, 154, 186, 30);
       panel_5.add(lblNewLabel_5_1_1_1);
-      
+   // Tạo các radio button
       JRadioButton rdbtnNewRadioButton = new JRadioButton("Đổi hàng");
       rdbtnNewRadioButton.setBackground(new Color(255, 255, 255));
       rdbtnNewRadioButton.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       rdbtnNewRadioButton.setBounds(217, 158, 109, 23);
       panel_5.add(rdbtnNewRadioButton);
-      
+
       JRadioButton rdbtnTrHng = new JRadioButton("Trả hàng");
       rdbtnTrHng.setBackground(new Color(255, 255, 255));
       rdbtnTrHng.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       rdbtnTrHng.setBounds(364, 158, 109, 23);
       panel_5.add(rdbtnTrHng);
+
+      // Tạo ButtonGroup và thêm các radio button vào nhóm
+      ButtonGroup group = new ButtonGroup();
+      group.add(rdbtnNewRadioButton);
+      group.add(rdbtnTrHng);
+
+      rdbtnTrHng.setSelected(true);
       
       JLabel lblNewLabel_5_1_1_1_1 = new JLabel("Danh sách sản phẩm:");
       lblNewLabel_5_1_1_1_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
@@ -1812,6 +1824,170 @@ public class BanHang_GUI extends JFrame {
 
       //initComponents();
       initializeInvoiceFields();
+      
+   // Thêm ActionListener vào nút btnNewButton_6_2_1
+      btnNewButton_6_2_1.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Lấy mô hình của table_4 và table_5
+    	        DefaultTableModel modelTable4 = (DefaultTableModel) table_4.getModel();
+    	        DefaultTableModel modelTable5 = (DefaultTableModel) table_5.getModel();
+    	        DefaultTableModel modelTable6 = (DefaultTableModel) table_6.getModel();
+    	        // Xóa các hàng hiện tại của table_5
+    	        modelTable5.setRowCount(0);
+
+    	        // Lặp qua các hàng của table_4 và thêm vào table_5
+    	        for (int i = 0; i < modelTable4.getRowCount(); i++) {
+    	            Object maSanPham = modelTable4.getValueAt(i, 0);
+    	            Object tenSanPham = modelTable4.getValueAt(i, 1);
+    	            Object soLuong = modelTable4.getValueAt(i, 2);
+    	            Object donGia = modelTable4.getValueAt(i, 3);
+    	            Object thueGTGT = modelTable4.getValueAt(i, 4);
+    	            Object thanhTien = modelTable4.getValueAt(i, 5);
+
+    	            // Thêm hàng vào table_5
+    	            modelTable5.addRow(new Object[]{maSanPham, tenSanPham, soLuong, donGia, thueGTGT, null, thanhTien});
+    	            modelTable6.addRow(new Object[]{maSanPham, tenSanPham, soLuong, thanhTien});
+    	        }
+
+    	        // Lấy mô hình của table_3
+    	        DefaultTableModel modelTable3 = (DefaultTableModel) table_3.getModel();
+
+    	        // Lấy chỉ số dòng đang được chọn
+    	        int selectedRow = table_3.getSelectedRow();
+
+    	        // Kiểm tra nếu có dòng nào được chọn
+    	        if (selectedRow != -1) {
+    	            // Lấy các giá trị trong dòng đó
+    	            String maHoaDon = (String) modelTable3.getValueAt(selectedRow, 0);
+    	            String maNhanVien = (String) modelTable3.getValueAt(selectedRow, 1);
+    	            String maKhachHang = (String) modelTable3.getValueAt(selectedRow, 2);
+    	            java.sql.Date ngayMuaSQL = (java.sql.Date) modelTable3.getValueAt(selectedRow, 3);
+    	            String ngayMua = ngayMuaSQL.toString();
+    	            String maGiamGia = (String) modelTable3.getValueAt(selectedRow, 4);
+    	            Double value = (Double) modelTable3.getValueAt(selectedRow, 5);  // Giả sử bạn đang lấy giá trị kiểu Double từ bảng
+    	            String thanhTien = String.valueOf(value);
+    	            // Gọi hàm truy vấn tên khách hàng và tên nhân viên từ DAO
+    	            String tenKhachHang = khachHangDAO.layTenKhachHangByMa(maKhachHang);
+    	            String tenNhanVien = nhanVienDAO.layTenNhanVienByMa(maNhanVien);
+
+    	            String loaiKhachHang;
+					if (maKhachHang.equals("KH0000000000")) {
+						loaiKhachHang = "Khách vãng lai";
+					}
+					else {
+						loaiKhachHang= "Thành viên";
+					}
+    	            // Đặt giá trị cho các JTextField tương ứng
+    	            textField_15.setText(maNhanVien);
+    	            textField_16.setText(tenNhanVien != null ? tenNhanVien : "Không tìm thấy tên NV");
+    	            textField_17.setText(loaiKhachHang);
+    	            textField_18.setText(maKhachHang);
+    	            textField_19.setText(tenKhachHang != null ? tenKhachHang : "Không tìm thấy tên KH");
+    	            textField_20.setText(maHoaDon);
+    	            textField_21.setText(ngayMua);
+    	            textField_22.setText(thanhTien);
+    	            
+    	            
+    	            
+    	            
+    	            String maHoaDonDoiTra = maHoaDon.replace("BH", "DT");
+    	            textField_23.setText(maHoaDonDoiTra);
+    	            textField_24.setText(maNVDangNhap);
+    	            textField_25.setText(ngayMua);
+//    	            textField_26 : Lý do
+    	            textField_27.setText(thanhTien);
+//Ngày tạo, Tiền hoàn, Lý do, maHoaDonDoiTra, maHoaDonXuat, maKhachHang, maNhanVien, loaiHoaDon ( Trả hàng / Đổi hàng )
+
+    	            // Chuyển từ panel DonHoanThanhPane sang DonTraPane
+    	            DonHoanThanhPane.setVisible(false);
+    	            DonTraPane.setVisible(true);
+    	        } else {
+    	            // Hiển thị thông báo nếu chưa chọn dòng nào
+    	            JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng trong bảng.");
+    	        }
+    	    }
+    	});
+      
+      
+      btnNewButton_7.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Lấy thông tin từ các TextField
+    	        String maHoaDonDoiTra = textField_23.getText();
+    	        String maHoaDonXuat = textField_20.getText();
+    	        String maKhachHang = textField_18.getText();
+    	        String maNhanVien = textField_15.getText(); // textField_24 mới đúng
+    	        LoaiHoaDon loaiHoaDon = rdbtnTrHng.isSelected() ? LoaiHoaDon.TRA_HANG : LoaiHoaDon.DOI_HANG;
+    	        String ngayTao = textField_25.getText();  // Giả sử bạn có ngày tạo
+    	        String tienHoan = textField_27.getText();
+    	        String lyDo = textField_26.getText();
+
+    	        // Chuyển các giá trị chuỗi thành kiểu dữ liệu thích hợp
+    	        LocalDate ngayTaoDate = LocalDate.parse(ngayTao); // Giả sử ngày có định dạng hợp lệ
+    	        double tienHoanValue = Double.parseDouble(tienHoan); // Chuyển chuỗi thành double
+
+    	        // Tạo đối tượng HoaDonDoiTra
+    	        HoaDonDoiTra hoaDonDoiTra = new HoaDonDoiTra();
+    	        hoaDonDoiTra.setMaHoaDonDoiTra(maHoaDonDoiTra);
+    	        hoaDonDoiTra.setHoaDonXuat(new HoaDonXuat(maHoaDonXuat));
+    	        hoaDonDoiTra.setKhachHang(new KhachHang(maKhachHang));
+    	        hoaDonDoiTra.setNhanVien(new NhanVien(maNhanVien));
+    	        hoaDonDoiTra.setLoaiHoaDon(loaiHoaDon);
+    	        hoaDonDoiTra.setNgayTao(ngayTaoDate);
+    	        hoaDonDoiTra.setTienHoan(tienHoanValue);
+    	        hoaDonDoiTra.setLyDo(lyDo);
+
+    	        // Gọi phương thức lưu vào DAO
+    	        HoaDonDoiTra_DAO hoaDonDoiTraDAO = new HoaDonDoiTra_DAO();
+    	        boolean result = hoaDonDoiTraDAO.luuHoaDonDoiTra(hoaDonDoiTra);
+    	        if (result) {
+    	            JOptionPane.showMessageDialog(null, "Lưu hóa đơn đổi trả thành công!");
+    	        } else {
+    	            JOptionPane.showMessageDialog(null, "Lỗi khi lưu hóa đơn đổi trả!");
+    	        }
+    	    }
+    	});
+
+      
+      btnNewButton_7_1.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {
+    	        // 1. Xóa tất cả các dòng trong bảng table_5 và table_6
+    	        DefaultTableModel model5 = (DefaultTableModel) table_5.getModel();
+    	        DefaultTableModel model6 = (DefaultTableModel) table_6.getModel();
+    	        model5.setRowCount(0);  // Xóa tất cả các dòng trong table_5
+    	        model6.setRowCount(0);  // Xóa tất cả các dòng trong table_6
+    	        
+    	        // 2. Đặt tất cả các textField từ textField_15 đến textField_27 thành rỗng
+    	        textField_15.setText("");
+    	        textField_16.setText("");
+    	        textField_17.setText("");
+    	        textField_18.setText("");
+    	        textField_19.setText("");
+    	        textField_20.setText("");
+    	        textField_21.setText("");
+    	        textField_22.setText("");
+    	        textField_23.setText("");
+    	        textField_24.setText("");
+    	        textField_25.setText("");
+    	        textField_26.setText("");
+    	        textField_27.setText("");
+    	        
+    	        // 3. Chọn lại rdbtnTrHng
+    	        rdbtnTrHng.setSelected(true);  // Đặt radio button rdbtnTrHng thành đã chọn
+    	        
+    	        DonHoanThanhPane.setVisible(true);
+    	        DonTraPane.setVisible(false);
+    	    }
+    	    
+    	});
+
+      
+      
+      
+      
+      
+
     }
   
   	public void giaoDienTable (JTable table) {

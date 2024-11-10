@@ -38,5 +38,8 @@ public class NhanVien {
 	private String matKhau;
 	private boolean trangThai;
 	
-	
+	public NhanVien(String maNhanVien) {
+		super();
+		this.maNhanVien = maNhanVien;
+	}
 }
