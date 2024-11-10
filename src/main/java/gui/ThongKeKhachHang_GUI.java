@@ -39,11 +39,6 @@ import javax.swing.ListSelectionModel;
 public class ThongKeKhachHang_GUI extends JFrame {
 	
 	
-	// vấn đề : 
-	// khi chọn ngày ở JDateChooser, ngày không được chọn
-	// khi chọn JRadioButton, nhóm không hoạt động
-	
-
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField textField_1;

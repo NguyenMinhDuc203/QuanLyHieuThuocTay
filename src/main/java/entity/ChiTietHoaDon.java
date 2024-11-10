@@ -30,6 +30,11 @@ public class ChiTietHoaDon {
 	@JoinColumn(name = "maHoaDonXuat")
 	private HoaDonXuat hoaDonXuat;
 	
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "maHoaDonDoiTra")
+	private HoaDonDoiTra hoaDonDoiTra;
+	
+	
 	
 	@EqualsAndHashCode.Exclude
 	private int soLuong;

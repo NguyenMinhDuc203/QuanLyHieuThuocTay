@@ -21,4 +21,6 @@ public class MaGiamGia {
 	private String maGiamGia;
 	private double triGia;
 	private LocalDate ngayHetHan;
+	private int diemDoi;
+	
 }
