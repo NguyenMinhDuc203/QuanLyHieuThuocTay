@@ -985,12 +985,18 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        return;
 			    }
 
+			    // Gọi hàm checkData() để kiểm tra tính hợp lệ của dữ liệu
+			    if (!checkData()) {
+			        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
 			    // Kiểm tra nếu tên sản phẩm đã tồn tại trong bảng
 			    DefaultTableModel model = (DefaultTableModel) table.getModel();
 			    boolean isProductExist = false;
 
 			    for (int i = 0; i < model.getRowCount(); i++) {
-			    	String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
+			        String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
 			        if (existingProductName.equalsIgnoreCase(tenSP)) {
 			            isProductExist = true;
 			            break;
@@ -1015,7 +1021,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			    model.addRow(new Object[]{
 			        maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT, maHoaDon, maLoaiSP
 			    });
-			    model.fireTableDataChanged();
 
 			    JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
 
@@ -1037,6 +1042,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			    cboDVTSP.setSelectedIndex(0);
 			    txtNSXSP.setText("");
 			}
+
 
 			if (o.equals(btnXoa)) {
 			    int selectedRow = table.getSelectedRow();
@@ -1623,6 +1629,85 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		    // Kiểm tra Loại sản phẩm và Hóa đơn nhập
 		   // if (sp.loaiSanPham == null) sp.loaiSanPham = new LoaiSanPham("Không xác định");
 		  //  if (sp.hoaDonNhap == null) sp.hoaDonNhap = new HoaDonNhap("Không xác định");
+		}
+		public boolean checkData() {
+		    String tenSP = txtTenSP.getText().trim();
+		    String baoq = txtBQSP.getText().trim();
+		    String giaBan = txtGBSP.getText().trim();
+		    String ghiChu = txtGCSP.getText().trim();
+		    String giaNhap = txtGNSP.getText().trim();
+		    String soLuongTonKho = txtSLTKSP.getText().trim();
+		    String thanhPhan = txtTPSP.getText().trim();
+		    String thueGTGT = txtTGTGTSP.getText().trim();
+		    String nhaSanXuat = txtNhaSXSP.getText().trim();
+		    String hanSuDung = txtHSDSP.getText().trim();
+		    String maHoaDon = txtMHDSP.getText().trim();
+		    String maLoaiSP = txtMLSP.getText().trim();
+		    String congDung = txtCDSP.getText().trim();
+		    String chongChiDinh = txtCCDSP.getText().trim();
+		    String donViTinh = cboDVTSP.getSelectedItem().toString().trim();
+		    String ngaySanXuat = txtNSXSP.getText().trim();
+
+		    // Kiểm tra các trường bắt buộc không được để trống
+		    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || giaNhap.isEmpty() || soLuongTonKho.isEmpty() ||
+		        thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() || hanSuDung.isEmpty() ||
+		        maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() || ngaySanXuat.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra giá bán, giá nhập, và thuế GTGT phải là số hợp lệ
+		    try {
+		        Double.parseDouble(giaBan);
+		        Double.parseDouble(giaNhap);
+		        Double.parseDouble(thueGTGT);
+		    } catch (NumberFormatException e) {
+		        JOptionPane.showMessageDialog(null, "Giá bán, giá nhập, và thuế GTGT phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra số lượng tồn kho là số nguyên hợp lệ
+		    try {
+		        Integer.parseInt(soLuongTonKho);
+		    } catch (NumberFormatException e) {
+		        JOptionPane.showMessageDialog(null, "Số lượng tồn kho phải là số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra định dạng ngày tháng
+		    try {
+		        LocalDate hanSuDungDate = LocalDate.parse(hanSuDung);
+		        LocalDate ngaySanXuatDate = LocalDate.parse(ngaySanXuat);
+
+		        if (ngaySanXuatDate.isAfter(LocalDate.now())) {
+		            JOptionPane.showMessageDialog(null, "Ngày sản xuất không thể sau ngày hiện tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		            return false;
+		        }
+
+		        if (hanSuDungDate.isBefore(ngaySanXuatDate)) {
+		            JOptionPane.showMessageDialog(null, "Hạn sử dụng phải sau ngày sản xuất!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		            return false;
+		        }
+		    } catch (DateTimeParseException e) {
+		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-mm-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra mã loại sản phẩm có tồn tại trong bảng LoaiSanPham không
+		    LoaiSanPham loai = dao_lsp.findLoaiSanPhamByMa(maLoaiSP);  // Giả sử loaiSanPhamDAO là đối tượng truy cập dữ liệu của LoaiSanPham
+		    if (loai == null) {
+		        JOptionPane.showMessageDialog(null, "Mã loại sản phẩm không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra mã hóa đơn nhập có tồn tại trong bảng HoaDonNhap không
+		    HoaDonNhap hoaDon = dao_hdn.findHoaDonNhapByMa(maHoaDon);  // Giả sử hoaDonNhapDAO là đối tượng truy cập dữ liệu của HoaDonNhap
+		    if (hoaDon == null) {
+		        JOptionPane.showMessageDialog(null, "Mã hóa đơn nhập không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    return true;
 		}
 
 }

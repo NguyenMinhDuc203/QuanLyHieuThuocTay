@@ -337,5 +337,35 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
+    public String layMaNhanVienTheoTenTK(String tenTK) {
+	    EntityManager entityManager = emf.createEntityManager();
+	    String maNhanVien = null;
+
+	    try {
+	        // Bắt đầu giao dịch
+	        entityManager.getTransaction().begin();
+
+	        // Tạo truy vấn để lấy maNhanVien dựa trên tenTK
+	        String jpql = "SELECT nv.maNhanVien FROM NhanVien nv WHERE nv.tenTK = :tenTK";
+	        Query query = entityManager.createQuery(jpql);
+	        query.setParameter("tenTK", tenTK);
+
+	        // Lấy kết quả (nếu có)
+	        maNhanVien = (String) query.getSingleResult();
+
+	        // Kết thúc giao dịch
+	        entityManager.getTransaction().commit();
+	    } catch (Exception e) {
+	        if (entityManager.getTransaction().isActive()) {
+	            entityManager.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        entityManager.close();
+	    }
+
+	    return maNhanVien;
+	}
+
 
 }
