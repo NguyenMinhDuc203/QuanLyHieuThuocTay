@@ -958,7 +958,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        cboDVTSP.setSelectedIndex(0);
 			}
 			// Tạo hành động khi nhấn nút "Thêm Sản Phẩm"
-			if(o.equals(btnThem)) {
+			if (o.equals(btnThem)) {
 			    String tenSP = txtTenSP.getText();
 			    String baoq = txtBQSP.getText();
 			    String giaBan = txtGBSP.getText();
@@ -990,7 +990,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			    boolean isProductExist = false;
 
 			    for (int i = 0; i < model.getRowCount(); i++) {
-			        String existingProductName = model.getValueAt(i, 1).toString(); // Lấy tên sản phẩm từ cột thứ 2 (index 1)
+			    	String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
 			        if (existingProductName.equalsIgnoreCase(tenSP)) {
 			            isProductExist = true;
 			            break;
@@ -1002,9 +1002,14 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        return;
 			    }
 
-			    // Nếu kiểm tra dữ liệu thành công và sản phẩm chưa tồn tại, thêm sản phẩm vào bảng
+			    // Tạo mã sản phẩm theo công thức: SP + 4 chữ số bắt đầu từ 0010
 			    int rowCount = model.getRowCount();
-			    String maSP = String.format("SP%09d", rowCount + 1);
+			    String maSP = String.format("SP%04d", rowCount + 10);  // Bắt đầu từ SP0010 và tăng dần
+
+			    // Thêm mã loại sản phẩm, ngày sản xuất và chuỗi 123456789 + 5 chữ số bắt đầu từ 00001
+			    String loaiSP = maLoaiSP;  // Loại sản phẩm
+			    String formattedDate = ngaySanXuat.replace("-", "");  // Định dạng ngày sản xuất dạng yyyyMMdd
+			    maSP += loaiSP + formattedDate + "123456789" + String.format("%05d", rowCount + 1);
 
 			    // Thêm dòng mới vào bảng
 			    model.addRow(new Object[]{
@@ -1032,7 +1037,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			    cboDVTSP.setSelectedIndex(0);
 			    txtNSXSP.setText("");
 			}
-
 
 			if (o.equals(btnXoa)) {
 			    int selectedRow = table.getSelectedRow();
@@ -1460,7 +1464,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 
 		        danhSachSanPham.add(sp);
 		    }
-
+		    
 		    return danhSachSanPham;
 		}
 
