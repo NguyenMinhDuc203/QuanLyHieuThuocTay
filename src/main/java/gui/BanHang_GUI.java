@@ -29,6 +29,19 @@ import java.awt.GridBagLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.*;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.TextAlignment;
+import com.itextpdf.layout.element.Cell;
+
+import com.itextpdf.kernel.font.PdfFontFactory;
+
+import java.io.IOException;
+
+import com.itextpdf.kernel.font.PdfFont;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -136,8 +149,9 @@ public class BanHang_GUI extends JFrame {
 	private KhachHang khachHang;
 	private ChiTietHoaDon chiTietHoaDon;
 	private HoaDonXuat hoaDonXuat;
-	private KhachHang_DAO khachHangDAO;
+	private static KhachHang_DAO khachHangDAO;
 	private HoaDonXuat_DAO hoaDonXuatDAO;
+	private SanPham sanPham;
 
     private DonTam_DAO donTamDAO;  // DAO để lấy và lưu dữ liệu
     public static void main(String[] args) {
@@ -686,7 +700,7 @@ public class BanHang_GUI extends JFrame {
       		
       	},
       	new String[] {
-      		"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "Th\u00E0nh ti\u1EC1n"
+      		"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "Mã giảm giá", "Th\u00E0nh ti\u1EC1n"
       	}
       ));
       giaoDienTable(table_3);
@@ -788,32 +802,6 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_6_1.setBackground(new Color(26, 133, 94));
       btnNewButton_6_1.setBounds(129, 693, 183, 59);
       DonHoanThanhPane.add(btnNewButton_6_1);
-   // Thêm sự kiện ActionListener cho nút
-      btnNewButton_6_1.addActionListener(new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-              // Gọi class GeneratePdf để tạo file invoice.pdf
-              try {
-                  GeneratePdf.main(new String[]{});  // Gọi phương thức main của class GeneratePdf
-
-                  // Mở file PDF vừa tạo
-                  File invoiceFile = new File("invoice.pdf");
-                  if (invoiceFile.exists()) {
-                      // Sử dụng Desktop API để mở file PDF
-                      if (Desktop.isDesktopSupported()) {
-                          Desktop desktop = Desktop.getDesktop();
-                          desktop.open(invoiceFile);  // Mở file PDF với ứng dụng mặc định
-                      } else {
-                          JOptionPane.showMessageDialog(null, "Ứng dụng mở PDF không được hỗ trợ.");
-                      }
-                  } else {
-                      JOptionPane.showMessageDialog(null, "Không thể tìm thấy file hóa đơn.");
-                  }
-              } catch (Exception ex) {
-                  JOptionPane.showMessageDialog(null, "Lỗi khi xuất hóa đơn: " + ex.getMessage());
-              }
-          }
-      });
       
       JButton btnNewButton_6_2_1 = new JButton("Đổi/Trả hàng");
       btnNewButton_6_2_1.setForeground(new Color(255, 255, 255));
@@ -1405,7 +1393,7 @@ public class BanHang_GUI extends JFrame {
     	        if (sanPham != null) {
     	            // Lấy giá bán và các thông tin cần thiết từ sản phẩm
     	            double giaBan = sanPham.getGiaBan();
-    	            double thueGTGT = giaBan * sanPham.getThueGTGT() / 100;
+    	            double thueGTGT = giaBan * sanPham.getGiaBan() / 100;
     	            double giamGia = giaBan * 0 / 100; // Giả sử không có giảm giá
     	            double thanhTien = giaBan + thueGTGT - giamGia;
 
@@ -1674,43 +1662,78 @@ public class BanHang_GUI extends JFrame {
           }
       });
       table_3.addMouseListener(new MouseAdapter() {
-		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		        int row = table_3.rowAtPoint(e.getPoint());
-		        table_3.clearSelection(); // Xóa lựa chọn hiện tại
-		        table_3.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp
-		        DefaultTableModel model_1 = (DefaultTableModel) table_3.getModel();
-		        // Lấy mã hóa đơn xuất từ cột đầu tiên của hàng đã chọn
-		        String maHoaDon = (String) table_3.getValueAt(row, 0); // Giả sử mã hóa đơn xuất ở cột đầu tiên
-		        DefaultTableModel model_2 = (DefaultTableModel) table_4.getModel();
-		        model_2.setRowCount(0);
-		        model_2.setRowCount(0);
-		        ArrayList<Object[]> chiTietSanPham;
-		        chiTietSanPham = hoaDonXuatDAO.layDanhSachChiTietSanPhamTheoMaHoaDonXuat2(maHoaDon);
-	            // Thêm dữ liệu vào tableModel cho hóa đơn xuất
-	            for (Object[] rowData : chiTietSanPham) {
-	            	model_2.addRow(rowData);
-	            } 
-		        // Kiểm tra và in ra thông báo nếu không có sản phẩm nào
-		        if (chiTietSanPham == null || chiTietSanPham.isEmpty()) {
-		            System.out.println("Không tìm thấy sản phẩm cho mã hóa đơn: " + maHoaDon);
-		        }
-		        table_3.setModel(model_1);
+    	    @Override
+    	    public void mouseClicked(MouseEvent e) {
+    	        // Lấy chỉ số dòng mà người dùng nhấp vào
+    	        int row = table_3.rowAtPoint(e.getPoint());
+    	        table_3.clearSelection(); // Xóa lựa chọn hiện tại
+    	        table_3.setRowSelectionInterval(row, row); // Chọn hàng đã nhấp vào
+    	        
+    	        DefaultTableModel model_1 = (DefaultTableModel) table_3.getModel();
+    	        
+    	        // Lấy mã hóa đơn xuất từ cột đầu tiên của hàng đã chọn
+    	        String maHoaDon = (String) table_3.getValueAt(row, 0); // Giả sử mã hóa đơn xuất ở cột đầu tiên
+    	        
+    	        // Lấy bảng chi tiết sản phẩm (table_4) để cập nhật
+    	        DefaultTableModel model_2 = (DefaultTableModel) table_4.getModel();
+    	        model_2.setRowCount(0); // Xóa hết các hàng cũ trong bảng chi tiết
+    	        
+    	        // Lấy danh sách chi tiết sản phẩm cho mã hóa đơn
+    	        ArrayList<Object[]> chiTietSanPham = hoaDonXuatDAO.layDanhSachChiTietSanPhamTheoMaHoaDonXuat2(maHoaDon);
+    	        
+    	        // Thêm dữ liệu vào bảng chi tiết sản phẩm (table_4)
+    	        for (Object[] rowData : chiTietSanPham) {
+    	            model_2.addRow(rowData);
+    	        }
+
+    	        // Cập nhật thông tin khách hàng và hóa đơn vào các trường văn bản
+    	        String maKhachHang = (String) table_3.getValueAt(row, 2);
+    	        KhachHang kh = khachHangDAO.layKhachHangTheoMa(maKhachHang);
+    	        HoaDonXuat HD = hoaDonXuatDAO.findHoaDonById(maHoaDon);
+
+    	        txtLoiKhchHng.setText("Thành viên");
+    	        if (maKhachHang.equals("KH0000000000")) {
+    	            txtLoiKhchHng.setText("Khách Vãng Lai");
+    	        }
+    	        
+    	        // Điền thông tin khách hàng vào các trường văn bản
+    	        textField_11.setText(kh.getMaKhachHang());
+    	        textField_12.setText(kh.getTenKhachHang());
+    	        textField_13.setText(HD.getTienKhachDua() + "");
+    	        textField_14.setText(HD.getTienThoi() + "");
+
+    	        // Thêm sự kiện ActionListener cho nút xuất hóa đơn (btnNewButton_6_1)
+    	        btnNewButton_6_1.addActionListener(new ActionListener() {
+    	            @Override
+    	            public void actionPerformed(ActionEvent e) {
+    	                // Gọi hàm GeneratePdf để xuất hóa đơn cho mã hóa đơn đã chọn
+    	                try {
+    	                    // Gọi hàm GeneratePdf và truyền mã hóa đơn cần xuất
+    	                    GeneratePdf(maHoaDon, maKhachHang);  // Gọi phương thức main của class GeneratePdf
+
+    	                    // Mở file PDF vừa tạo
+    	                    File invoiceFile = new File(maHoaDon+".pdf");
+    	                    if (invoiceFile.exists()) {
+    	                        // Sử dụng Desktop API để mở file PDF
+    	                        if (Desktop.isDesktopSupported()) {
+    	                            Desktop desktop = Desktop.getDesktop();
+    	                            desktop.open(invoiceFile);  // Mở file PDF với ứng dụng mặc định
+    	                        } else {
+    	                            JOptionPane.showMessageDialog(null, "Ứng dụng mở PDF không được hỗ trợ.");
+    	                        }
+    	                    } else {
+    	                        JOptionPane.showMessageDialog(null, "Không thể tìm thấy file hóa đơn.");
+    	                    }
+    	                } catch (Exception ex) {
+    	                    JOptionPane.showMessageDialog(null, "Lỗi khi xuất hóa đơn: " + ex.getMessage());
+    	                }
+    	            }
+    	        });
+    	        table_3.setModel(model_1);
 		        table_4.setModel(model_2);
-		        String maKhachHang = (String) table_3.getValueAt(row, 2);
-		        KhachHang kh = khachHangDAO.layKhachHangTheoMa(maKhachHang);
-		        HoaDonXuat HD = hoaDonXuatDAO.findHoaDonById(maHoaDon);
-		        txtLoiKhchHng.setText("Thành viên");
-		        if (maKhachHang.equals("KH0000000000")) {
-		        	txtLoiKhchHng.setText("Khách Vãng Lai");
-		        }
-		        textField_11.setText(kh.getMaKhachHang());
-		        textField_12.setText(kh.getTenKhachHang());
-		        textField_13.setText(kh.getTenKhachHang());
-		        textField_14.setText(HD.getTienKhachDua()+"");
-		        textField_15.setText(HD.getTienThoi()+"");
-		    }
-		});
+    	    }
+    	});
+
      
    // Lắng nghe sự kiện khi người dùng nhấn nút tìm kiếm
       btnNewButton_3.addActionListener(new ActionListener() {
@@ -2084,5 +2107,124 @@ private void loadChiTietDonTam(java.util.List<ChiTietDonTam> donHang) {
         System.out.println("Danh sách chi tiết đơn hàng là null hoặc rỗng!");
     }
 }
+    public static void GeneratePdf (String maHD, String maKh) throws IOException {
+        String path = maHD+".pdf";
 
+        // Tạo PdfWriter và PdfDocument
+        PdfWriter pdfWriter = new PdfWriter(path);
+        PdfDocument pdfDoc = new PdfDocument(pdfWriter);
+        
+     // Đường dẫn tới font Tahoma trên hệ thống của bạn
+        String fontPath = "./gui/tahoma.ttf";
+        
+        // Đặt kích thước trang mặc định
+        pdfDoc.setDefaultPageSize(PageSize.A4);
+        
+        // Sử dụng font mặc định (Times Roman)
+        PdfFont font = PdfFontFactory.createFont(fontPath);  // Font mặc định sẽ được sử dụng
+        
+        // Tạo đối tượng Document và thêm nội dung
+        Document document = new Document(pdfDoc);
+        
+     // Tiêu đề hóa đơn
+        document.add(new Paragraph("NHÀ THUỐC ABC")
+            .setTextAlignment(TextAlignment.CENTER)
+            .setBold().setFontSize(20).setFont(font));
+        document.add(new Paragraph("CN1: 392A Dương Quảng Hàm, Phường 05, Quận Gò Vấp, Thành phố Hồ Chí Minh")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(13).setFont(font));
+        document.add(new Paragraph("CN2: 384 Nguyễn Oanh , Phường 6, Quận Gò Vấp, Thành phố Hồ Chí Minh")
+                .setTextAlignment(TextAlignment.CENTER)
+               .setFontSize(13).setFont(font));
+        document.add(new Paragraph("CN3: 39 Phan Văn Trị, Phường7, Quận Gò Vấp, Thành phố Hồ Chí Minh")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(13).setFont(font));
+        document.add(new Paragraph("Liên hệ hotline: 19001080")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(15).setFont(font));
+        document.add(new Paragraph("Website: https://ABC.com/")
+                .setTextAlignment(TextAlignment.CENTER)
+                .setFontSize(15).setFont(font));
+        // Tiêu đề hóa đơn
+        document.add(new Paragraph("HÓA ĐƠN MUA HÀNG")
+            .setTextAlignment(TextAlignment.CENTER)
+            .setBold().setFontSize(20).setFont(font));  // Sử dụng font mặc định
+        LocalDate currentDate = LocalDate.now();
+        document.add(new Paragraph("Ngày: " + currentDate.toString())
+                .setTextAlignment(TextAlignment.LEFT)
+                .setFontSize(13).setFont(font));
+        HoaDonXuat_DAO hoaDonXuatDAO = new HoaDonXuat_DAO();
+        HoaDonXuat HD = hoaDonXuatDAO.findHoaDonById(maHD);
+        document.add(new Paragraph("Mã đơn hàng: " + HD.getMaHoaDonXuat())
+                .setTextAlignment(TextAlignment.LEFT)
+               .setFontSize(13).setFont(font));
+        NhanVien_DAO nvdao = new NhanVien_DAO();
+        String manv = HD.getNhanVien().getMaNhanVien();
+        NhanVien nv = nvdao.layThongTinNhanVienTheoMa(manv);
+        KhachHang_DAO khachHangDAO = new KhachHang_DAO();
+        KhachHang kh = khachHangDAO.layKhachHangTheoMa(maKh);
+        // Thêm thông tin khách hàng
+        document.add(new Paragraph("Nhân viên: " + nv.getTenNhanVien()).setFont(font));  // setFont() trên Paragraph
+        document.add(new Paragraph("Khách hàng: "+ kh.getTenKhachHang()).setFont(font));  // setFont() trên Paragraph
+//        
+        // Tạo bảng chi tiết hóa đơn
+        float[] pointColumnWidths = {150f, 100f, 100f, 100f};  // Định nghĩa độ rộng cột
+        Table table = new Table(pointColumnWidths);
+        Double tongtien = 0.0;
+        // Thêm tiêu đề bảng
+        table.addCell(new Cell().add(new Paragraph("Sản phẩm")).setBold().setFont(font));  // setFont() trên Cell
+        table.addCell(new Cell().add(new Paragraph("Số lượng")).setBold().setFont(font));  // setFont() trên Cell
+        table.addCell(new Cell().add(new Paragraph("Đơn giá")).setBold().setFont(font));  // setFont() trên Cell
+        table.addCell(new Cell().add(new Paragraph("Thành tiền")).setBold().setFont(font));  // setFont() trên Cell
+        ArrayList<Object[]> cthd = hoaDonXuatDAO.layDanhSachChiTietSanPhamTheoMaHoaDonXuat2(maHD);
+        for (Object[] ct : cthd) {
+            // Giả sử ct có cấu trúc: [0] -> tên sản phẩm, [1] -> số lượng, [2] -> đơn giá, [3] -> thành tiền
+            String tenSanPham = ct[1].toString();   // Lấy tên sản phẩm
+            int soLuong = Integer.parseInt(ct[2].toString());  // Lấy số lượng, giả sử đây là kiểu số nguyên
+            double donGia = Double.parseDouble(ct[3].toString());  // Lấy đơn giá, giả sử đây là kiểu số thực
+            double thanhTien = Double.parseDouble(ct[5].toString());  // Lấy thành tiền, giả sử đây là kiểu số thực
+            tongtien += thanhTien;
+            // Thêm các thông tin vào bảng
+            table.addCell(new Cell().add(new Paragraph(tenSanPham)).setFont(font));  // Tên sản phẩm
+            table.addCell(new Cell().add(new Paragraph(String.valueOf(soLuong))).setFont(font));  // Số lượng
+            table.addCell(new Cell().add(new Paragraph(String.format("%.0f VND", donGia))).setFont(font));  // Đơn giá
+            table.addCell(new Cell().add(new Paragraph(String.format("%.0f VND", thanhTien))).setFont(font));  // Thành tiền
+        }
+        
+        // Thêm bảng vào tài liệu
+        document.add(table);
+        // Giảm giá
+        String maGG;
+        Double trgia = 0.0;
+//        maGG = HD.getMaGiamGia().getMaGiamGia();
+//        if (maGG!=null) trgia = HD.getMaGiamGia().getTriGia();
+//        else trgia = 0.0;
+     // Giảm giá
+        String giadisc = String.format("%.0f", trgia);  // Định dạng giá trị trgia thành số nguyên không có phần thập phân
+        document.add(new Paragraph("Giảm giá: " + giadisc)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setBold().setFontSize(13).setFont(font));  // setFont() trên Paragraph	
+
+        // Tổng cộng
+        String tongcong = String.format("%.0f", (tongtien-trgia));  // Định dạng tổng cộng thành số nguyên không có phần thập phân
+        document.add(new Paragraph("Tổng cộng: " + tongcong)
+                    .setTextAlignment(TextAlignment.RIGHT)
+                    .setBold().setFontSize(16).setFont(font));  // setFont() trên Paragraph
+
+        // Chỉ xuất hóa đơn trong ngày
+        document.add(new Paragraph("Chỉ xuất hóa đơn trong ngày")
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(13).setFont(font));
+
+        // Đổi trả trong vòng 3 ngày
+        document.add(new Paragraph("Đổi trả trong vòng 3 ngày")
+                    .setTextAlignment(TextAlignment.CENTER)
+                    .setFontSize(13).setFont(font));
+
+
+        // Đóng tài liệu
+        document.close();
+        
+        System.out.println("PDF đã được tạo thành công tại: " + path);
+    }
 }
