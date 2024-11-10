@@ -13,10 +13,15 @@ import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.type.PhoneNumber;
 
 import entity.ChucVu;
+import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+<<<<<<< HEAD
 import jakarta.persistence.NoResultException;
+=======
+import jakarta.persistence.EntityTransaction;
+>>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -338,6 +343,7 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
+<<<<<<< HEAD
     
     
  // Hàm lấy tên nhân viên theo mã nhân viên
@@ -358,12 +364,144 @@ public class NhanVien_DAO {
             System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
         } catch (Exception e) {
             // Xử lý các lỗi khác nếu có
+=======
+    public String layMaNhanVienTheoTenTK(String tenTK) {
+	    EntityManager entityManager = emf.createEntityManager();
+	    String maNhanVien = null;
+
+	    try {
+	        // Bắt đầu giao dịch
+	        entityManager.getTransaction().begin();
+
+	        // Tạo truy vấn để lấy maNhanVien dựa trên tenTK
+	        String jpql = "SELECT nv.maNhanVien FROM NhanVien nv WHERE nv.tenTK = :tenTK";
+	        Query query = entityManager.createQuery(jpql);
+	        query.setParameter("tenTK", tenTK);
+
+	        // Lấy kết quả (nếu có)
+	        maNhanVien = (String) query.getSingleResult();
+
+	        // Kết thúc giao dịch
+	        entityManager.getTransaction().commit();
+	    } catch (Exception e) {
+	        if (entityManager.getTransaction().isActive()) {
+	            entityManager.getTransaction().rollback();
+	        }
+	        e.printStackTrace();
+	    } finally {
+	        entityManager.close();
+	    }
+
+	    return maNhanVien;
+	}
+    public boolean create(NhanVien e) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction transaction = em.getTransaction();
+        boolean isSuccess = false;
+
+        try {
+            transaction.begin(); // Bắt đầu giao dịch
+            em.persist(e); // Thêm đối tượng KhachHang vào cơ sở dữ liệu
+            transaction.commit(); // Cam kết giao dịch
+            isSuccess = true; // Đánh dấu thành công
+        } catch (Exception e1) {
+            if (transaction.isActive()) {
+                transaction.rollback(); // Hoàn tác giao dịch nếu có lỗi
+            }
+            System.err.println("Lỗi khi thêm khách hàng trong create: " + e1.getMessage());
+            e1.printStackTrace();
+        } finally {
+            em.close(); // Đóng EntityManager
+        }
+
+        return isSuccess;
+    }
+    //
+    public boolean delete(String maNhanVien) {
+        EntityManager entityManager = emf.createEntityManager();
+        boolean isDeleted = false;
+
+        try {
+            entityManager.getTransaction().begin();
+
+            // Thực hiện truy vấn DELETE trực tiếp trong cơ sở dữ liệu
+            int deletedCount = entityManager.createQuery("DELETE FROM NhanVien nv WHERE nv.maNhanVien = :maNhanVien")
+                                            .setParameter("maNhanVien", maNhanVien)
+                                            .executeUpdate();
+
+            if (deletedCount > 0) {
+                isDeleted = true; // Đánh dấu là xóa thành công
+            } else {
+                System.out.println("Không tìm thấy khách hàng với mã: " + maNhanVien);
+            }
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback(); // Khôi phục nếu có lỗi
+            }
+            e.printStackTrace();
+        } finally {
+            entityManager.close(); // Đảm bảo đóng entity manager
+        }
+
+        return isDeleted; // Trả về true nếu đã xóa thành công
+    }
+    ////////////
+    public boolean updatenhanVien(NhanVien nv) {
+        EntityManager em = emf.createEntityManager();
+        boolean isUpdated = false;
+
+        try {
+            em.getTransaction().begin();
+            
+            // Cập nhật thông tin nhân viên
+            int updatedCount = em.createQuery(
+                    "UPDATE NhanVien nv SET nv.tenNhanVien = :tenNhanVien, nv.sDT = :sDT, nv.gioiTinh = :gioiTinh, " +
+                    "nv.ngaySinh = :ngaySinh, nv.ngayVaoLam = :ngayVaoLam, nv.luongCanBan = :luongCanBan, " +
+                    "nv.chucVu = :chucVu, nv.cMND = :cMND, nv.trinhDo = :trinhDo, nv.diaChi = :diaChi, nv.email = :email, " +
+                    "nv.matKhau = :matKhau, nv.trangThai = :trangThai WHERE nv.maNhanVien = :maNhanVien")
+                .setParameter("tenNhanVien", nv.getTenNhanVien())
+                .setParameter("sDT", nv.getSDT())
+                .setParameter("gioiTinh", nv.isGioiTinh())
+                .setParameter("ngaySinh", nv.getNgaySinh())
+                .setParameter("ngayVaoLam", nv.getNgayVaoLam())
+                .setParameter("luongCanBan", nv.getLuongCanBan())
+                .setParameter("chucVu", nv.getChucVu().name())
+                .setParameter("cMND", nv.getCMND())
+                .setParameter("trinhDo", nv.getTrinhDo())
+                .setParameter("diaChi", nv.getDiaChi())
+                .setParameter("email", nv.getEmail())
+                .setParameter("matKhau", nv.getMatKhau())
+                .setParameter("trangThai", nv.isTrangThai())
+                .setParameter("maNhanVien", nv.getMaNhanVien())
+                .executeUpdate();
+            
+            // Nếu có bản ghi được cập nhật
+            if (updatedCount > 0) {
+                em.getTransaction().commit();
+                isUpdated = true;
+            } else {
+                em.getTransaction().rollback();
+            }
+
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Rollback nếu có lỗi
+            }
+>>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
             e.printStackTrace();
         } finally {
             em.close();
         }
 
+<<<<<<< HEAD
         return tenNhanVien;
     }
+=======
+        return isUpdated;
+    }
+
+>>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
 
 }

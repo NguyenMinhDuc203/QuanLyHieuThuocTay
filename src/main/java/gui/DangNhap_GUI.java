@@ -122,27 +122,27 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 	}
 
 	 @Override
-	    public void actionPerformed(ActionEvent e) {
-	        Object o = e.getSource();
-	        if (o.equals(btnLogIn_1)) {
-	            String tenTK = textTaiKhoan.getText().trim();
-	            String sdt = txtMK.getText().trim();
+	 public void actionPerformed(ActionEvent e) {
+		    Object o = e.getSource();
+		    if (o.equals(btnLogIn_1)) {
+		        String tenTK = textTaiKhoan.getText().trim();
+		        String sdt = txtMK.getText().trim();
 
-	            String result = dao_nv.kiemTraDangNhap(tenTK, sdt);
+		        String result = dao_nv.kiemTraDangNhap(tenTK, sdt);
 
-	            if (result.equals("Đăng nhập thành công.")) {
-	                // Lưu thông tin nhân viên vào đối tượng nhanVienHienTai
-	                nhanVienHienTai = dao_nv.findNhanVienById(tenTK);
-	                BanHang_GUI.maNVDangNhap = nhanVienHienTai.getMaNhanVien();
-	                openTrangChu();
-	            } else {
-	                JOptionPane.showMessageDialog(this, result);
-	            }
-	        }
-	        if (o.equals(btnLogIn_1_1)) {
-	            showMaNhanVienDialog(); // Gọi hàm hiển thị dialog
-	        }
-	    }
+		        if (result.equals("Đăng nhập thành công.")) {
+		            // Thiết lập mã nhân viên đăng nhập thông qua dao_nv
+		            BanHang_GUI.maNVDangNhap = dao_nv.layMaNhanVienTheoTenTK(tenTK);
+		            openTrangChu();
+		        } else {
+		            JOptionPane.showMessageDialog(this, result);
+		        }
+		    }
+		    if (o.equals(btnLogIn_1_1)) {
+		        showMaNhanVienDialog(); // Gọi hàm hiển thị dialog
+		    }
+		}
+
 
 	    
 	
@@ -188,4 +188,5 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
         TrangChu_GUI trangChu = new TrangChu_GUI();
         trangChu.setVisible(true);
 	}
+	
 }

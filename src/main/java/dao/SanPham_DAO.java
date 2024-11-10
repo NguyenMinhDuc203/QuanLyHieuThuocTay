@@ -377,29 +377,22 @@ public class SanPham_DAO {
         }
     }
 
-    public boolean saveSanPham(List<SanPham> danhSachSanPham) {
+    public boolean saveSanPham(SanPham sanPham) {
         EntityManager entityManager = emf.createEntityManager();
         boolean isSaved = true;
 
         try {
-            // Xóa toàn bộ sản phẩm cũ trong cơ sở dữ liệu
-            clearAllSanPham();
-
             // Bắt đầu giao dịch
             entityManager.getTransaction().begin();
 
-            // Duyệt qua từng sản phẩm và lưu vào cơ sở dữ liệu
-            for (SanPham sp : danhSachSanPham) {
-                // Gọi phương thức addSanPham1 để thêm sản phẩm vào cơ sở dữ liệu
-                boolean result = addSanPham1(sp);
-                if (!result) {
-                    // Nếu có lỗi khi lưu một sản phẩm, set isSaved = false và tiếp tục với sản phẩm tiếp theo
-                    isSaved = false;
-                    break;
-                }
+            // Gọi phương thức addSanPham1 để thêm sản phẩm vào cơ sở dữ liệu
+            boolean result = addSanPham1(sanPham);
+            if (!result) {
+                // Nếu có lỗi khi lưu sản phẩm, set isSaved = false
+                isSaved = false;
             }
 
-            // Commit giao dịch nếu tất cả sản phẩm đã được lưu
+            // Commit giao dịch nếu sản phẩm đã được lưu thành công
             if (isSaved) {
                 entityManager.getTransaction().commit();
                 System.out.println("Giao dịch thành công!");
@@ -416,7 +409,7 @@ public class SanPham_DAO {
                 entityManager.close();
             }
         }
-        
+
         return isSaved;
     }
 

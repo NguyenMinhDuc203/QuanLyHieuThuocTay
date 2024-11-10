@@ -71,7 +71,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 	private JButton btnSua;
 	private JButton btnTim;
 	private JButton btThoat;
-	private JButton btnLuu;
 	private KhachHang_DAO dao_kh = new KhachHang_DAO();
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
 
@@ -363,18 +362,8 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			panel_2_1.setBorder(titledBorder);
 								 			panel_2_1.setBackground(new Color(226, 250, 252));
 								 			
-								 			panel_2_1.setBounds(1165, 246, 372, 206);
+								 			panel_2_1.setBounds(1165, 246, 372, 171);
 								 			panel.add(panel_2_1);
-								 			 
-								 			 				// Nút "Lưu"
-								 			 				 btnLuu = new JButton("Lưu");
-								 			 				 btnLuu.setBounds(32, 91, 133, 39);
-								 			 				 panel_2_1.add(btnLuu);
-								 			 				 btnLuu.setOpaque(true);
-								 			 				 btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			 				 btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			 				 btnLuu.setBackground(new Color(46, 139, 87));
-								 			 				 btnLuu.setIcon(new ImageIcon(scaledImageLuu));
 								 			 				 
 								 			 				 				// Nút "Sửa"
 								 			 				 				 btnSua = new JButton("Sửa");
@@ -411,7 +400,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			 				 				 				  
 								 			 				 				 				  				// Nút "Xóa Trắng"
 								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
-								 			 				 				 				  			btnXoaTrang.setBounds(85, 146, 211, 39);
+								 			 				 				 				  			btnXoaTrang.setBounds(32, 91, 133, 39);
 								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
 								 			 				 				 				  			btnXoaTrang.setOpaque(true);
 								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -570,7 +559,6 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 								 			 				 				 				  btnThem.addActionListener(this);
 								 			 				 				 				 btnXoa.addActionListener(this);
 								 			 				 				 btnSua.addActionListener(this);
-								 			 				 btnLuu.addActionListener(this);
 								 btnTim.addActionListener(this);
 				
 				//Actions Menu
@@ -743,46 +731,143 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				}
 				if (o.equals(btnThem)) {
 					
-				    String tenNV = txtTenNV.getText();
-				    String sdt = txtSDT.getText();
-				    String ngaySinh = txtNSNV.getText();
-				    String ngayVaoLam = txtNVLNV.getText();
-				    String luongCB = txtLuong.getText();
-				    String chucVu = cboChucVuNV.getSelectedItem().toString();
-				    String cmnd = txtCMNDNV.getText();
-				    String trinhDo = txtTDNV.getText();
-				    String diaChi = txtDiaChiNV.getText();
-				    String email = txtEmailNV.getText();
-				    String matKhau = txtMK.getText();
-				    String gioiTinh = rdbtnNam.isSelected() ? "Nam" : "Nữ";
-				    String trangThai = txtTrangThaiNV.getText();
+					String tenNV = txtTenNV.getText().trim();
+					String sdt = txtSDT.getText().trim();
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-				    if (tenNV.isEmpty() || sdt.isEmpty() || ngaySinh.isEmpty() || ngayVaoLam.isEmpty() || luongCB.isEmpty() ||
-				        chucVu.isEmpty() || cmnd.isEmpty() || trinhDo.isEmpty() || diaChi.isEmpty() || email.isEmpty() || matKhau.isEmpty()) {
-				        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				        return; 
-				    }
+					LocalDate ngaySinh = null;
+					LocalDate ngayVaoLam = null;
+					try {
+					    ngaySinh = LocalDate.parse(txtNSNV.getText().trim(), formatter);
+					    ngayVaoLam = LocalDate.parse(txtNVLNV.getText().trim(), formatter);
+					} catch (DateTimeParseException e1) {
+					    JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-MM-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					    return;
+					}
+
+					Double luongCB = null;
+					try {
+					    luongCB = Double.parseDouble(txtLuong.getText().trim());
+					} catch (NumberFormatException e1) {
+					    JOptionPane.showMessageDialog(null, "Lương cơ bản phải là một số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					    return;
+					}
+
+					String cmnd = txtCMNDNV.getText().trim();
+					String trinhDo = txtTDNV.getText().trim();
+					String diaChi = txtDiaChiNV.getText().trim();
+					String email = txtEmailNV.getText().trim();
+					String matKhau = txtMK.getText().trim();
+					boolean gioiTinh = rdbtnNam.isSelected();
+					String trangThai = txtTrangThaiNV.getText().trim();
+					boolean isActive = trangThai.equalsIgnoreCase("Đang hoạt động");
+
+					String selectedChucVu = cboChucVuNV.getSelectedItem().toString();
+					ChucVu chucVu1 = null;
+					try {
+					    chucVu1 = ChucVu.valueOf(selectedChucVu);
+					} catch (IllegalArgumentException e1) {
+					    JOptionPane.showMessageDialog(null, "Chức vụ không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					    return;
+					}
+
+					// Kiểm tra xem có trường nào bị trống không
+					if (tenNV.isEmpty() || sdt.isEmpty() || ngaySinh == null || ngayVaoLam == null || luongCB == null ||
+					    chucVu1 == null || cmnd.isEmpty() || trinhDo.isEmpty() || diaChi.isEmpty() || email.isEmpty() || matKhau.isEmpty()) {
+					    JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					    return;
+					}
+				
+					
+					// Tiếp tục xử lý nếu tất cả các trường đều hợp lệ
+					// Ví dụ: lưu thông tin khách hàng vào cơ sở dữ liệu
+
                     if(checkData()) {
+                    	
 				    DefaultTableModel model = (DefaultTableModel) table.getModel();
-				    if (chucVu.equals("NhanVien")) {
-				        String maNV = taoMaNhanVien("NVBH");
-				        boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt, cmnd);
-
+				    if (chucVu1 == ChucVu.NhanVien) {
+				        
+				        boolean isExist = kiemTraNhanVienTonTai( sdt, cmnd);
+				        
 				        if (isExist) {
 				            JOptionPane.showMessageDialog(null, "Nhân viên đã tồn tại");
 				        } else {
-				            model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau });
+				        	String maNV = taoMaNhanVien("NVBH");
+					        NhanVien nv= new NhanVien();
+					    	nv.setMaNhanVien(maNV);
+					    	nv.setTenNhanVien(tenNV);
+					    	nv.setSDT(sdt);
+					    	nv.setGioiTinh(gioiTinh);
+					    	nv.setNgaySinh(ngaySinh);
+					    	nv.setNgayVaoLam(ngayVaoLam);
+					    	nv.setChucVu(chucVu1);
+					    	nv.setCMND(cmnd);
+					    	nv.setTrinhDo(trinhDo);
+					    	nv.setDiaChi(diaChi);
+					    	nv.setEmail(email);
+					    	nv.setMatKhau(matKhau);
+					    	nv.setTrangThai(isActive);
+				        	dao_nv.create(nv);
+				        	model.addRow(new Object[] {
+				        		    maNV,
+				        		    tenNV,
+				        		    sdt,
+				        		    gioiTinh ? "Nam" : "Nữ", // Chuyển đổi boolean giới tính sang chuỗi
+				        		    ngaySinh,
+				        		    ngayVaoLam,
+				        		    luongCB,
+				        		    chucVu1, // Chức vụ là kiểu enum ChucVu
+				        		    cmnd,
+				        		    trinhDo,
+				        		    diaChi,
+				        		    email,
+				        		    isActive ? "Đang hoạt động" : "Ngừng hoạt động", // Chuyển đổi trạng thái boolean sang chuỗi
+				        		    matKhau
+				        		});
+
 				            model.fireTableDataChanged();
 				            JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
 				        }
 				    } else {
 				        String maNV = taoMaNhanVien("NVQL");
-				        boolean isExist = kiemTraNhanVienTonTai(tenNV, sdt, cmnd);
+				        boolean isExist = kiemTraNhanVienTonTai( sdt, cmnd);
 
 				        if (isExist) {
 				            JOptionPane.showMessageDialog(null, "Nhân viên đã tồn tại");
 				        } else {
-				            model.addRow(new Object[] { maNV, tenNV, sdt, gioiTinh, ngaySinh, ngayVaoLam, luongCB, chucVu, cmnd, trinhDo, diaChi, email, trangThai, matKhau });
+				        	String maNV1 = taoMaNhanVien("NVBH");
+					        NhanVien nv= new NhanVien();
+					    	nv.setMaNhanVien(maNV1);
+					    	nv.setTenNhanVien(tenNV);
+					    	nv.setSDT(sdt);
+					    	nv.setGioiTinh(gioiTinh);
+					    	nv.setNgaySinh(ngaySinh);
+					    	nv.setNgayVaoLam(ngayVaoLam);
+					    	nv.setChucVu(chucVu1);
+					    	nv.setCMND(cmnd);
+					    	nv.setTrinhDo(trinhDo);
+					    	nv.setDiaChi(diaChi);
+					    	nv.setEmail(email);
+					    	nv.setMatKhau(matKhau);
+					    	nv.setTrangThai(isActive);
+				        	dao_nv.create(nv);
+
+				        	model.addRow(new Object[] {
+				        		    maNV1,
+				        		    tenNV,
+				        		    sdt,
+				        		    gioiTinh ? "Nam" : "Nữ", // Chuyển đổi boolean giới tính sang chuỗi
+				        		    ngaySinh,
+				        		    ngayVaoLam,
+				        		    luongCB,
+				        		    chucVu1, // Chức vụ là kiểu enum ChucVu
+				        		    cmnd,
+				        		    trinhDo,
+				        		    diaChi,
+				        		    email,
+				        		    isActive ? "Đang hoạt động" : "Ngừng hoạt động", // Chuyển đổi trạng thái boolean sang chuỗi
+				        		    matKhau
+				        		});
 				            model.fireTableDataChanged();
 				            JOptionPane.showMessageDialog(null, "Thêm nhân viên vào bảng thành công!");
 				        }
@@ -808,6 +893,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				 if(o.equals(btnXoa)) {
 				       
 				        int row = table.getSelectedRow();
+				        String maNhanVien = table.getValueAt(row, 0).toString();
 
 				       
 				        if (row == -1) {
@@ -815,12 +901,19 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 				            return;  
 				        }
 
-				       
+				        int confirmation = JOptionPane.showConfirmDialog(
+				        	    null,
+				        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
+				        	    "Xác nhận",  
+				        	    JOptionPane.YES_NO_OPTION
+				        	);
+				        if (confirmation == JOptionPane.YES_OPTION) {
+				        dao_nv.delete(maNhanVien);
 				        DefaultTableModel model = (DefaultTableModel) table.getModel();
 				        model.removeRow(row);
 
 				        
-				        JOptionPane.showMessageDialog(null, "Xóa nhân viên khỏi bảng thành công!");
+				        JOptionPane.showMessageDialog(null, "Xóa nhân viên khỏi bảng thành công!");}
 
 				        txtTenNV.setText("");
 					    txtSDT.setText("");
@@ -837,155 +930,123 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 					    rdbtnNam.setSelected(true);  
 				    }
 				 if(o.equals(btnSua)) {
-				        // Chức năng sửa thông tin
-				        int row = table.getSelectedRow();
+					    // Chức năng sửa thông tin
+					    int row = table.getSelectedRow();
 
-				        if (row == -1) {
-				            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần sửa thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				            return;  
-				        }
-
-				        String tenNV = txtTenNV.getText();
-				        String sdt = txtSDT.getText();
-				        String ngaySinh = txtNSNV.getText();
-				        String ngayVaoLam = txtNVLNV.getText();
-				        String luongCB = txtLuong.getText();
-				        String chucVu = cboChucVuNV.getSelectedItem().toString();
-				        String cmnd = txtCMNDNV.getText();
-				        String trinhDo = txtTDNV.getText();
-				        String diaChi = txtDiaChiNV.getText();
-				        String email = txtEmailNV.getText();
-				        String matKhau = txtMK.getText();
-				        String gioiTinh = rdbtnNam.isSelected() ? "Nam" : "Nữ";
-				        String trangThai = txtTrangThaiNV.getText();
-
-				        if (tenNV.isEmpty() || sdt.isEmpty() || ngaySinh.isEmpty() || ngayVaoLam.isEmpty() || luongCB.isEmpty() ||
-				            chucVu.isEmpty() || cmnd.isEmpty() || trinhDo.isEmpty() || diaChi.isEmpty() || email.isEmpty() || matKhau.isEmpty()) {
-				            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-				            return; 
-				        }
-
-				        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-				       
-				        model.setValueAt(tenNV, row, 1); 
-				        model.setValueAt(sdt, row, 2);
-				        model.setValueAt(ngaySinh, row, 3); 
-				        model.setValueAt(ngayVaoLam, row, 4); 
-				        model.setValueAt(luongCB, row, 5); 
-				        model.setValueAt(chucVu, row, 6);
-				        model.setValueAt(cmnd, row, 7); 
-				        model.setValueAt(trinhDo, row, 8);
-				        model.setValueAt(diaChi, row, 9); // Cập nhật Địa Chỉ
-				        model.setValueAt(gioiTinh, row, 10); // Cập nhật Giới Tính
-				        model.setValueAt(email, row, 11); // Cập nhật Email
-				        model.setValueAt(trangThai, row, 12); // Cập nhật Trạng Thái
-				        model.setValueAt(matKhau, row, 13); // Cập nhật Mật Khẩu
-
-				        JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thành công!");
-
-				      
-				        txtTenNV.setText("");
-				        txtSDT.setText("");
-				        txtNSNV.setText("");
-				        txtNVLNV.setText("");
-				        txtLuong.setText("");
-				        txtCMNDNV.setText("");
-				        txtTDNV.setText("");
-				        txtDiaChiNV.setText("");
-				        txtEmailNV.setText("");
-				        txtMK.setText("");
-				        txtTrangThaiNV.setText("");
-				        cboChucVuNV.setSelectedIndex(0);
-				        rdbtnNam.setSelected(true);  
-				    }
-				 if (o.equals(btnLuu)) {
-					    try {
-					        // Lấy danh sách tất cả nhân viên từ bảng
-					      List  <NhanVien> danhSachNhanVien = getDanhSachNhanVienFromTable(table); // Giả sử bạn có phương thức này để lấy dữ liệu từ bảng
-
-					        boolean isSaved = true;  // Đặt mặc định là đã lưu thành công
-					        int confirmation = JOptionPane.showConfirmDialog(
-					        	    null,
-					        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
-					        	    "Xác nhận",  
-					        	    JOptionPane.YES_NO_OPTION
-					        	);
-					        if (confirmation == JOptionPane.YES_OPTION) {
-					        for (NhanVien nv : danhSachNhanVien) {
-					            try {
-					                // Kiểm tra các trường và thông báo lỗi nếu cần
-					                Field maNhanVienField = NhanVien.class.getDeclaredField("maNhanVien");
-					                maNhanVienField.setAccessible(true);
-					                String maNhanVien = (String) maNhanVienField.get(nv);
-					                if (maNhanVien.isEmpty()) throw new Exception("Mã nhân viên không được để trống");
-
-					                Field tenNhanVienField = NhanVien.class.getDeclaredField("tenNhanVien");
-					                tenNhanVienField.setAccessible(true);
-					                String tenNhanVien = (String) tenNhanVienField.get(nv);
-					                if (tenNhanVien.isEmpty()) throw new Exception("Tên nhân viên không được để trống");
-
-					                Field sdtField = NhanVien.class.getDeclaredField("sDT");
-					                sdtField.setAccessible(true);
-					                String sdt = (String) sdtField.get(nv);
-					                if (sdt.isEmpty()) throw new Exception("Số điện thoại không được để trống");
-
-					                Field ngaySinhField = NhanVien.class.getDeclaredField("ngaySinh");
-					                ngaySinhField.setAccessible(true);
-					                LocalDate ngaySinh = (LocalDate) ngaySinhField.get(nv);
-					                if (ngaySinh == null) throw new Exception("Ngày sinh không hợp lệ");
-
-					                Field ngayVaoLamField = NhanVien.class.getDeclaredField("ngayVaoLam");
-					                ngayVaoLamField.setAccessible(true);
-					                LocalDate ngayVaoLam = (LocalDate) ngayVaoLamField.get(nv);
-					                if (ngayVaoLam == null) throw new Exception("Ngày vào làm không hợp lệ");
-
-					                Field luongCanBanField = NhanVien.class.getDeclaredField("luongCanBan");
-					                luongCanBanField.setAccessible(true);
-					                double luongCanBan = (double) luongCanBanField.get(nv);
-					                if (luongCanBan <= 0) throw new Exception("Lương căn bản phải lớn hơn 0");
-
-					                // Lấy giá trị chức vụ từ JComboBox và chuyển đổi
-					                String chucVuText = (String) cboChucVuNV.getSelectedItem();
-					                ChucVu chucVuEnum;
-					                try {
-					                    chucVuEnum = ChucVu.valueOf(chucVuText); // Chuyển đổi giá trị string thành enum
-					                    // Sử dụng Reflection để gán giá trị cho thuộc tính chucVu
-					                    Field chucVuField = NhanVien.class.getDeclaredField("chucVu");
-					                    chucVuField.setAccessible(true);
-					                    chucVuField.set(nv, chucVuEnum); // Gán giá trị trực tiếp vào thuộc tính
-					                } catch (IllegalArgumentException e1) {
-					                    throw new Exception("Chức vụ không hợp lệ: " + chucVuText);
-					                }
-
-					                Field cMNDField = NhanVien.class.getDeclaredField("cMND");
-					                cMNDField.setAccessible(true);
-					                String cMND = (String) cMNDField.get(nv);
-					                if (cMND.isEmpty()) throw new Exception("CMND không được để trống");
-
-					                // Lưu nhân viên vào cơ sở dữ liệu
-					                boolean result = dao_nv.saveNhanVien(danhSachNhanVien);
-					                if (!result) {
-					                    isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
-					                    JOptionPane.showMessageDialog(null, "Không thể lưu nhân viên: " + maNhanVien);
-					                }
-
-					            } catch (Exception e1) {
-					                isSaved = false;  // Đánh dấu là không lưu thành công nếu có lỗi
-					                JOptionPane.showMessageDialog(null, "Lỗi ở nhân viên: " + e1.getMessage());
-					            }
-					        }
-
-					        if (isSaved) {
-					            JOptionPane.showMessageDialog(null, "Tất cả nhân viên đã được lưu thành công!");
-					        } else {
-					            JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu nhân viên.");
-					        }}
-
-					    } catch (Exception e1) {
-					        JOptionPane.showMessageDialog(null, "Lỗi chung: " + e1.getMessage());
+					    if (row == -1) {
+					        JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần sửa thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;  
 					    }
-					}
+					    String maNhanVien = table.getValueAt(row, 0).toString();
+					    String tenNV = txtTenNV.getText().trim();
+					    String sdt = txtSDT.getText().trim();
+					    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+					    LocalDate ngaySinh = null;
+					    LocalDate ngayVaoLam = null;
+					    try {
+					        ngaySinh = LocalDate.parse(txtNSNV.getText().trim(), formatter);
+					        ngayVaoLam = LocalDate.parse(txtNVLNV.getText().trim(), formatter);
+					    } catch (DateTimeParseException e1) {
+					        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-MM-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+					    }
+
+					    Double luongCB = null;
+					    try {
+					        luongCB = Double.parseDouble(txtLuong.getText().trim());
+					    } catch (NumberFormatException e1) {
+					        JOptionPane.showMessageDialog(null, "Lương cơ bản phải là một số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+					    }
+
+					    String cmnd = txtCMNDNV.getText().trim();
+					    String trinhDo = txtTDNV.getText().trim();
+					    String diaChi = txtDiaChiNV.getText().trim();
+					    String email = txtEmailNV.getText().trim();
+					    String matKhau = txtMK.getText().trim();
+					    
+					    // Xử lý giới tính (nam hay nữ)
+					    boolean gioiTinh = rdbtnNam.isSelected(); // nếu chọn nam thì là true, ngược lại là false
+					    
+					    String trangThai = txtTrangThaiNV.getText().trim();
+					    boolean isActive = trangThai.equalsIgnoreCase("Đang hoạt động");
+
+					 // Lấy giá trị chức vụ từ JComboBox
+					    String selectedChucVu = cboChucVuNV.getSelectedItem().toString();
+
+					    // Kiểm tra nếu giá trị chức vụ không hợp lệ
+					    if (selectedChucVu == null || selectedChucVu.trim().isEmpty()) {
+					        JOptionPane.showMessageDialog(null, "Vui lòng chọn chức vụ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+					    }
+
+					    // Biến lưu trữ chức vụ
+					    ChucVu chucVu1 = null;
+
+					    // Kiểm tra và chuyển đổi giá trị từ chuỗi thành enum ChucVu
+					    try {
+					        chucVu1 = ChucVu.valueOf(selectedChucVu.trim());
+					    } catch (IllegalArgumentException e1) {
+					        // Nếu không tìm thấy giá trị hợp lệ trong enum ChucVu, thông báo lỗi cho người dùng
+					        JOptionPane.showMessageDialog(null, "Chức vụ không hợp lệ! Vui lòng chọn lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+					        return;
+					    }
+
+					    // Tiến hành cập nhật thông tin nhân viên
+					    NhanVien nv = new NhanVien();
+					    nv.setMaNhanVien(maNhanVien);
+					    nv.setTenNhanVien(tenNV);
+					    nv.setSDT(sdt);
+					    nv.setGioiTinh(gioiTinh);
+					    nv.setNgaySinh(ngaySinh);
+					    nv.setNgayVaoLam(ngayVaoLam);
+					    nv.setChucVu(chucVu1);  // Cập nhật chức vụ đã chọn vào nhân viên
+					    nv.setCMND(cmnd);
+					    nv.setTrinhDo(trinhDo);
+					    nv.setDiaChi(diaChi);
+					    nv.setEmail(email);
+					    nv.setMatKhau(matKhau);
+					    nv.setTrangThai(isActive);
+
+					    // Gọi phương thức cập nhật nhân viên trong DAO
+					    dao_nv.updatenhanVien(nv);
+
+					    // Cập nhật bảng hiển thị
+					    DefaultTableModel model = (DefaultTableModel) table.getModel();
+					    model.setValueAt(tenNV, row, 1);
+					    model.setValueAt(sdt, row, 2);
+					    model.setValueAt(ngaySinh, row, 4);
+					    model.setValueAt(ngayVaoLam, row, 5);
+					    model.setValueAt(luongCB, row, 6);
+					    model.setValueAt(chucVu1, row, 7);  // Cập nhật chức vụ trong bảng
+					    model.setValueAt(cmnd, row, 8);
+					    model.setValueAt(trinhDo, row, 9);
+					    model.setValueAt(diaChi, row, 10);
+					    model.setValueAt(gioiTinh ? "Nam" : "Nữ", row, 3);
+					    model.setValueAt(email, row, 11);
+					    model.setValueAt(trangThai, row, 12);
+					    model.setValueAt(matKhau, row, 13);
+
+					    // Thông báo thành công
+					    JOptionPane.showMessageDialog(null, "Sửa thông tin nhân viên thành công!");
+
+					    // Xóa các trường nhập liệu
+					    txtTenNV.setText("");
+					    txtSDT.setText("");
+					    txtNSNV.setText("");
+					    txtNVLNV.setText("");
+					    txtLuong.setText("");
+					    txtCMNDNV.setText("");
+					    txtTDNV.setText("");
+					    txtDiaChiNV.setText("");
+					    txtEmailNV.setText("");
+					    txtMK.setText("");
+					    txtTrangThaiNV.setText("");
+					    cboChucVuNV.setSelectedIndex(0);
+					    rdbtnNam.setSelected(true);  // Đặt lại giới tính mặc định là Nam
+				 }
+				
 				 
 				 if (o.equals(btnTim)) {
 					    String maNV = txtNhap.getText().trim(); // Lấy mã nhân viên từ ô nhập liệu tìm kiếm
@@ -1441,14 +1502,14 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		
 
 		// Thêm phương thức kiểm tra sự tồn tại của nhân viên trong bảng
-		private boolean kiemTraNhanVienTonTai(String tenNV, String sdt, String cmnd) {
+		private boolean kiemTraNhanVienTonTai( String sdt, String cmnd) {
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
 		    for (int i = 0; i < model.getRowCount(); i++) {
 		        String tenTrongBang = model.getValueAt(i, 1).toString();
 		        String sdtTrongBang = model.getValueAt(i, 2).toString();
 		        String cmndTrongBang = model.getValueAt(i, 8).toString();
 		        
-		        if (tenNV.equals(tenTrongBang) && (sdt.equals(sdtTrongBang) )) {
+		        if ((sdt.equals(sdtTrongBang) )) {
 		            return true; // Nhân viên đã tồn tại
 		        }
 		        

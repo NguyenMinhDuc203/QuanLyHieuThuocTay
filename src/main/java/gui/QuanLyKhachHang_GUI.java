@@ -39,6 +39,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import org.mariadb.jdbc.client.column.SignedTinyIntColumn;
+
 import javax.swing.UIManager;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -73,7 +75,6 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 	private JButton btnSua;
 	private JButton btnTim;
 	private JButton btThoat;
-	private JButton btnLuu;
 	
 	private JTextField txtDTL;
 	private KhachHang_DAO dao_kh = new KhachHang_DAO();
@@ -386,22 +387,12 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			panel_2_1.setBorder(titledBorder);
 								 			panel_2_1.setBackground(new Color(226, 250, 252));
 								 			
-								 			panel_2_1.setBounds(1105, 362, 407, 291);
+								 			panel_2_1.setBounds(1105, 413, 407, 212);
 								 			panel.add(panel_2_1);
-								 			 
-								 			 				// Nút "Lưu"
-								 			 				 btnLuu = new JButton("Lưu");
-								 			 				 btnLuu.setBounds(35, 126, 161, 45);
-								 			 				 panel_2_1.add(btnLuu);
-								 			 				 btnLuu.setOpaque(true);
-								 			 				 btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			 				 btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			 				 btnLuu.setBackground(new Color(46, 139, 87));
-								 			 				 btnLuu.setIcon(new ImageIcon(scaledImageLuu));
 								 			 				 
 								 			 				 				// Nút "Sửa"
 								 			 				 				 btnSua = new JButton("Sửa");
-								 			 				 				 btnSua.setBounds(87, 214, 222, 45);
+								 			 				 				 btnSua.setBounds(35, 126, 161, 45);
 								 			 				 				 panel_2_1.add(btnSua);
 								 			 				 				 btnSua.setOpaque(true);
 								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -445,7 +436,6 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 				  btnThem.addActionListener(this);
 								 			 				 				 				 btnXoa.addActionListener(this);
 								 			 				 				 btnSua.addActionListener(this);
-								 			 				 btnLuu.addActionListener(this);
 								 btnTim.addActionListener(this);
 				
 				//Actions Menu
@@ -656,10 +646,16 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				    
 				    String tenKH = txtTenNV.getText();
 				    String sdt = txtSDT.getText();
-				    String diemTichLuy = txtDTL.getText();
+				    int diemTichLuy=0;
+				    try {
+				        diemTichLuy = Integer.parseInt(txtDTL.getText().trim());
+				    } catch (NumberFormatException e1) {
+				        JOptionPane.showMessageDialog(null, "Điểm tích lũy phải là một số nguyên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				        return; // Dừng phương thức nếu có lỗi
+				    }
 
 				    
-				    if (tenKH.isEmpty() || sdt.isEmpty() || diemTichLuy.isEmpty()) {
+				    if (tenKH.isEmpty() || sdt.isEmpty() ) {
 				        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				        return; 
 				    }
@@ -672,8 +668,9 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				    for (int i = 0; i < model.getRowCount(); i++) {
 				        String existingTenKH = model.getValueAt(i, 1).toString();
 				        String existingSDT = model.getValueAt(i, 2).toString();
-
-				        if (existingTenKH.equals(tenKH) && existingSDT.equals(sdt)) {
+				        Object value = model.getValueAt(i, 3);
+				       
+				        if (existingSDT.equals(sdt)) {
 				            isDuplicate = true;
 				            break;
 				        }
@@ -683,10 +680,16 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				        JOptionPane.showMessageDialog(null, "Khách hàng này đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				        return;
 				    }
-
-				    
-				    int rowCount = model.getRowCount(); // Số dòng hiện có
 				    String maKH =dao_kh.maTuSinhKhachHang(sdt);
+				    KhachHang kh= new KhachHang();
+				    kh.setMaKhachHang(maKH);
+				    kh.setTenKhachHang(tenKH);
+				    kh.setSDT(sdt);
+				    kh.setDiemTichLuy(diemTichLuy);
+				    dao_kh.create(kh);
+				    int rowCount = model.getRowCount(); // Số dòng hiện có
+				    
+				   
 
 				   
 				    model.addRow(new Object[] { maKH, tenKH, sdt, diemTichLuy });
@@ -709,20 +712,26 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			    if(o.equals(btnXoa)) {
 			       
 			        int row = table.getSelectedRow();
-
+			        String maKhachHang = table.getValueAt(row, 0).toString();
 			       
 			        if (row == -1) {
 			            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			            return;  
 			        }
-
-			       
+			        int confirmation = JOptionPane.showConfirmDialog(
+			        	    null,
+			        	    "Bạn có chắc chắn muốn xóa thông tin nhân viên này không?", 
+			        	    "Xác nhận",  
+			        	    JOptionPane.YES_NO_OPTION
+			        	);
+			        if (confirmation == JOptionPane.YES_OPTION) {
+			       dao_kh.delete(maKhachHang);
 			        DefaultTableModel model = (DefaultTableModel) table.getModel();
 			        model.removeRow(row);
 
 			        
 			        JOptionPane.showMessageDialog(null, "Xóa nhân viên khỏi bảng thành công!");
-
+			        }
 			        txtTenNV.setText("");
 			        txtSDT.setText("");
 			        txtDTL.setText("");  
@@ -735,16 +744,16 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			            return;
 			        }
 
-			  
+			        String maNhanVien = table.getValueAt(row, 0).toString();
 			        String tenNV = txtTenNV.getText();
 			        String sdt = txtSDT.getText();
-			        String diemTichLuy = txtDTL.getText();
+			        int diemTichLuy = Integer.parseInt(txtDTL.getText().trim());
 
-			        if (tenNV.isEmpty() || sdt.isEmpty() || diemTichLuy.isEmpty()) {
+			        if (tenNV.isEmpty() || sdt.isEmpty() ) {
 			            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			            return;
 			        }
-
+			        dao_kh.updateKhachHang(maNhanVien,tenNV,sdt,diemTichLuy);
 			  
 			        DefaultTableModel model = (DefaultTableModel) table.getModel();
 			        model.setValueAt(tenNV, row, 1);  // Cập nhật tên nhân viên tại cột 1
@@ -758,49 +767,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			        txtSDT.setText("");
 			        txtDTL.setText("");
 			    }
-			    if (o.equals(btnLuu)) {
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
-			        int rowCount = model.getRowCount();
-
-			        boolean isCleared = dao_kh.clearAllKhachHang();
-			        if (!isCleared) {
-			            JOptionPane.showMessageDialog(null, "Lỗi khi xóa dữ liệu cũ trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			            return;
-			        }
-
-			        boolean isError = false;
-			        for (int i = 0; i < rowCount; i++) {
-			            String maNV = model.getValueAt(i, 0).toString();
-			            String tenNV = model.getValueAt(i, 1).toString();
-			            String sdt = model.getValueAt(i, 2).toString();
-			            String diemTichLuy = model.getValueAt(i, 3).toString();
-
-			            if (maNV.isEmpty() || tenNV.isEmpty() || sdt.isEmpty() || diemTichLuy.isEmpty()) {
-			                JOptionPane.showMessageDialog(null, "Dữ liệu không đầy đủ tại dòng " + (i + 1), "Lỗi", JOptionPane.ERROR_MESSAGE);
-			                isError = true;
-			                break; // Nếu dữ liệu thiếu, dừng lại và không tiếp tục lưu
-			            }
-
-
-			            try {
-			                boolean isSaved = dao_kh.saveKhachHang(maNV, tenNV, sdt, Integer.parseInt(diemTichLuy));
-			                if (!isSaved) {
-			                    JOptionPane.showMessageDialog(null, "Lỗi khi lưu khách hàng: " + maNV, "Lỗi", JOptionPane.ERROR_MESSAGE);
-			                    isError = true;
-			                    break; 
-			                }
-			            } catch (NumberFormatException e1) {
-			                JOptionPane.showMessageDialog(null, "Số điểm tích lũy không hợp lệ tại dòng " + (i + 1), "Lỗi", JOptionPane.ERROR_MESSAGE);
-			                isError = true;
-			                break; 
-			        }
-
-			        
-
-			        
-			    }			            JOptionPane.showMessageDialog(null, "Lưu tất cả khách hàng vào cơ sở dữ liệu thành công!");
-
-			        }
+			  
 
 
 			    if (o.equals(btnTim)) {

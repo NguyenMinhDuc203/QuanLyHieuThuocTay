@@ -149,11 +149,14 @@ public class TraCuuSanPham_GUI extends JFrame {
                 txtMaSanPham.setText("");
                 txtTenSanPham.setText("");
                 txtBaoQuan.setText("");
+<<<<<<< HEAD
                 txtChongChiDinh.setText("");
                 txtThanhPhan.setText("");
                 txtGiaBan.setText("");
                 txtGiaNhap.setText("");
                 txtCongDung.setText("");
+=======
+>>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
                 hienThiSanPham(new ArrayList<>()); // Xóa bảng kết quả
             }
         });
