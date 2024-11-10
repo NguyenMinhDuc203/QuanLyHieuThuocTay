@@ -357,6 +357,62 @@ public class HoaDonXuat_DAO {
             }
             return result; // Trả về ArrayList chứa thông tin chi tiết sản phẩm
         }
+        
+        public ArrayList<Object[]> layDanhSachChiTietSanPhamTheoMaHoaDonXuat2(String maHoaDonXuat) {
+            EntityManager em = emf.createEntityManager();
+            ArrayList<Object[]> result = new ArrayList<>(); // Khởi tạo ArrayList để lưu kết quả
+
+            try {
+                // Câu truy vấn để lấy chi tiết sản phẩm dựa trên mã hóa đơn xuất
+            	String sql = "SELECT " +
+                        "sp.maSanPham, " +
+                        "sp.tenSanPham, " +
+                        "cthd.soLuong, " +
+                        "sp.giaBan, " +
+                        "sp.thueGTGT, " +
+                        "ROUND(SUM(cthd.soLuong * sp.giaBan), 2) AS thanhTien " +
+                        "FROM ChiTietHoaDon cthd " +
+                        "JOIN cthd.hoaDonXuat hdx " +
+                        "JOIN cthd.sanPham sp " +
+                        "WHERE hdx.maHoaDonXuat LIKE :maHoaDonXuat " +
+                        "GROUP BY sp.maSanPham, sp.tenSanPham, cthd.soLuong, sp.thueGTGT, sp.giaBan";
+
+
+
+
+                // Tạo câu truy vấn
+                Query query = em.createQuery(sql);
+                query.setParameter("maHoaDonXuat", "%" + maHoaDonXuat + "%"); // Sử dụng ký tự đại diện cho tìm kiếm
+
+                // Thực thi câu truy vấn và lấy kết quả
+                result = new ArrayList<>(query.getResultList()); // Chuyển đổi kết quả thành ArrayList
+                System.out.println("Câu truy vấn: " + sql);
+
+                // In kết quả ra console
+                if (result.isEmpty()) {
+                    System.out.println("Không tìm thấy sản phẩm cho mã hóa đơn: " + maHoaDonXuat);
+                } else {
+                    for (Object[] row : result) {
+                        System.out.println("Mã Sản Phẩm: " + row[0] + 
+                                           ", Tên Sản Phẩm: " + row[1] + 
+                                           ", Số lượng: " + row[2] + 
+                                           ", Đơn giá: " + row[3] + 
+                                           ", Thuế: " + row[4] + 
+                                           ", Thành Tiền: " + row[5]);
+                    }
+                }
+
+            } catch (Exception e) {
+                System.err.println("Lỗi khi lấy danh sách chi tiết sản phẩm: " + e.getMessage());
+                e.printStackTrace();
+            } finally {
+                if (em.isOpen()) {
+                    em.close(); // Đảm bảo EntityManager được đóng
+                }
+            }
+            return result; // Trả về ArrayList chứa thông tin chi tiết sản phẩm
+        }
+        
         // Thống kê doanh số theo ngày
         public List<Object[]> thongKeDoanhSoTheoNgay(LocalDate ngay) {
             EntityManager em = emf.createEntityManager();

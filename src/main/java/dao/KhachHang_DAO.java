@@ -400,7 +400,31 @@ public class KhachHang_DAO {
 
         return khachHang;  // Trả về đối tượng KhachHang hoặc null nếu không tìm thấy
     }
+    public KhachHang layKhachHangTheoMa(String maKH) {
+        EntityManager em = emf.createEntityManager();
+        KhachHang khachHang = null;  // Biến mặc định khi không tìm thấy khách hàng
 
+        try {
+            // Truy vấn JPQL để lấy khách hàng theo số điện thoại
+            String jpql = "SELECT kh FROM KhachHang kh WHERE kh.maKhachHang = :maKH";
+            TypedQuery<KhachHang> query = em.createQuery(jpql, KhachHang.class);
+            query.setParameter("maKH", maKH);
+
+            // Lấy kết quả khách hàng
+            khachHang = query.getSingleResult();  // Kết quả là đối tượng KhachHang
+
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy khách hàng, trả về null
+            khachHang = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            khachHang = null;  // Mặc định trả về null nếu có lỗi
+        } finally {
+            em.close();
+        }
+
+        return khachHang;  // Trả về đối tượng KhachHang hoặc null nếu không tìm thấy
+    }
 
     // Phương thức tìm kiếm khách hàng theo giới tính
     public List<KhachHang> findKhachHangByGender(String gioiTinh) {
