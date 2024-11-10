@@ -4,6 +4,8 @@ import dao.SanPham_DAO;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,6 +58,7 @@ public class TraCuuSanPham_GUI extends JFrame {
         menuBar.add(mnStats);
         menuBar.add(mnLookup);
 
+        
         // Panel tìm kiếm
         JPanel timKiemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 20));
         txtMaSanPham = new JTextField(20);
@@ -69,26 +72,34 @@ public class TraCuuSanPham_GUI extends JFrame {
         timKiemPanel.add(txtTenSanPham);
 
         btnTimKiem = new JButton("Tìm kiếm");
+        btnTimKiem.setBackground(new Color(76, 175, 80));
+        btnTimKiem.setForeground(Color.WHITE);
         timKiemPanel.add(btnTimKiem);
 
         btnLamMoi = new JButton("Làm Mới");
+        btnLamMoi.setBackground(new Color(76, 175, 80));
+        btnLamMoi.setForeground(Color.WHITE);
         timKiemPanel.add(btnLamMoi);
 
         String[] columns = {"Mã SP", "Tên SP", "Giá nhập", "Giá bán", "SL tồn"};
         bangSanPham = new JTable(new DefaultTableModel(new Object[][]{}, columns));
         JScrollPane bangScrollPane = new JScrollPane(bangSanPham);
+        JTableHeader header = bangSanPham.getTableHeader();
+        header.setForeground(Color.WHITE); // Màu chữ tiêu đề
+        header.setBackground(new Color(76, 175, 80)); // Màu nền tiêu đề
+        header.setFont(new Font("SansSerif", Font.BOLD, 14)); // Tùy chỉnh font chữ
 
         // Panel thông tin sản phẩm
         JPanel thongTinSPPanel = new JPanel();
         thongTinSPPanel.setLayout(new BoxLayout(thongTinSPPanel, BoxLayout.Y_AXIS));
         thongTinSPPanel.setBackground(new Color(220, 220, 220));
-        TitledBorder mainBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(0, 77, 77)), "Thông tin sản phẩm");
+        TitledBorder mainBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.RED), "Thông tin sản phẩm");
         thongTinSPPanel.setBorder(mainBorder);
 
         JPanel basicInfoPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        basicInfoPanel.setBackground(SystemColor.info);
         txtGiaNhap = new JTextField(20);
         txtGiaBan = new JTextField(20);
-
         txtMaSanPham = new JTextField(20);
         txtTenSanPham = new JTextField(20);
 
@@ -102,6 +113,7 @@ public class TraCuuSanPham_GUI extends JFrame {
         basicInfoPanel.add(txtGiaBan);
 
         JPanel specPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        specPanel.setBackground(SystemColor.window);
         txtCongDung = new JTextField(20);
         txtThanhPhan = new JTextField(20);
         txtBaoQuan = new JTextField(20);
@@ -118,6 +130,7 @@ public class TraCuuSanPham_GUI extends JFrame {
 
         thongTinSPPanel.add(basicInfoPanel);
         thongTinSPPanel.add(specPanel);
+
 
         getContentPane().add(timKiemPanel, BorderLayout.NORTH);
         getContentPane().add(bangScrollPane, BorderLayout.CENTER);
@@ -148,6 +161,12 @@ public class TraCuuSanPham_GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 txtMaSanPham.setText("");
                 txtTenSanPham.setText("");
+                txtGiaNhap.setText("");
+                txtGiaBan.setText("");
+                txtCongDung.setText("");
+                txtThanhPhan.setText("");
+                txtBaoQuan.setText("");
+                txtChongChiDinh.setText("");
                 hienThiSanPham(new ArrayList<>()); // Xóa bảng kết quả
             }
         });

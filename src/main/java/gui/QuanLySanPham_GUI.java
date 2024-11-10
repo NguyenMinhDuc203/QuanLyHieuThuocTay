@@ -85,7 +85,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	private JButton btnSua;
 	private JButton btnTim;
 	private JButton btnThoat;
-	private JButton btnLuu;
 	private KhachHang_DAO dao_kh = new KhachHang_DAO();
 	private HoaDonNhap_DAO dao_hdn = new HoaDonNhap_DAO();
 	private LoaiSanPham_DAO dao_lsp = new LoaiSanPham_DAO();
@@ -379,18 +378,8 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			panel_2_1.setBorder(titledBorder);
 								 			panel_2_1.setBackground(new Color(226, 250, 252));
 								 			
-								 			panel_2_1.setBounds(1165, 285, 372, 206);
+								 			panel_2_1.setBounds(1165, 285, 372, 167);
 								 			panel.add(panel_2_1);
-								 			 
-								 			 				// Nút "Lưu"
-								 			 				 btnLuu = new JButton("Lưu");
-								 			 				 btnLuu.setBounds(32, 91, 133, 39);
-								 			 				 panel_2_1.add(btnLuu);
-								 			 				 btnLuu.setOpaque(true);
-								 			 				 btnLuu.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
-								 			 				 btnLuu.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-								 			 				 btnLuu.setBackground(new Color(46, 139, 87));
-								 			 				 btnLuu.setIcon(new ImageIcon(scaledImageLuu));
 								 			 				 
 								 			 				 				// Nút "Sửa"
 								 			 				 				 btnSua = new JButton("Sửa");
@@ -427,7 +416,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  
 								 			 				 				 				  				// Nút "Xóa Trắng"
 								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
-								 			 				 				 				  			btnXoaTrang.setBounds(87, 150, 204, 35);
+								 			 				 				 				  			btnXoaTrang.setBounds(32, 93, 133, 35);
 								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
 								 			 				 				 				  			btnXoaTrang.setOpaque(true);
 								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -613,7 +602,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  btnThem.addActionListener(this);
 								 			 				 				 				 btnXoa.addActionListener(this);
 								 			 				 				 btnSua.addActionListener(this);
-								 			 				 btnLuu.addActionListener(this);
 								 btnTim.addActionListener(this);
 				
 				//Actions Menu
@@ -959,6 +947,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			}
 			// Tạo hành động khi nhấn nút "Thêm Sản Phẩm"
 			if (o.equals(btnThem)) {
+			    // Lấy dữ liệu từ các trường nhập liệu
 			    String tenSP = txtTenSP.getText();
 			    String baoq = txtBQSP.getText();
 			    String giaBan = txtGBSP.getText();
@@ -985,67 +974,123 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        return;
 			    }
 
-			    // Kiểm tra nếu tên sản phẩm đã tồn tại trong bảng
-			    DefaultTableModel model = (DefaultTableModel) table.getModel();
-			    boolean isProductExist = false;
-
-			    for (int i = 0; i < model.getRowCount(); i++) {
-			    	String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
-			        if (existingProductName.equalsIgnoreCase(tenSP)) {
-			            isProductExist = true;
-			            break;
-			        }
-			    }
-
-			    if (isProductExist) {
-			        JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại trong bảng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    // Gọi hàm checkData() để kiểm tra tính hợp lệ của dữ liệu
+			    if (!checkData()) {
+			        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			        return;
 			    }
 
-			    // Tạo mã sản phẩm theo công thức: SP + 4 chữ số bắt đầu từ 0010
-			    int rowCount = model.getRowCount();
-			    String maSP = String.format("SP%04d", rowCount + 10);  // Bắt đầu từ SP0010 và tăng dần
+			    // Tạo đối tượng SanPham và gán giá trị vào các thuộc tính tương ứng
+			    SanPham sanPham = new SanPham();
+			    try {
+			        // Gán các giá trị đã lấy vào đối tượng sanPham
+			        sanPham.setTenSanPham(tenSP);
+			        sanPham.setCongDung(congDung);
+			        sanPham.setGiaBan(Double.parseDouble(giaBan)); // Chuyển giá bán sang kiểu double
+			        sanPham.setGhiChu(ghiChu);
+			        sanPham.setGiaNhap(Double.parseDouble(giaNhap)); // Chuyển giá nhập sang kiểu double
+			        sanPham.setSoLuongTonkho(Integer.parseInt(soLuongTonKho)); // Chuyển số lượng tồn kho sang kiểu int
+			        sanPham.setThanhPhan(thanhPhan);
+			        sanPham.setThueGTGT(Double.parseDouble(thueGTGT)); // Chuyển thuế GTGT sang kiểu double
+			        sanPham.setNhaSanXuat(nhaSanXuat);
 
-			    // Thêm mã loại sản phẩm, ngày sản xuất và chuỗi 123456789 + 5 chữ số bắt đầu từ 00001
-			    String loaiSP = maLoaiSP;  // Loại sản phẩm
-			    String formattedDate = ngaySanXuat.replace("-", "");  // Định dạng ngày sản xuất dạng yyyyMMdd
-			    maSP += loaiSP + formattedDate + "123456789" + String.format("%05d", rowCount + 1);
+			        // Chuyển đổi giá trị LocalDate từ chuỗi ngày tháng
+			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			        sanPham.setHanSuDung(LocalDate.parse(hanSuDung, formatter)); // Chuyển chuỗi ngày hết hạn thành LocalDate
+			        sanPham.setNgaySanXuat(LocalDate.parse(ngaySanXuat, formatter)); // Chuyển chuỗi ngày sản xuất thành LocalDate
 
-			    // Thêm dòng mới vào bảng
-			    model.addRow(new Object[]{
-			        maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT, maHoaDon, maLoaiSP
-			    });
-			    model.fireTableDataChanged();
+			        // Chuyển DonViTinh từ chuỗi sang enum DonViTinh
+			        DonViTinh donViTinhEnum = DonViTinh.valueOf(donViTinh.toUpperCase()); // Chuyển đổi sang enum
+			        sanPham.setDonViTinh(donViTinhEnum);
 
-			    JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
+			        // Thiết lập các mối quan hệ với LoaiSanPham và HoaDonNhap
+			        LoaiSanPham loaiSanPham = new LoaiSanPham();
+			        loaiSanPham.setMaLoai(maLoaiSP); // Giả sử bạn đã có phương thức setMaLoai trong lớp LoaiSanPham
+			        sanPham.setLoaiSanPham(loaiSanPham);
 
-			    // Làm sạch các trường nhập liệu sau khi thêm sản phẩm
-			    txtTenSP.setText("");
-			    txtBQSP.setText("");
-			    txtGBSP.setText("");
-			    txtGCSP.setText("");
-			    txtGNSP.setText("");
-			    txtSLTKSP.setText("");
-			    txtTPSP.setText("");
-			    txtTGTGTSP.setText("");
-			    txtNhaSXSP.setText("");
-			    txtHSDSP.setText("");
-			    txtMHDSP.setText("");
-			    txtMLSP.setText("");
-			    txtCDSP.setText("");
-			    txtCCDSP.setText("");
-			    cboDVTSP.setSelectedIndex(0);
-			    txtNSXSP.setText("");
+			        HoaDonNhap hoaDonNhap = new HoaDonNhap();
+			        hoaDonNhap.setMaHoaDonNhap(maHoaDon); // Giả sử bạn đã có phương thức setMaHoaDon trong lớp HoaDonNhap
+			        sanPham.setHoaDonNhap(hoaDonNhap);
+
+			        // Chuyển đổi chuỗi chongChiDinh sang đối tượng, nếu cần
+			        sanPham.setChongChiDinh(chongChiDinh);
+
+			        // Lưu đối tượng sanPham vào cơ sở dữ liệu
+			        SanPham_DAO sanPhamDAO = new SanPham_DAO();
+			        sanPhamDAO.saveSanPham(sanPham);
+
+			        // Kiểm tra nếu tên sản phẩm đã tồn tại trong bảng
+			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        boolean isProductExist = false;
+
+			        for (int i = 0; i < model.getRowCount(); i++) {
+			            String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
+			            if (existingProductName.equalsIgnoreCase(tenSP)) {
+			                isProductExist = true;
+			                break;
+			            }
+			        }
+
+			        if (isProductExist) {
+			            JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại trong bảng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			            return;
+			        }
+
+			        // Tạo mã sản phẩm theo công thức: SP + 4 chữ số bắt đầu từ 0010
+			        int rowCount = model.getRowCount();
+			        String maSP = String.format("SP%04d", rowCount + 10);  // Bắt đầu từ SP0010 và tăng dần
+
+			        // Thêm mã loại sản phẩm, ngày sản xuất và chuỗi 123456789 + 5 chữ số bắt đầu từ 00001
+			        String loaiSP = maLoaiSP;  // Loại sản phẩm
+			        String formattedDate = ngaySanXuat.replace("-", "");  // Định dạng ngày sản xuất dạng yyyyMMdd
+			        maSP += loaiSP + formattedDate + "123456789" + String.format("%05d", rowCount + 1);
+
+			        // Thêm dòng mới vào bảng
+			        model.addRow(new Object[]{
+			            maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT, maHoaDon, maLoaiSP
+			        });
+
+			        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
+
+			        // Làm sạch các trường nhập liệu sau khi thêm sản phẩm
+			        txtTenSP.setText("");
+			        txtBQSP.setText("");
+			        txtGBSP.setText("");
+			        txtGCSP.setText("");
+			        txtGNSP.setText("");
+			        txtSLTKSP.setText("");
+			        txtTPSP.setText("");
+			        txtTGTGTSP.setText("");
+			        txtNhaSXSP.setText("");
+			        txtHSDSP.setText("");
+			        txtMHDSP.setText("");
+			        txtMLSP.setText("");
+			        txtCDSP.setText("");
+			        txtCCDSP.setText("");
+			        cboDVTSP.setSelectedIndex(0);
+			        txtNSXSP.setText("");
+
+			    } catch (NumberFormatException ex) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng số cho các trường giá trị!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    }
 			}
+
 
 			if (o.equals(btnXoa)) {
 			    int selectedRow = table.getSelectedRow();
 			    if (selectedRow != -1) {
+			    	  int confirmation = JOptionPane.showConfirmDialog(
+				        	    null,
+				        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
+				        	    "Xác nhận",  
+				        	    JOptionPane.YES_NO_OPTION
+				        	);
+				        if (confirmation == JOptionPane.YES_OPTION) {
 			        DefaultTableModel model = (DefaultTableModel) table.getModel();
 			        model.removeRow(selectedRow);
 
 			        JOptionPane.showMessageDialog(null, "Đã xóa sản phẩm khỏi bảng!");
-			    } else {
+			    } }else {
 
 			        JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			    }
@@ -1124,71 +1169,8 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		        cboDVTSP.setSelectedIndex(0);
 		        txtNSXSP.setText("");
 		    }
-			if (o.equals(btnLuu)) {
-			    try {
-			        List<SanPham> danhSachSanPham = getDanhSachSanPhamFromTable(table); // Lấy danh sách sản phẩm từ bảng
-			        int confirmation = JOptionPane.showConfirmDialog(
-			            null,
-			            "Bạn có chắc chắn muốn lưu thông tin sản phẩm này không?",
-			            "Xác nhận",
-			            JOptionPane.YES_NO_OPTION
-			        );
-
-			        if (confirmation == JOptionPane.YES_OPTION) {
-			            // Kiểm tra và thiết lập các trường `hoaDonNhap` và `loaiSanPham` cho mỗi sản phẩm
-			            for (SanPham sp : danhSachSanPham) {
-			                try {
-			                    Field loaiSanPhamField = SanPham.class.getDeclaredField("loaiSanPham");
-			                    loaiSanPhamField.setAccessible(true);
-			                    LoaiSanPham loaiSanPham = (LoaiSanPham) loaiSanPhamField.get(sp);
-
-			                    Field hoaDonNhapField = SanPham.class.getDeclaredField("hoaDonNhap");
-			                    hoaDonNhapField.setAccessible(true);
-			                    HoaDonNhap hoaDonNhap = (HoaDonNhap) hoaDonNhapField.get(sp);
-
-			                    // Xử lý hoaDonNhap nếu chưa tồn tại
-			                    if (hoaDonNhap == null) {
-			                        hoaDonNhap = new HoaDonNhap();
-			                        Field maHoaDonField = HoaDonNhap.class.getDeclaredField("maHoaDonNhap");
-			                        maHoaDonField.setAccessible(true);
-			                        maHoaDonField.set(hoaDonNhap, "some_generated_value"); // Gán mã hóa đơn nhập
-			                        dao_hd.addHoaDonNhap(hoaDonNhap);
-			                        hoaDonNhapField.set(sp, hoaDonNhap);
-			                    }
-
-			                    // Xử lý loaiSanPham nếu chưa tồn tại
-			                    if (loaiSanPham == null) {
-			                        loaiSanPham = new LoaiSanPham();
-			                        Field maLoaiField = LoaiSanPham.class.getDeclaredField("maLoai");
-			                        maLoaiField.setAccessible(true);
-			                        maLoaiField.set(loaiSanPham, "some_generated_value"); // Gán mã loại sản phẩm
-			                        dao_lsp.addLoaiSanPham(loaiSanPham);
-			                        loaiSanPhamField.set(sp, loaiSanPham);
-			                    }
-
-			                } catch (NoSuchFieldException | IllegalAccessException e1) {
-			                    JOptionPane.showMessageDialog(null, "Lỗi khi xử lý sản phẩm: " + e1.getMessage());
-			                    e1.printStackTrace();
-			                }
-			            }
-
-			            // Gọi phương thức saveSanPham để lưu toàn bộ danh sách sản phẩm
-			            boolean isSaved = dao_sp.saveSanPham(danhSachSanPham);
-
-			            // Thông báo kết quả
-			            if (isSaved) {
-			                JOptionPane.showMessageDialog(null, "Tất cả sản phẩm đã được lưu thành công!");
-			            } else {
-			                JOptionPane.showMessageDialog(null, "Có lỗi xảy ra trong quá trình lưu sản phẩm.");
-			            }
-			        }
-
-			    } catch (Exception e1) {
-			        System.out.println("Lỗi chi tiết: " + e1.getMessage());
-			        JOptionPane.showMessageDialog(null, "Lỗi khi lưu sản phẩm: " + e1.getMessage());
-			        e1.printStackTrace();
-			    }
-			}
+		
+			
 
 
 
@@ -1623,6 +1605,85 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		    // Kiểm tra Loại sản phẩm và Hóa đơn nhập
 		   // if (sp.loaiSanPham == null) sp.loaiSanPham = new LoaiSanPham("Không xác định");
 		  //  if (sp.hoaDonNhap == null) sp.hoaDonNhap = new HoaDonNhap("Không xác định");
+		}
+		public boolean checkData() {
+		    String tenSP = txtTenSP.getText().trim();
+		    String baoq = txtBQSP.getText().trim();
+		    String giaBan = txtGBSP.getText().trim();
+		    String ghiChu = txtGCSP.getText().trim();
+		    String giaNhap = txtGNSP.getText().trim();
+		    String soLuongTonKho = txtSLTKSP.getText().trim();
+		    String thanhPhan = txtTPSP.getText().trim();
+		    String thueGTGT = txtTGTGTSP.getText().trim();
+		    String nhaSanXuat = txtNhaSXSP.getText().trim();
+		    String hanSuDung = txtHSDSP.getText().trim();
+		    String maHoaDon = txtMHDSP.getText().trim();
+		    String maLoaiSP = txtMLSP.getText().trim();
+		    String congDung = txtCDSP.getText().trim();
+		    String chongChiDinh = txtCCDSP.getText().trim();
+		    String donViTinh = cboDVTSP.getSelectedItem().toString().trim();
+		    String ngaySanXuat = txtNSXSP.getText().trim();
+
+		    // Kiểm tra các trường bắt buộc không được để trống
+		    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || giaNhap.isEmpty() || soLuongTonKho.isEmpty() ||
+		        thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() || hanSuDung.isEmpty() ||
+		        maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() || ngaySanXuat.isEmpty()) {
+		        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra giá bán, giá nhập, và thuế GTGT phải là số hợp lệ
+		    try {
+		        Double.parseDouble(giaBan);
+		        Double.parseDouble(giaNhap);
+		        Double.parseDouble(thueGTGT);
+		    } catch (NumberFormatException e) {
+		        JOptionPane.showMessageDialog(null, "Giá bán, giá nhập, và thuế GTGT phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra số lượng tồn kho là số nguyên hợp lệ
+		    try {
+		        Integer.parseInt(soLuongTonKho);
+		    } catch (NumberFormatException e) {
+		        JOptionPane.showMessageDialog(null, "Số lượng tồn kho phải là số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra định dạng ngày tháng
+		    try {
+		        LocalDate hanSuDungDate = LocalDate.parse(hanSuDung);
+		        LocalDate ngaySanXuatDate = LocalDate.parse(ngaySanXuat);
+
+		        if (ngaySanXuatDate.isAfter(LocalDate.now())) {
+		            JOptionPane.showMessageDialog(null, "Ngày sản xuất không thể sau ngày hiện tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		            return false;
+		        }
+
+		        if (hanSuDungDate.isBefore(ngaySanXuatDate)) {
+		            JOptionPane.showMessageDialog(null, "Hạn sử dụng phải sau ngày sản xuất!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		            return false;
+		        }
+		    } catch (DateTimeParseException e) {
+		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-mm-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra mã loại sản phẩm có tồn tại trong bảng LoaiSanPham không
+		    LoaiSanPham loai = dao_lsp.findLoaiSanPhamByMa(maLoaiSP);  // Giả sử loaiSanPhamDAO là đối tượng truy cập dữ liệu của LoaiSanPham
+		    if (loai == null) {
+		        JOptionPane.showMessageDialog(null, "Mã loại sản phẩm không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    // Kiểm tra mã hóa đơn nhập có tồn tại trong bảng HoaDonNhap không
+		    HoaDonNhap hoaDon = dao_hdn.findHoaDonNhapByMa(maHoaDon);  // Giả sử hoaDonNhapDAO là đối tượng truy cập dữ liệu của HoaDonNhap
+		    if (hoaDon == null) {
+		        JOptionPane.showMessageDialog(null, "Mã hóa đơn nhập không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+		        return false;
+		    }
+
+		    return true;
 		}
 
 }

@@ -165,13 +165,18 @@ public class KhachHang_DAO {
 
         try {
             entityManager.getTransaction().begin();
-            KhachHang khachHang = entityManager.find(KhachHang.class, maKhachHang);
-            if (khachHang != null) {
-                entityManager.remove(khachHang);
+
+            // Thực hiện truy vấn DELETE trực tiếp trong cơ sở dữ liệu
+            int deletedCount = entityManager.createQuery("DELETE FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang")
+                                            .setParameter("maKhachHang", maKhachHang)
+                                            .executeUpdate();
+
+            if (deletedCount > 0) {
                 isDeleted = true; // Đánh dấu là xóa thành công
             } else {
                 System.out.println("Không tìm thấy khách hàng với mã: " + maKhachHang);
             }
+
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             if (entityManager.getTransaction().isActive()) {
@@ -184,6 +189,7 @@ public class KhachHang_DAO {
 
         return isDeleted; // Trả về true nếu đã xóa thành công
     }
+
 //
     public boolean updateKhachHang(String maKhachHang, String tenKhachHang, String sDT, int diemTichLuy) {
         EntityManager em = emf.createEntityManager();
@@ -192,13 +198,13 @@ public class KhachHang_DAO {
         try {
             em.getTransaction().begin();
             
-            // Truy vấn JPQL để cập nhật thông tin khách hàng
+            // Truy vấn JPQL để cập nhật thông tin khách hàng dựa vào maKhachHang
             int updatedCount = em.createQuery(
-                    "UPDATE KhachHang kh SET kh.tenKhachHang = :tenKhachHang, kh.sDT = :sDT, kh.diemTichLuy = :diemTichLuy WHERE kh.sDT = :sDT")
+                    "UPDATE KhachHang kh SET kh.tenKhachHang = :tenKhachHang, kh.sDT = :sDT, kh.diemTichLuy = :diemTichLuy WHERE kh.maKhachHang = :maKhachHang")
                 .setParameter("tenKhachHang", tenKhachHang)
                 .setParameter("sDT", sDT)
-                .setParameter("maKhachHang", maKhachHang)
                 .setParameter("diemTichLuy", diemTichLuy)
+                .setParameter("maKhachHang", maKhachHang)
                 .executeUpdate();
 
             em.getTransaction().commit();
@@ -636,6 +642,30 @@ public class KhachHang_DAO {
     }
     
     
+    public String layTenKhachHangByMa(String maKhachHang) {
+        EntityManager em = emf.createEntityManager();
+        String tenKhachHang = null;
 
+        try {
+            // Sử dụng HQL để truy vấn tên khách hàng từ mã khách hàng
+            String jpql = "SELECT k.tenKhachHang FROM KhachHang k WHERE k.maKhachHang = :maKhachHang";
+            TypedQuery<String> query = em.createQuery(jpql, String.class);
+            query.setParameter("maKhachHang", maKhachHang);
 
+            // Lấy kết quả
+            tenKhachHang = query.getSingleResult();
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
+            System.out.println("Không tìm thấy khách hàng với mã: " + maKhachHang);
+        } catch (Exception e) {
+            // Xử lý các lỗi khác nếu có
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return tenKhachHang;
+    }
+    
+    
 }

@@ -21,6 +21,10 @@ import lombok.Setter;
 
 public class HoaDonXuat {
 	
+	public HoaDonXuat(String maHoaDonXuat) {
+		super();
+		this.maHoaDonXuat = maHoaDonXuat;
+	}
 	@Id
 	private String maHoaDonXuat;
 	private LocalDate ngayTao;

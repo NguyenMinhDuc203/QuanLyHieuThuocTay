@@ -15,6 +15,10 @@ import lombok.Setter;
 
 
 public class KhachHang {
+	public KhachHang(String maKhachHang) {
+		super();
+		this.maKhachHang = maKhachHang;
+	}
 	@Id
 	private String maKhachHang;
 	private String tenKhachHang;
