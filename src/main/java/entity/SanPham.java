@@ -44,7 +44,9 @@ public class SanPham {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "maLoai")  // Đây là tên cột trong bảng SanPham
 	private LoaiSanPham loaiSanPham;
-
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "maGiamGia")  // Đây là tên cột trong bảng SanPham
+	private SanPham sanPham;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "maHoaDonNhap")

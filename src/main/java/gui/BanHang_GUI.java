@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -43,6 +45,8 @@ import java.io.IOException;
 
 import com.itextpdf.kernel.font.PdfFont;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -75,7 +79,8 @@ import entity.NhanVien;
 import entity.SanPham;
 import entity.ChiTietHoaDon;
 import gui.DangNhap_GUI;
-
+import entity.MaGiamGia;
+import dao.MaGiamGia_DAO;
 import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.border.EtchedBorder;
@@ -1089,18 +1094,6 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_8.setBounds(540, 11, 170, 44);
       KhuyenMaiPane.add(btnNewButton_8);
       
-      JSpinner spinner_3 = new JSpinner();
-      spinner_3.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-      spinner_3.setModel(new SpinnerListModel(new String[] {"Lo\u1EA1i", "Ph\u1EA7n tr\u0103m", "Ti\u1EC1n"}));
-      spinner_3.setBounds(747, 11, 158, 44);
-      KhuyenMaiPane.add(spinner_3);
-      
-      JSpinner spinner_3_1 = new JSpinner();
-      spinner_3_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-      spinner_3_1.setModel(new SpinnerListModel(new String[] {"H\u1EA1n S\u1EED d\u1EE5ng", "H\u1EBFt h\u1EA1n", "C\u00F2n h\u1EA1n"}));
-      spinner_3_1.setBounds(939, 11, 158, 44);
-      KhuyenMaiPane.add(spinner_3_1);
-      
       JScrollPane scrollPane_5 = new JScrollPane();
       scrollPane_5.setBounds(10, 66, 700, 718);
       KhuyenMaiPane.add(scrollPane_5);
@@ -1117,16 +1110,10 @@ public class BanHang_GUI extends JFrame {
       giaoDienTable(table_7);
       scrollPane_5.setViewportView(table_7);
       
-      JSpinner spinner_3_1_1 = new JSpinner();
-      spinner_3_1_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
-      spinner_3_1_1.setModel(new SpinnerListModel(new String[] {"\u0110i\u1EC3m quy \u0111\u1ED5i", "1000", "2000", "3000", "0"}));
-      spinner_3_1_1.setBounds(1132, 11, 158, 44);
-      KhuyenMaiPane.add(spinner_3_1_1);
-      
       JPanel panel_6 = new JPanel();
       panel_6.setBackground(new Color(255, 255, 255));
       panel_6.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)), "Th\u00F4ng tin \u00E1p d\u1EE5ng khuy\u1EBFn m\u00E3i", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(26, 133, 94)));
-      panel_6.setBounds(747, 81, 600, 703);
+      panel_6.setBounds(732, 11, 600, 773);
       KhuyenMaiPane.add(panel_6);
       panel_6.setLayout(null);
       
@@ -1235,14 +1222,14 @@ public class BanHang_GUI extends JFrame {
       btnNewButton_9.setForeground(new Color(255, 255, 255));
       btnNewButton_9.setFont(new Font("Leelawadee UI", Font.BOLD, 16));
       btnNewButton_9.setBackground(new Color(26, 133, 94));
-      btnNewButton_9.setBounds(401, 648, 166, 44);
+      btnNewButton_9.setBounds(401, 718, 166, 44);
       panel_6.add(btnNewButton_9);
       
       JButton btnNewButton_9_1 = new JButton("Hủy");
       btnNewButton_9_1.setForeground(new Color(255, 255, 255));
       btnNewButton_9_1.setFont(new Font("Leelawadee UI", Font.PLAIN, 16));
       btnNewButton_9_1.setBackground(new Color(26, 133, 94));
-      btnNewButton_9_1.setBounds(204, 648, 166, 44);
+      btnNewButton_9_1.setBounds(208, 718, 166, 44);
       panel_6.add(btnNewButton_9_1);
       
       JLabel lblNewLabel_7_1_1_1_1_1_2 = new JLabel("Giảm giá trên:");
@@ -1256,7 +1243,7 @@ public class BanHang_GUI extends JFrame {
       panel_6.add(lblNewLabel_7_1_1_1_1_1_1_2_1);
       
       JScrollPane scrollPane_6 = new JScrollPane();
-      scrollPane_6.setBounds(27, 498, 541, 139);
+      scrollPane_6.setBounds(27, 498, 541, 193);
       panel_6.add(scrollPane_6);
       
       table_8 = new JTable();
@@ -1284,7 +1271,113 @@ public class BanHang_GUI extends JFrame {
       textField_39.setColumns(10);
       textField_39.setBounds(440, 270, 127, 37);
       panel_6.add(textField_39);
+      MaGiamGia_DAO maGGDAO = new MaGiamGia_DAO();
+      //Sự kiện cho giảm giá
+      ArrayList<MaGiamGia> maGiamGiaList = maGGDAO.getDanhSachMaGiamGiaConHieuLuc();
+   // Thêm dữ liệu vào bảng
+      DefaultTableModel model_7 = (DefaultTableModel) table_7.getModel();
+      for (MaGiamGia maGiamGia : maGiamGiaList) {
+    	  model_7.addRow(new Object[]{
+              maGiamGia.getMaGiamGia(),    // Mã giảm giá
+              maGGDAO.getLoaiGiamGiaByMa(maGiamGia.getMaGiamGia()),  // Loại giảm giá (ví dụ: phần trăm, số tiền)
+              maGiamGia.getTriGia(),       // Trị giá giảm giá
+              maGiamGia.getDiemDoi(),      // Điểm quy đổi
+              maGiamGia.getNgayHetHan()    // Hạn sử dụng
+          });
+      }
+   // Lắng nghe sự kiện chọn dòng trên table_7
+      table_7.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+          @Override
+          public void valueChanged(ListSelectionEvent e) {
+              if (!e.getValueIsAdjusting()) { // Đảm bảo chỉ xử lý khi người dùng thực sự thay đổi dòng
+                  int selectedRow = table_7.getSelectedRow();
+                  if (selectedRow != -1) {
+                      String maGiam = table_7.getValueAt(selectedRow, 0).toString(); // Lấy mã giảm giá từ dòng được chọn
+                      
+                      // Gọi lại phương thức getMaGiamGiaTheoMa để lấy thông tin mã giảm giá
+                      MaGiamGia maGG = maGGDAO.getMaGiamGiaTheoMa(maGiam);
+                      
+                      if (maGG != null) {
+                          // Cập nhật thông tin mã giảm giá vào các TextField
+                          textField_29.setText(maGG.getMaGiamGia());
+                          textField_33.setText(String.valueOf(maGG.getDiemDoi()));
+                          textField_38.setText(maGGDAO.getLoaiGiamGiaByMa(maGiam));
+                          textField_39.setText(maGGDAO.getLoaiGiamGiaByMa2(maGiam));
+                          textField_34.setText(String.valueOf(maGG.getTriGia()));
 
+                          // Tính toán giảm giá
+                          Double tongTien = 0.0;
+                          try {
+                              tongTien = Double.parseDouble(textField_9.getText()); // Lấy tổng tiền từ textField_9
+                          } catch (NumberFormatException ex) {
+                              tongTien = 0.0; // Nếu không phải là số hợp lệ, gán giá trị 0
+                          }
+
+                          if (maGGDAO.getLoaiGiamGiaByMa(maGiam).equals("Tiền")) {
+                              textField_35.setText(String.valueOf(maGG.getTriGia())); // Nếu là loại "Tiền", lấy giá trị giảm trực tiếp
+                          } else {
+                              textField_35.setText(String.valueOf(maGG.getTriGia() * tongTien / 100)); // Nếu là "Phần trăm", tính theo tỷ lệ
+                          }
+
+                          // Tính toán số tiền còn lại sau khi giảm
+                          Double giam = 0.0;
+                          try {
+                              giam = Double.parseDouble(textField_35.getText()); // Lấy giá trị giảm từ textField_35
+                          } catch (NumberFormatException ex) {
+                              giam = 0.0; // Nếu không phải là số hợp lệ, gán giá trị 0
+                          }
+                       // Tính toán giá trị còn lại sau khi giảm giá
+                          Double remainingAmount = tongTien - giam;
+
+                          // Nếu giá trị nhỏ hơn 0, gán bằng 0
+                          if (remainingAmount < 0) {
+                              remainingAmount = 0.0;
+                          }
+                          textField_36.setText(String.valueOf(remainingAmount)); // Cập nhật số tiền còn lại sau khi giảm
+                      } else {
+                          // Nếu không tìm thấy mã giảm giá, xóa thông tin
+                          textField_29.setText("");
+                          textField_33.setText("");
+                          textField_38.setText("");
+                          textField_39.setText("");
+                          textField_34.setText("");
+                          textField_35.setText("");
+                          textField_36.setText("");
+                      }
+                  }
+              }
+          }
+      });
+
+   // Thêm sự kiện cho nút Tìm kiếm
+      btnNewButton_8 .addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              String searchText = textField_28.getText().trim();  // Lấy giá trị người dùng nhập vào
+
+              // Tìm kiếm theo mã giảm giá và cập nhật bảng
+              ArrayList<MaGiamGia> resultList = maGGDAO.getDanhSachMaGiamGiaTheoMa(searchText);
+              // Xóa hết các hàng hiện tại trong bảng
+              model_7.setRowCount(0);
+
+              // Thêm dữ liệu vào bảng
+              for (MaGiamGia mgg : resultList) {
+            	  model_7.addRow(new Object[]{
+                      mgg.getMaGiamGia(),
+                      maGGDAO.getLoaiGiamGiaByMa(mgg.getMaGiamGia()),
+                      mgg.getTriGia(),
+                      mgg.getDiemDoi(),
+                      mgg.getNgayHetHan()
+                  });
+              } 
+          }
+      });
+      btnNewButton_9.addActionListener(e -> {
+    	  CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+          cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
+          textField_4.setText(textField_35.getText());
+          textField_5.setText(textField_36.getText()); 
+      });
       // Thêm sự kiện cho các nút chuyển panel
       btnBanHang.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
@@ -1353,28 +1446,116 @@ public class BanHang_GUI extends JFrame {
           cardLayout.show(panelContent, "KhuyenMaiPane"); // Chuyển sang trang Khuyến Mãi
           btnBanHang.setBackground(new Color(26, 133, 94));
           btnKhuyenMai.setBackground(new Color(153, 211, 158));
+          textField_30.setText(textField_2.getText());
+          String maKH = "KH" +textField.getText();
+          textField_31.setText(maKH);
+          int diemTL = khachHangDAO.layDiemTichLuyTheoSDT(textField.getText());
+          textField_32.setText(diemTL+"");
       });
       // Hiển thị cửa sổ
       setVisible(true);
       
-      // Thêm Listener cho JComboBox
+   // Thêm ActionListener cho JComboBox để xử lý lựa chọn khi người dùng thay đổi
       comboBox.addActionListener(new ActionListener() {
-    	    @Override
-    	    public void actionPerformed(ActionEvent e) {
-    	        // Lấy lựa chọn của JComboBox
-    	        String selectedOption = (String) comboBox.getSelectedItem();
-    	        textField.setText("");  // Reset textField khi thay đổi lựa chọn
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              // Lấy lựa chọn hiện tại từ JComboBox
+              String selectedOption = (String) comboBox.getSelectedItem();
+              textField.setText("");  // Reset textField khi thay đổi lựa chọn
+              textField_1.setText("");  // Reset textField_1 khi thay đổi lựa chọn
 
-    	        // Kiểm tra và cập nhật khả năng chỉnh sửa của các trường
-    	        if (selectedOption.equals("Khách Vãng Lai")) {
-    	            handleKhachVangLai();
-    	        } else if (selectedOption.equals("Khách Mới")) {
-    	            handleKhachMoi();
-    	        } else if (selectedOption.equals("Thành Viên")) {
-    	            handleThanhVien();
-    	        }
-    	    }
-    	});
+              // Xử lý dựa trên lựa chọn trong JComboBox
+              switch (selectedOption) {
+                  case "Khách Vãng Lai":
+                      // Khách vãng lai, không thể chỉnh sửa số điện thoại và họ tên
+                      textField.setEditable(false);
+                      textField.setBackground(new Color(239, 239, 239));  // Màu xám nhạt
+                      textField_1.setEditable(false);
+                      textField_1.setBackground(new Color(239, 239, 239));  // Màu xám nhạt
+                      
+                      // Cập nhật mã khách hàng là "KH0000000000" cho khách vãng lai
+                      khachHang.setMaKhachHang("KH0000000000");
+                      setMaHD();
+                      break;
+
+                  case "Khách Mới":
+                      // Khách mới, có thể sửa cả số điện thoại và họ tên
+                      textField.setEditable(true);
+                      textField.setBackground(new Color(255, 255, 255));  // Màu trắng
+                      textField_1.setEditable(true);
+                      textField_1.setBackground(new Color(255, 255, 255));  // Màu trắng
+                      updateData2();
+
+                      // Đăng ký KeyListener cho textField (số điện thoại)
+                      textField.addKeyListener(new KeyAdapter() {
+                          @Override
+                          public void keyPressed(KeyEvent e) {
+                              if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                                  // Người dùng nhấn Enter, lấy số điện thoại người dùng nhập
+                                  String SDT = textField.getText().trim();
+
+                                  if (!SDT.isEmpty()) {
+                                      // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
+                                      String maKH = "KH" + SDT;
+                                      System.out.print(SDT);
+                                      // Kiểm tra khách hàng có tồn tại trong hệ thống không
+                                      if (!(khachHangDAO.kiemTraKHTonTai(SDT))) {
+                                          // Nếu khách hàng không tồn tại, cập nhật mã khách hàng vào textField_1
+                                          khachHang.setMaKhachHang(maKH);  // Cập nhật thông tin khách hàng
+                                          khachHang.setTenKhachHang(textField_1.getText().trim());
+                                          setMaHD();
+                                      } else {
+                                          // Nếu khách hàng tồn tại, thông báo lỗi
+                                          JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " đã tồn tại trong hệ thống.");
+                                      }
+                                  }
+                              }
+                          }
+                      });
+                      break;
+
+                  case "Thành Viên":
+                      // Thành viên, có thể sửa số điện thoại, không thể sửa họ tên
+                      textField.setEditable(true);
+                      textField.setBackground(new Color(255, 255, 255));  // Màu trắng
+                      textField_1.setEditable(false);
+                      textField_1.setBackground(new Color(239, 239, 239));  // Màu xám nhạt
+                      updateData();
+
+                      // Đăng ký KeyListener cho textField (số điện thoại)
+                      textField.addKeyListener(new KeyAdapter() {
+                          @Override
+                          public void keyPressed(KeyEvent e) {
+                              if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                                  // Lấy số điện thoại người dùng nhập
+                                  String SDT = textField.getText().trim();
+
+                                  if (!SDT.isEmpty()) {
+                                      // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
+                                      String maKH = "KH" + SDT;
+                                      System.out.print(SDT);
+                                      // Kiểm tra khách hàng có tồn tại trong hệ thống không
+                                      if (khachHangDAO.kiemTraKHTonTai(SDT)) {
+                                          // Nếu khách hàng tồn tại, cập nhật mã khách hàng vào textField_1
+                                          khachHang.setMaKhachHang(maKH);  // Cập nhật thông tin khách hàng
+                                          setMaHD();
+                                      } else {
+                                          // Nếu khách hàng không tồn tại, thông báo lỗi
+                                          JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " chưa tồn tại trong hệ thống.");
+                                      }
+                                  }
+                              }
+                          }
+                      });
+                      break;
+
+                  default:
+                      // Nếu không chọn hợp lệ, không làm gì
+                      break;
+              }
+          }
+      });
+
 
     
    // Xử lý sự kiện thêm sản phẩm
@@ -1970,110 +2151,7 @@ private void initializeInvoiceFields() {
 //	    double tienKhachDua = Double.parseDouble(textField_6.getText());
 //	    textField_8.setText(tienKhachDua-tongTien+"");
 	}
-// Hàm xử lý khi lựa chọn là "Khách Vãng Lai"
-private void handleKhachVangLai() {
-    // Khách vãng lai, không thể chỉnh sửa số điện thoại và họ tên
-    textField.setEditable(false);
-    textField.setBackground(new Color(239, 239, 239));
-    textField_1.setEditable(false);
-    textField_1.setBackground(new Color(239, 239, 239));
 
-    // Cập nhật mã khách hàng là "KH0000000000" cho khách vãng lai
-    khachHang.setMaKhachHang("KH0000000000");
-    setMaHD();
-}
-
-// Hàm xử lý khi lựa chọn là "Khách Mới"
-private void handleKhachMoi() {
-    // Khách mới, có thể sửa cả số điện thoại và họ tên
-    textField.setEditable(true);
-    textField.setBackground(new Color(255, 255, 255));
-    textField_1.setEditable(true);
-    textField_1.setBackground(new Color(255, 255, 255));
-    updateData2();
-
-    // Đăng ký KeyListener cho textField (số điện thoại)
-    textField.addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                // Người dùng nhấn Enter
-            	// Lấy số điện thoại người dùng nhập
-          	    String SDT = textField.getText().trim();
-
-          	    if (!SDT.isEmpty()) {
-          	        // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
-          	        String maKH = "KH" + SDT;
-          	        System.out.print(SDT);
-          	        // Kiểm tra khách hàng có tồn tại trong hệ thống không
-          	        if (!(khachHangDAO.kiemTraKHTonTai(SDT))) {
-          	            // Nếu khách hàng không tồn tại, cập nhật mã khách hàng vào textField_1
-          	            khachHang.setMaKhachHang(maKH); // Cập nhật thông tin khách hàng (nếu cần thiết)
-          	            khachHang.setTenKhachHang(textField_1.getText().trim());
-          	            setMaHD();
-          	        } else {
-          	            // Nếu khách hàng tồn tại, thông báo lỗi
-          	            JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " đã tồn tại trong hệ thống.");
-          	        }
-          	    }
-            }
-        }
-    });
-//
-//    // Đăng ký FocusListener để xử lý khi người dùng rời khỏi ô nhập (blur event)
-//    textField.addFocusListener(new FocusAdapter() {
-//        @Override
-//        public void focusLost(FocusEvent e) {
-//            // Khi mất focus (rời khỏi ô nhập), thực hiện kiểm tra
-//            updateData2();
-//        }
-//    });
-}
-
-// Hàm xử lý khi lựa chọn là "Thành Viên"
-private void handleThanhVien() {
-    // Thành viên, có thể sửa số điện thoại, không thể sửa họ tên
-    textField.setEditable(true);
-    textField.setBackground(new Color(255, 255, 255));
-    textField_1.setEditable(false);
-    textField_1.setBackground(new Color(239, 239, 239));
-    updateData();
-
-    // Đăng ký KeyListener cho textField (số điện thoại)
-    textField.addKeyListener(new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                // Lấy số điện thoại người dùng nhập
-	    String SDT = textField.getText().trim();
-
-	    if (!SDT.isEmpty()) {
-	        // Tạo mã khách hàng theo quy tắc "KH" + số điện thoại
-	        String maKH = "KH" + SDT;
-	        System.out.print(SDT);
-	        // Kiểm tra khách hàng có tồn tại trong hệ thống không
-	        if (khachHangDAO.kiemTraKHTonTai(SDT) == true) {
-	            // Nếu khách hàng tồn tại, cập nhật mã khách hàng vào textField_1
-	            khachHang.setMaKhachHang(maKH); // Cập nhật thông tin khách hàng (nếu cần thiết)
-	            setMaHD();
-	        } else {
-	            // Nếu khách hàng không tồn tại, thông báo lỗi
-	            JOptionPane.showMessageDialog(null, "Khách hàng với số điện thoại " + SDT + " chưa tồn tại trong hệ thống.");
-	        }
-	    }
-            }
-        }
-    });
-
-//    // Đăng ký FocusListener để xử lý khi người dùng rời khỏi ô nhập (blur event)
-//    textField.addFocusListener(new FocusAdapter() {
-//        @Override
-//        public void focusLost(FocusEvent e) {
-//            // Khi mất focus (rời khỏi ô nhập), thực hiện kiểm tra
-//            updateData();
-//        }
-//    });
-}
 //Phương thức để tải DonTam vào table_1
 private void loadDonTamData() {
     java.util.List<DonTam> donTamList = donTamDAO.getAllDonTam();  // Lấy toàn bộ DonTam từ DAO
