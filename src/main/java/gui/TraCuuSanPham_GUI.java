@@ -148,6 +148,7 @@ public class TraCuuSanPham_GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 txtMaSanPham.setText("");
                 txtTenSanPham.setText("");
+                txtBaoQuan.setText("");
                 hienThiSanPham(new ArrayList<>()); // Xóa bảng kết quả
             }
         });
