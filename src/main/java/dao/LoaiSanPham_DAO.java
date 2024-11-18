@@ -84,5 +84,33 @@ public class LoaiSanPham_DAO {
 	    return exists; // Trả về true nếu tồn tại, false nếu không
 	}
 
+	public LoaiSanPham findLoaiSanPhamByMa(String maLoaiSanPham) {
+	    EntityManager em = emf.createEntityManager();
+	    LoaiSanPham loaiSanPham = null;
 
+	    try {
+	        loaiSanPham = em.find(LoaiSanPham.class, maLoaiSanPham);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+
+	    return loaiSanPham;
+	}
+	
+	public LoaiSanPham findLoaiSanPhamById(String maLoaiSanPham) {
+	    EntityManager em = emf.createEntityManager();
+	    LoaiSanPham loaiSanPham = null;
+
+	    try {
+	        loaiSanPham = em.find(LoaiSanPham.class, maLoaiSanPham);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        em.close();
+	    }
+
+	    return loaiSanPham;
+	}
 }

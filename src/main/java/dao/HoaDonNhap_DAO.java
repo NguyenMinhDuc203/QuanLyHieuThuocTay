@@ -230,5 +230,19 @@ public class HoaDonNhap_DAO {
         return isSuccess;
     }
 
+    public HoaDonNhap findHoaDonNhapByMa(String maHoaDonNhap) {
+        EntityManager em = emf.createEntityManager();
+        HoaDonNhap hoaDonNhap = null;
+
+        try {
+            hoaDonNhap = em.find(HoaDonNhap.class, maHoaDonNhap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return hoaDonNhap;
+    }
 
 }

@@ -479,6 +479,120 @@ public class SanPham_DAO {
 
         return result;
     }
+    //Thêm
+	  public boolean createSanPham(SanPham nv) {
+	        EntityManager em = emf.createEntityManager();
+	        EntityTransaction transaction = em.getTransaction();
+	        boolean isSuccess = false;
+	        try {
+	            transaction.begin(); // Bắt đầu giao dịch
+	            em.persist(nv); // Thêm đối tượng NhanVien vào cơ sở dữ liệu
+	            transaction.commit(); // Cam kết giao dịch
+	            isSuccess = true; // Đánh dấu thành công
+	        } catch (Exception e) {
+	            if (transaction.isActive()) {
+	                transaction.rollback(); // Hoàn tác giao dịch nếu có lỗi
+	            }
+	            System.err.println("Lỗi khi thêm sản phẩm trong createNhanVien: " + e.getMessage());
+	            e.printStackTrace();
+	        } finally {
+	            em.close(); // Đóng EntityManager
+	        }
+	        return isSuccess;
+	    }
+	 // xóa 
+	  public boolean deleteSanPham(String maSanPham) {
+		    EntityManager em = emf.createEntityManager(); // emf là đối tượng EntityManagerFactory
+		    boolean isDeleted = false;
+
+		    try {
+		        em.getTransaction().begin();
+
+		        // Xóa sản phẩm khỏi bảng SanPham
+		        int deletedCount = em.createQuery("DELETE FROM SanPham sp WHERE sp.maSanPham = :maSanPham")
+		                             .setParameter("maSanPham", maSanPham)
+		                             .executeUpdate();
+
+		        if (deletedCount > 0) {
+		            isDeleted = true; // Xóa thành công
+		        } else {
+		            System.out.println("Không tìm thấy sản phẩm với mã: " + maSanPham);
+		        }
+
+		        em.getTransaction().commit();
+		    } catch (Exception e) {
+		        if (em.getTransaction().isActive()) {
+		            em.getTransaction().rollback(); // Khôi phục giao dịch nếu có lỗi
+		        }
+		        e.printStackTrace();
+		    } finally {
+		        em.close(); // Đóng EntityManager
+		    }
+
+		    return isDeleted; // Trả về kết quả
+		}
+//sửa
+	  public boolean updateSanPham(SanPham sanPham) {
+		    EntityManager em = emf.createEntityManager();
+		    boolean isUpdated = false;
+
+		    try {
+		        em.getTransaction().begin();
+
+		        // Truy vấn JPQL để cập nhật thông tin sản phẩm dựa vào maSanPham
+		        int updatedCount = em.createQuery(
+		                "UPDATE SanPham sp SET sp.tenSanPham = :tenSanPham, sp.giaBan = :giaBan, sp.congDung = :congDung, " +
+		                "sp.hanSuDung = :hanSuDung, sp.baoQuan = :baoQuan, sp.chongChiDinh = :chongChiDinh, " +
+		                "sp.ngaySanXuat = :ngaySanXuat, sp.thanhPhan = :thanhPhan, sp.soLuongTonkho = :soLuongTonkho, " +
+		                "sp.ghiChu = :ghiChu, sp.nhaSanXuat = :nhaSanXuat, sp.donViTinh = :donViTinh, " +
+		                "sp.thueGTGT = :thueGTGT, sp.giaNhap = :giaNhap, sp.loaiSanPham = :loaiSanPham, " +
+		                "sp.hoaDonNhap = :hoaDonNhap WHERE sp.maSanPham = :maSanPham")
+		            .setParameter("tenSanPham", sanPham.getTenSanPham())
+		            .setParameter("giaBan", sanPham.getGiaBan())
+		            .setParameter("congDung", sanPham.getCongDung())
+		            .setParameter("hanSuDung", sanPham.getHanSuDung())
+		            .setParameter("baoQuan", sanPham.getBaoQuan())
+		            .setParameter("chongChiDinh", sanPham.getChongChiDinh())
+		            .setParameter("ngaySanXuat", sanPham.getNgaySanXuat())
+		            .setParameter("thanhPhan", sanPham.getThanhPhan())
+		            .setParameter("soLuongTonkho", sanPham.getSoLuongTonkho())
+		            .setParameter("ghiChu", sanPham.getGhiChu())
+		            .setParameter("nhaSanXuat", sanPham.getNhaSanXuat())
+		            .setParameter("donViTinh", sanPham.getDonViTinh()) // Enum hoặc String
+		            .setParameter("thueGTGT", sanPham.getThueGTGT())
+		            .setParameter("giaNhap", sanPham.getGiaNhap())
+		            .setParameter("loaiSanPham", sanPham.getLoaiSanPham()) // Entity quan hệ ManyToOne
+		            .setParameter("hoaDonNhap", sanPham.getHoaDonNhap())   // Entity quan hệ ManyToOne
+		            .setParameter("maSanPham", sanPham.getMaSanPham())
+		            .executeUpdate();
+
+		        em.getTransaction().commit();
+
+		        isUpdated = updatedCount > 0; // Kiểm tra xem có bản ghi nào được cập nhật không
+		    } catch (Exception e) {
+		        if (em.getTransaction().isActive()) {
+		            em.getTransaction().rollback();
+		        }
+		        e.printStackTrace();
+		    } finally {
+		        em.close();
+		    }
+
+		    return isUpdated;
+		}
+	  public List<SanPham> findSanPhamByPartialId(String partialId) {
+		    EntityManager em = emf.createEntityManager();
+		    try {
+		        String queryStr = "SELECT sp FROM SanPham sp WHERE sp.maSanPham LIKE :partialId";
+		        TypedQuery<SanPham> query = em.createQuery(queryStr, SanPham.class);
+		        query.setParameter("partialId", partialId + "%"); // Tìm kiếm với từ khóa bắt đầu bằng partialId
+		        List<SanPham> resultList = query.getResultList();
+		        return resultList != null ? resultList : new ArrayList<>(); // Trả về danh sách trống nếu không có kết quả
+		    } finally {
+		        em.close();
+		    }
+		}
+
     
 }
  

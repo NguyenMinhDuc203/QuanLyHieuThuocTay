@@ -17,19 +17,18 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 import org.hibernate.Hibernate;
+
+import com.toedter.calendar.JDateChooser;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -44,7 +43,6 @@ import entity.DonViTinh;
 import entity.HoaDonNhap;
 import entity.KhachHang;
 import entity.LoaiSanPham;
-import entity.NhaPhanPhoi;
 import entity.NhanVien;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
@@ -57,6 +55,7 @@ import java.sql.DriverManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -80,7 +79,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	private JButton btnXoaTrang;
 
 	private SanPham_DAO dao_sp = new SanPham_DAO();
-	private HoaDonNhap_DAO dao_hd= new HoaDonNhap_DAO();
+	
 	private JButton btnXoa;
 	private JButton btnSua;
 	private JButton btnTim;
@@ -107,10 +106,13 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		private JTextField txtCDSP;
 		private JTextField txtNSXSP;
 		private JTextField txtMHDSP;
-		private JTextField txtHSDSP;
+
 		private JTextField txtMLSP;
 		private EntityManager entityManager;
 		private JComboBox<Object> cboDVTSP;
+		private JDateChooser dateChooser;
+		private JDateChooser dateChooser1;
+		private Date dateChooserHSDSP;
 		
 		
 	/**
@@ -157,7 +159,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				contentPane.add(menuBar);
 				
 				
-				JButton btnNewButton = new JButton("Đăng Xuất");
+				JButton btnNewButton = new JButton("ÄÄƒng Xuáº¥t");
 				btnNewButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 					}
@@ -182,7 +184,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				////
 				
 				
-				JLabel lblNewLabel = new JLabel("QUẢN LÝ SẢN PHẨM");
+				JLabel lblNewLabel = new JLabel("QUáº¢N LÃ Sáº¢N PHáº¨M");
 				lblNewLabel.setForeground(new Color(46, 139, 87));
 				lblNewLabel.setFont(new Font("Leelawadee UI", Font.BOLD, 40));
 				lblNewLabel.setBounds(97, 11, 512, 70);
@@ -249,7 +251,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				Image scaledImageLuu = bImageLuu.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 				
 				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setBounds(10, 520, 1515, 261);
+				scrollPane.setBounds(10, 520, 1527, 261);
 				panel.add(scrollPane);
 				table = new JTable();
 				table.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -259,7 +261,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 					new Object[][] {
 					},
 					new String[] {
-						"M\u00E3 s\u1EA3n ph\u1EA9m ", "T\u00EAn S\u1EA3n ph\u1EA9m ", "b\u1EA3o qu\u1EA3n s\u1EA3n ph\u1EA9m ", "ch\u1ED1ng ch\u1EC9 \u0111\u1ECBnh  ", "C\u00F4ng d\u1EE5ng ", "\u0110\u01A1n v\u1ECB t\u00EDnh", "Ghi ch\u00FA ", "Gi\u00E1 b\u00E1n ", "Gi\u00E1 nh\u1EADp", "H\u1EA1n s\u1EED d\u1EE5ng ", "Ng\u00E0y s\u1EA3n xu\u1EA5t ", "Nha s\u1EA3n xu\u1EA5t  ", "S\u1ED1 l\u01B0\u1EE3ng t\u1ED3n kho", "th\u00E0nh ph\u1EA7n ", "thu\u1EBF GTGT", "M\u00E3 h\u00F3a \u0111\u01A1n ", "M\u00E3 loại SP"
+						"M\u00E3 s\u1EA3n ph\u1EA9m ", "T\u00EAn S\u1EA3n ph\u1EA9m ", "b\u1EA3o qu\u1EA3n s\u1EA3n ph\u1EA9m ", "ch\u1ED1ng ch\u1EC9 \u0111\u1ECBnh  ", "C\u00F4ng d\u1EE5ng ", "\u0110\u01A1n v\u1ECB t\u00EDnh", "Ghi ch\u00FA ", "Gi\u00E1 b\u00E1n ", "Gi\u00E1 nh\u1EADp", "H\u1EA1n s\u1EED d\u1EE5ng ", "Ng\u00E0y s\u1EA3n xu\u1EA5t ", "Nha s\u1EA3n xu\u1EA5t  ", "S\u1ED1 l\u01B0\u1EE3ng t\u1ED3n kho", "th\u00E0nh ph\u1EA7n ", "thu\u1EBF GTGT", "M\u00E3 h\u00F3a \u0111\u01A1n ", "M\u00E3 loáº¡i SP"
 					}
 				) {
 					Class[] columnTypes = new Class[] {
@@ -269,9 +271,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 						return columnTypes[columnIndex];
 					}
 				});
-				// Lệnh để không cho phép chỉnh sửa bảng
-				table.setDefaultEditor(Object.class, null); // Vô hiệu hóa việc chỉnh sửa mọi cột trong bảng
-
 				table.getColumnModel().getColumn(1).setPreferredWidth(92);
 				table.getColumnModel().getColumn(5).setPreferredWidth(91);
 				table.getColumnModel().getColumn(9).setPreferredWidth(99);
@@ -280,18 +279,18 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 
 				scrollPane.setViewportView(table);
 
-				// Tạo renderer cho tất cả các cột
+				// Táº¡o renderer cho táº¥t cáº£ cÃ¡c cá»™t
 				DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
 				    @Override
 				    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 				        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				        
-				        // Đặt màu nền xen kẽ
+				        // Äáº·t mÃ u ná»n xen káº½
 				        if (!isSelected) {
 				            if (row % 2 == 0) {
 				                c.setBackground(Color.WHITE);
 				            } else {
-				                c.setBackground(new Color(200, 230, 220)); // Màu xanh nhạt
+				                c.setBackground(new Color(200, 230, 220)); // MÃ u xanh nháº¡t
 				            }
 				        } else {
 				            c.setBackground(table.getSelectionBackground());
@@ -301,19 +300,19 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				    }
 				};
 
-				// Áp dụng renderer cho tất cả các cột
+				// Ãp dá»¥ng renderer cho táº¥t cáº£ cÃ¡c cá»™t
 				for (int i = 0; i < table.getColumnCount(); i++) {
 				    table.getColumnModel().getColumn(i).setCellRenderer(renderer);
 				}
 				
-				// Lấy JTableHeader từ bảng
+				// Láº¥y JTableHeader tá»« báº£ng
 				JTableHeader header = table.getTableHeader();
-				header.setFont(new Font("Tahoma", Font.PLAIN, 12)); // Điều chỉnh kích thước font ở đây
+				header.setFont(new Font("Tahoma", Font.PLAIN, 12)); // Äiá»u chá»‰nh kÃ­ch thÆ°á»›c font á»Ÿ Ä‘Ã¢y
 				header.setBackground(new Color(46, 139, 87)); 
 				header.setForeground(Color.BLACK); 
 				header.setPreferredSize(new Dimension(header.getPreferredSize().width, 40));
 				table.setShowGrid(false);
-				table.setIntercellSpacing(new Dimension(0, 0)); // Xóa khoảng cách giữa các ô
+				table.setIntercellSpacing(new Dimension(0, 0)); // XÃ³a khoáº£ng cÃ¡ch giá»¯a cÃ¡c Ã´
 
 
 				scrollPane.setViewportView(table);
@@ -331,9 +330,9 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				
 				JPanel panel_2 = new JPanel();
 				panel_2.setBounds(1165, 113, 372, 145);
-				TitledBorder titledBorder1 = BorderFactory.createTitledBorder("Tìm Kiếm nhân Viên");
-	 	        //titledBorder.setTitleColor(Color.RED);  // Đặt màu chữ cho tiêu đề
-	 	        titledBorder1.setBorder(BorderFactory.createLineBorder(Color.black));  // Đặt màu cho viền
+				TitledBorder titledBorder1 = BorderFactory.createTitledBorder("TÃ¬m Kiáº¿m nhÃ¢n ViÃªn");
+	 	        //titledBorder.setTitleColor(Color.RED);  // Äáº·t mÃ u chá»¯ cho tiÃªu Ä‘á»
+	 	        titledBorder1.setBorder(BorderFactory.createLineBorder(Color.black));  // Äáº·t mÃ u cho viá»n
 	 			panel_2.setBorder(titledBorder1);
 				panel_2.setBackground(new Color(226, 250, 252));
 				panel.add(panel_2);
@@ -341,30 +340,30 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								
 												
 												txtNhap = new JTextField();
-												txtNhap.setBounds(71, 49, 270, 30);
+												txtNhap.setBounds(71, 49, 240, 30);
 												panel_2.add(txtNhap);
 												txtNhap.setColumns(10);
 				
 								
-								JLabel lblNhpMNhn = new JLabel("Nhập mã Sản Phẩm ");
+								JLabel lblNhpMNhn = new JLabel("Nháº­p mÃ£ Sáº£n Pháº©m ");
 								lblNhpMNhn.setBounds(124, 22, 130, 17);
 								panel_2.add(lblNhpMNhn);
 								lblNhpMNhn.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								
-								// Nút "Tìm"
-								 btnTim = new JButton("Tìm Kiếm ");
+								// NÃºt "TÃ¬m"
+								 btnTim = new JButton("TÃ¬m Kiáº¿m ");
 								 btnTim.setBounds(26, 89, 159, 35);
 								 panel_2.add(btnTim);
 								 btnTim.setOpaque(true);
-								 btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 btnTim.setForeground(new Color(255, 255, 255)); // Äá»•i mÃ u chá»¯ thÃ nh tráº¯ng
 								 btnTim.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 btnTim.setBackground(new Color(46, 139, 87));
 								 
-								  btnThoat = new JButton("Thoát");
-								  btnThoat.setBounds(204, 89, 150, 35);
+								  btnThoat = new JButton("ThoÃ¡t");
+								  btnThoat.setBounds(195, 90, 148, 37);
 								  panel_2.add(btnThoat);
 								  btnThoat.setOpaque(true);
-								  btnThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								  btnThoat.setForeground(new Color(255, 255, 255)); // Äá»•i mÃ u chá»¯ thÃ nh tráº¯ng
 								  btnThoat.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								  btnThoat.setBackground(new Color(46, 139, 87));
 								  btnThoat.setIcon(new ImageIcon(scaledImageThoat));
@@ -372,40 +371,40 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			
 								 			JPanel panel_2_1 = new JPanel();
 								 			panel_2_1.setLayout(null);
-								 			TitledBorder titledBorder = BorderFactory.createTitledBorder("Thao tác ");
-								 	        //titledBorder.setTitleColor(Color.RED);  // Đặt màu chữ cho tiêu đề
-								 	        titledBorder.setBorder(BorderFactory.createLineBorder(Color.black));  // Đặt màu cho viền
+								 			TitledBorder titledBorder = BorderFactory.createTitledBorder("Thao tÃ¡c ");
+								 	        //titledBorder.setTitleColor(Color.RED);  // Äáº·t mÃ u chá»¯ cho tiÃªu Ä‘á»
+								 	        titledBorder.setBorder(BorderFactory.createLineBorder(Color.black));  // Äáº·t mÃ u cho viá»n
 								 			panel_2_1.setBorder(titledBorder);
 								 			panel_2_1.setBackground(new Color(226, 250, 252));
 								 			
-								 			panel_2_1.setBounds(1165, 285, 372, 167);
+								 			panel_2_1.setBounds(1165, 315, 372, 161);
 								 			panel.add(panel_2_1);
 								 			 				 
-								 			 				 				// Nút "Sửa"
-								 			 				 				 btnSua = new JButton("Sửa");
-								 			 				 				 btnSua.setBounds(206, 31, 133, 37);
+								 			 				 				// NÃºt "Sá»­a"
+								 			 				 				 btnSua = new JButton("Sá»­a");
+								 			 				 				 btnSua.setBounds(203, 91, 148, 37);
 								 			 				 				 panel_2_1.add(btnSua);
 								 			 				 				 btnSua.setOpaque(true);
-								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Äá»•i mÃ u chá»¯ thÃ nh tráº¯ng
 								 			 				 				 btnSua.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 			 				 				 btnSua.setBackground(new Color(46, 139, 87));
 								 			 				 				 btnSua.setIcon(new ImageIcon(scaledImageSua));
 								 			 				 				 
 								 			 				 				 
-								 			 				 				 				// Nút "Xóa"
-								 			 				 				 				 btnXoa = new JButton("Xóa");
-								 			 				 				 				 btnXoa.setBounds(206, 91, 133, 39);
+								 			 				 				 				// NÃºt "XÃ³a"
+								 			 				 				 				 btnXoa = new JButton("XÃ³a");
+								 			 				 				 				 btnXoa.setBounds(203, 30, 148, 39);
 								 			 				 				 				 panel_2_1.add(btnXoa);
 								 			 				 				 				 btnXoa.setOpaque(true);
-								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Äá»•i mÃ u chá»¯ thÃ nh tráº¯ng
 								 			 				 				 				 btnXoa.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 			 				 				 				 btnXoa.setBackground(new Color(46, 139, 87));
 								 			 				 				 				 btnXoa.setIcon(new ImageIcon(scaledImageXoa));
 								 			 				 				 				 
 								 			 				 				 				 
-								 			 				 				 				 // Nút "Thêm"
-								 			 				 				 				  btnThem = new JButton("Thêm");
-								 			 				 				 				  btnThem.setBounds(32, 30, 133, 39);
+								 			 				 				 				 // NÃºt "ThÃªm"
+								 			 				 				 				  btnThem = new JButton("ThÃªm");
+								 			 				 				 				  btnThem.setBounds(20, 30, 151, 39);
 								 			 				 				 				  panel_2_1.add(btnThem);
 								 			 				 				 				  btnThem.setOpaque(true);
 								 			 				 				 				  btnThem.setForeground(new Color(255, 255, 255));
@@ -414,12 +413,12 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  btnThem.setIcon(new ImageIcon(scaledImageThem));
 								 			 				 				 				  
 								 			 				 				 				  
-								 			 				 				 				  				// Nút "Xóa Trắng"
-								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
-								 			 				 				 				  			btnXoaTrang.setBounds(32, 93, 133, 35);
+								 			 				 				 				  				// NÃºt "XÃ³a Tráº¯ng"
+								 			 				 				 				  			btnXoaTrang = new JButton("XÃ³a Tráº¯ng");
+								 			 				 				 				  			btnXoaTrang.setBounds(20, 92, 151, 35);
 								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
 								 			 				 				 				  			btnXoaTrang.setOpaque(true);
-								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
+								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Äá»•i mÃ u chá»¯ thÃ nh tráº¯ng
 								 			 				 				 				  			btnXoaTrang.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
 								 			 				 				 				  			btnXoaTrang.setBackground(new Color(46, 139, 87));
 								 			 				 				 				  			btnXoaTrang.setIcon(new ImageIcon(scaledImageXT));
@@ -461,7 +460,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  txtGNSP.setBounds(448, 171, 280, 30);
 								 			 				 				 				  panel_1.add(txtGNSP);
 								 			 				 				 			
-								 			 				 				 			// Bạn có thể thêm các chức vụ khác nếu cần
+								 			 				 				 			// Báº¡n cÃ³ thá»ƒ thÃªm cÃ¡c chá»©c vá»¥ khÃ¡c náº¿u cáº§n
 								 			 				 				 				  
 								 			 				 				 				  txtSLTKSP = new JTextField();
 								 			 				 				 				  txtSLTKSP.setColumns(10);
@@ -478,57 +477,57 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  txtTGTGTSP.setBounds(853, 235, 257, 30);
 								 			 				 				 				  panel_1.add(txtTGTGTSP);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblTenNV = new JLabel("Tên Sản Phẩm");
+								 			 				 				 				  JLabel lblTenNV = new JLabel("TÃªn Sáº£n Pháº©m");
 								 			 				 				 				  lblTenNV.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblTenNV.setBounds(23, 12, 126, 14);
 								 			 				 				 				  panel_1.add(lblTenNV);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblSDT = new JLabel("Bảo Quản ");
+								 			 				 				 				  JLabel lblSDT = new JLabel("Báº£o Quáº£n ");
 								 			 				 				 				  lblSDT.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblSDT.setBounds(23, 82, 126, 14);
 								 			 				 				 				  panel_1.add(lblSDT);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblNgaysinh = new JLabel("Ghi Chú ");
+								 			 				 				 				  JLabel lblNgaysinh = new JLabel("Ghi ChÃº ");
 								 			 				 				 				  lblNgaysinh.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblNgaysinh.setBounds(448, 11, 126, 16);
 								 			 				 				 				  panel_1.add(lblNgaysinh);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblNgayVaolam = new JLabel("Giá Bán ");
+								 			 				 				 				  JLabel lblNgayVaolam = new JLabel("GiÃ¡ BÃ¡n ");
 								 			 				 				 				  lblNgayVaolam.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblNgayVaolam.setBounds(448, 71, 126, 24);
 								 			 				 				 				  panel_1.add(lblNgayVaolam);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblLngCnBnlblLngCnBn = new JLabel("Giá nhập");
+								 			 				 				 				  JLabel lblLngCnBnlblLngCnBn = new JLabel("GiÃ¡ nháº­p");
 								 			 				 				 				  lblLngCnBnlblLngCnBn.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblLngCnBnlblLngCnBn.setBounds(448, 138, 126, 30);
 								 			 				 				 				  panel_1.add(lblLngCnBnlblLngCnBn);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblChucVu = new JLabel("Hạn Sử Dụng");
+								 			 				 				 				  JLabel lblChucVu = new JLabel("Háº¡n Sá»­ Dá»¥ng");
 								 			 				 				 				  lblChucVu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblChucVu.setBounds(448, 211, 126, 24);
 								 			 				 				 				  panel_1.add(lblChucVu);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblCmnd = new JLabel("Nhà Sản Xuất ");
+								 			 				 				 				  JLabel lblCmnd = new JLabel("NhÃ  Sáº£n Xuáº¥t ");
 								 			 				 				 				  lblCmnd.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblCmnd.setBounds(853, 11, 126, 16);
 								 			 				 				 				  panel_1.add(lblCmnd);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblTrinhDo = new JLabel("Số Lượng Tồn Kho");
+								 			 				 				 				  JLabel lblTrinhDo = new JLabel("Sá»‘ LÆ°á»£ng Tá»“n Kho");
 								 			 				 				 				  lblTrinhDo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblTrinhDo.setBounds(853, 81, 126, 16);
 								 			 				 				 				  panel_1.add(lblTrinhDo);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblDiaChi = new JLabel("Thành Phần ");
+								 			 				 				 				  JLabel lblDiaChi = new JLabel("ThÃ nh Pháº§n ");
 								 			 				 				 				  lblDiaChi.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblDiaChi.setBounds(853, 154, 126, 16);
 								 			 				 				 				  panel_1.add(lblDiaChi);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblEmail = new JLabel("Thuế GTGT");
+								 			 				 				 				  JLabel lblEmail = new JLabel("Thuáº¿ GTGT");
 								 			 				 				 				  lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblEmail.setBounds(853, 215, 126, 16);
 								 			 				 				 				  panel_1.add(lblEmail);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblMtKhu = new JLabel("Chống Chỉ Định");
+								 			 				 				 				  JLabel lblMtKhu = new JLabel("Chá»‘ng Chá»‰ Äá»‹nh");
 								 			 				 				 				  lblMtKhu.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblMtKhu.setBounds(23, 155, 126, 14);
 								 			 				 				 				  panel_1.add(lblMtKhu);
@@ -538,12 +537,12 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  txtCCDSP.setBounds(23, 171, 280, 30);
 								 			 				 				 				  panel_1.add(txtCCDSP);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblMtKhu_1 = new JLabel("Công Dụng");
+								 			 				 				 				  JLabel lblMtKhu_1 = new JLabel("CÃ´ng Dá»¥ng");
 								 			 				 				 				  lblMtKhu_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblMtKhu_1.setBounds(23, 214, 126, 14);
 								 			 				 				 				  panel_1.add(lblMtKhu_1);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblnVTnh = new JLabel("Đơn Vị Tính");
+								 			 				 				 				  JLabel lblnVTnh = new JLabel("ÄÆ¡n Vá»‹ TÃ­nh");
 								 			 				 				 				  lblnVTnh.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblnVTnh.setBounds(23, 275, 126, 14);
 								 			 				 				 				  panel_1.add(lblnVTnh);
@@ -555,22 +554,22 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  txtCDSP.setBounds(23, 236, 280, 30);
 								 			 				 				 				  panel_1.add(txtCDSP);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblTenNV_2 = new JLabel("Ngày Sản Xuất ");
+								 			 				 				 				  JLabel lblTenNV_2 = new JLabel("NgÃ y Sáº£n Xuáº¥t ");
 								 			 				 				 				  lblTenNV_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblTenNV_2.setBounds(448, 275, 280, 14);
 								 			 				 				 				  panel_1.add(lblTenNV_2);
 								 			 				 				 				  
-								 			 				 				 				  txtNSXSP = new JTextField();
-								 			 				 				 				  txtNSXSP.setColumns(10);
-								 			 				 				 				  txtNSXSP.setBounds(448, 294, 280, 30);
-								 			 				 				 				  panel_1.add(txtNSXSP);
+							 			 				 				 				  		dateChooser1 = new JDateChooser();
+							 			 				 				 				//  	dateChooser1.setColumns(10);
+							 			 				 				 				dateChooser1.setBounds(448, 294, 280, 30);
+								 			 				 				 				  panel_1.add(dateChooser1);
 								 			 				 				 				  
 								 			 				 				 				  txtMHDSP = new JTextField();
 								 			 				 				 				  txtMHDSP.setColumns(10);
 								 			 				 				 				  txtMHDSP.setBounds(853, 294, 257, 30);
 								 			 				 				 				  panel_1.add(txtMHDSP);
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblTenNV_2_1 = new JLabel("Mã Hóa Đơn");
+								 			 				 				 				  JLabel lblTenNV_2_1 = new JLabel("MÃ£ HÃ³a ÄÆ¡n");
 								 			 				 				 				  lblTenNV_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblTenNV_2_1.setBounds(853, 275, 280, 14);
 								 			 				 				 				  panel_1.add(lblTenNV_2_1);
@@ -579,18 +578,28 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  cboDVTSP.setBounds(23, 293, 280, 30);
 								 			 				 				 				  panel_1.add(cboDVTSP);
 								 			 				 				 				  
-								 			 				 				 				cboDVTSP.addItem("Viên");
+								 			 				 				 				cboDVTSP.addItem("ViÃªn");
 									 			 				 				 			
 									 			 				 				 			cboDVTSP.addItem("MG");
 									 			 				 				 			cboDVTSP.addItem("ML");
-									 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("Gram");
+								 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("Lá»");
+									 			 				 				 			cboDVTSP.addItem("Há»™p");
+										 			 				 				 		cboDVTSP.addItem("Vá»‰");
+									 			 				 				 			cboDVTSP.addItem("GÃ³i");
+								 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("CÃ¡i");
+									 			 				 				 			cboDVTSP.addItem("Miáº¿ng");
+								 			 				 				 			
 								 			 				 				 				  
-								 			 				 				 				  txtHSDSP = new JTextField();
-								 			 				 				 				  txtHSDSP.setColumns(10);
-								 			 				 				 				  txtHSDSP.setBounds(448, 235, 280, 30);
-								 			 				 				 				  panel_1.add(txtHSDSP);
+						 			 				 				 				  		dateChooser = new JDateChooser();
+						 			 				 				 				  //		dateChooser.setColumns(10);
+						 			 				 				 				  		dateChooser.setBounds(448, 235, 280, 30);
+								 			 				 				 				 panel_1.add(dateChooser);
+								 			 				 				 				  		
 								 			 				 				 				  
-								 			 				 				 				  JLabel lblTenNV_2_1_1 = new JLabel("Mã Loại Sản Phẩm ");
+								 			 				 				 				  JLabel lblTenNV_2_1_1 = new JLabel("MÃ£ Loáº¡i Sáº£n Pháº©m ");
 								 			 				 				 				  lblTenNV_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 								 			 				 				 				  lblTenNV_2_1_1.setBounds(853, 348, 280, 14);
 								 			 				 				 				  panel_1.add(lblTenNV_2_1_1);
@@ -607,7 +616,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				//Actions Menu
 				
 			table.addMouseListener(this);
-					//    countComponents(); // Khởi tạo các thành phần giao diện người dùng
+					//    countComponents(); // Khá»Ÿi táº¡o cÃ¡c thÃ nh pháº§n giao diá»‡n ngÆ°á»i dÃ¹ng
 			displaySanPhamsInTable();
 			this.setVisible(true);
 	}
@@ -620,58 +629,58 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	    menuBar.setOpaque(true);
 	    menuBar.setBackground(new Color(26, 133, 94));
 
-	 // Menu Trang Chủ
-	    JMenu homeMenu = createMenu("Trang Chủ", "/gui/house-solid.png");
+	 // Menu Trang Chá»§
+	    JMenu homeMenu = createMenu("Trang Chá»§", "/gui/house-solid.png");
 	    menuBar.add(homeMenu);
 	    
-	    // Menu Quản Lý
-	    JMenuItem manageMenuItem1 = createMenuItem("Sản Phẩm");
-	    JMenuItem manageMenuItem2 = createMenuItem("Nhân Viên");
-	    JMenuItem manageMenuItem3 = createMenuItem("Khách Hàng");
+	    // Menu Quáº£n LÃ½
+	    JMenuItem manageMenuItem1 = createMenuItem("Sáº£n Pháº©m");
+	    JMenuItem manageMenuItem2 = createMenuItem("NhÃ¢n ViÃªn");
+	    JMenuItem manageMenuItem3 = createMenuItem("KhÃ¡ch HÃ ng");
 
-	    JMenu manageMenu = createMenu("Quản Lý", "/gui/list-check-solid.png");
+	    JMenu manageMenu = createMenu("Quáº£n LÃ½", "/gui/list-check-solid.png");
 	    manageMenu.add(manageMenuItem1);
 	    manageMenu.add(manageMenuItem2);
 	    manageMenu.add(manageMenuItem3);
 	    menuBar.add(manageMenu);
 
-	    // Menu Bán Hàng
-	    JMenu salesMenu = createMenu("Bán Hàng", "/gui/cart-shopping-solid.png");
+	    // Menu BÃ¡n HÃ ng
+	    JMenu salesMenu = createMenu("BÃ¡n HÃ ng", "/gui/cart-shopping-solid.png");
 	    menuBar.add(salesMenu);
 
-	    // Menu Thống Kê
-	    JMenuItem statsMenuItem1 = createMenuItem("Doanh Số");
-	    JMenuItem statsMenuItem2 = createMenuItem("Nhân Viên");
-	    JMenuItem statsMenuItem3 = createMenuItem("Khách Hàng");
-	    JMenuItem statsMenuItem4 = createMenuItem("Sản Phẩm");
+	    // Menu Thá»‘ng KÃª
+	    JMenuItem statsMenuItem1 = createMenuItem("Doanh Sá»‘");
+	    JMenuItem statsMenuItem2 = createMenuItem("NhÃ¢n ViÃªn");
+	    JMenuItem statsMenuItem3 = createMenuItem("KhÃ¡ch HÃ ng");
+	    JMenuItem statsMenuItem4 = createMenuItem("Sáº£n Pháº©m");
 	    
-	    JMenu statsMenu = createMenu("Thống Kê", "/gui/clipboard-solid.png");
+	    JMenu statsMenu = createMenu("Thá»‘ng KÃª", "/gui/clipboard-solid.png");
 	    statsMenu.add(statsMenuItem1);
 	    statsMenu.add(statsMenuItem2);
 	    statsMenu.add(statsMenuItem3);
 	    statsMenu.add(statsMenuItem4);
 	    menuBar.add(statsMenu);
 	    
-	    // Menu Tra Cứu
-	    JMenuItem searchMenuItem1 = createMenuItem("Sản Phẩm");
-	    JMenuItem searchMenuItem2 = createMenuItem("Nhân Viên");
-	    JMenuItem searchMenuItem3 = createMenuItem("Khách Hàng");
-	    JMenuItem searchMenuItem4 = createMenuItem("Hóa Đơn");
+	    // Menu Tra Cá»©u
+	    JMenuItem searchMenuItem1 = createMenuItem("Sáº£n Pháº©m");
+	    JMenuItem searchMenuItem2 = createMenuItem("NhÃ¢n ViÃªn");
+	    JMenuItem searchMenuItem3 = createMenuItem("KhÃ¡ch HÃ ng");
+	    JMenuItem searchMenuItem4 = createMenuItem("HÃ³a ÄÆ¡n");
 	    
-	    JMenu searchMenu = createMenu("Tra Cứu", "/gui/circle-question-solid.png");
+	    JMenu searchMenu = createMenu("Tra Cá»©u", "/gui/circle-question-solid.png");
 	    searchMenu.add(searchMenuItem1);
 	    searchMenu.add(searchMenuItem2);
 	    searchMenu.add(searchMenuItem3);
 	    searchMenu.add(searchMenuItem4);
 	    menuBar.add(searchMenu);
-	    // **Sự kiện cho các nút trong menu (gộp chung trong một hàm xử lý)**
+	    // **Sá»± kiá»‡n cho cÃ¡c nÃºt trong menu (gá»™p chung trong má»™t hÃ m xá»­ lÃ½)**
 
 	    searchMenuItem1.addActionListener(createMenuActionListener(this, TraCuuSanPham_GUI.class));
 	    searchMenuItem2.addActionListener(createMenuActionListener(this, TraCuuNhanVien_GUI.class));
 	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
 	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
 	    
-	   // salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
 	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
 	    
 	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
@@ -709,9 +718,9 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	        this.setVisible(false);
 	    }
 		public void openBanHang() {
-	//        BanHang_GUI banHang = new BanHang_GUI();
-	  //      banHang.setVisible(true);
-	    //    this.setVisible(false);
+	        BanHang_GUI banHang = new BanHang_GUI();
+	        banHang.setVisible(true);
+	        this.setVisible(false);
 	    }
 		public void openThongKeDoanhSo() {
 	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
@@ -753,21 +762,21 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	
 		public class DateUtils {
 		    
-		    // Phương thức chuyển đổi ngày từ "dd/MM/yyyy" sang "yyyy-MM-dd"
+		    // PhÆ°Æ¡ng thá»©c chuyá»ƒn Ä‘á»•i ngÃ y tá»« "d/MM/yyyy" sang "yyyy-MM-dd"
 		    public static String convertDateToStandardFormat(String dateStr) {
 		        try {
-		            // Định dạng ngày gốc "d/MM/yyyy"
+		            // Äá»‹nh dáº¡ng ngÃ y gá»‘c "d/MM/yyyy"
 		            DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
 		            LocalDate date = LocalDate.parse(dateStr, inputFormatter);
 
-		            // Định dạng ngày mới "yyyy-MM-dd"
+		            // Äá»‹nh dáº¡ng ngÃ y má»›i "yyyy-MM-dd"
 		            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		            return date.format(outputFormatter);
 
 		        } catch (DateTimeParseException e) {
-		            // Xử lý lỗi nếu chuỗi ngày không hợp lệ
-		            System.out.println("Ngày không hợp lệ: " + dateStr);
-		            return null; // Trả về null nếu chuỗi ngày không hợp lệ
+		            // Xá»­ lÃ½ lá»—i náº¿u chuá»—i ngÃ y khÃ´ng há»£p lá»‡
+		            System.out.println("NgÃ y khÃ´ng há»£p lá»‡: " + dateStr);
+		            return null; // Tráº£ vá» null náº¿u chuá»—i ngÃ y khÃ´ng há»£p lá»‡
 		        }
 		    }
 		}
@@ -777,37 +786,37 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 
 
 		
-		// Hàm chung xử lý sự kiện click chuột cho JMenu
+		// HÃ m chung xá»­ lÃ½ sá»± kiá»‡n click chuá»™t cho JMenu
 		public MouseAdapter createMenuMouseAdapter(JFrame frame, Class<?> guiClass) {
 		    return new MouseAdapter() {
 		        @Override
 		        public void mouseClicked(MouseEvent e) {
-		            System.out.println("Đã vào mouseClicked"); // Kiểm tra sự kiện mouseClicked
+		            System.out.println("ÄÃ£ vÃ o mouseClicked"); // Kiá»ƒm tra sá»± kiá»‡n mouseClicked
 
 		            try {
-		                System.out.println("Đang khởi tạo giao diện: " + guiClass.getName());
+		                System.out.println("Äang khá»Ÿi táº¡o giao diá»‡n: " + guiClass.getName());
 
-		                // Tạo đối tượng GUI mới từ class truyền vào
+		                // Táº¡o Ä‘á»‘i tÆ°á»£ng GUI má»›i tá»« class truyá»n vÃ o
 		                Object guiInstance = guiClass.getDeclaredConstructor().newInstance();
-		                System.out.println("Khởi tạo đối tượng thành công");
+		                System.out.println("Khá»Ÿi táº¡o Ä‘á»‘i tÆ°á»£ng thÃ nh cÃ´ng");
 
-		                // Kiểm tra nếu guiInstance là một JFrame, thì hiển thị nó
+		                // Kiá»ƒm tra náº¿u guiInstance lÃ  má»™t JFrame, thÃ¬ hiá»ƒn thá»‹ nÃ³
 		                if (guiInstance instanceof JFrame) {
 		                    JFrame newFrame = (JFrame) guiInstance;
-		                    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Đóng cửa sổ hiện tại
-		                    newFrame.setSize(1920, 1080);  // Kích thước cửa sổ mới
-		                    newFrame.setLocationRelativeTo(null); // Căn giữa cửa sổ
-		                    newFrame.setVisible(true);  // Hiển thị cửa sổ mới
+		                    newFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // ÄÃ³ng cá»­a sá»• hiá»‡n táº¡i
+		                    newFrame.setSize(1920, 1080);  // KÃ­ch thÆ°á»›c cá»­a sá»• má»›i
+		                    newFrame.setLocationRelativeTo(null); // CÄƒn giá»¯a cá»­a sá»•
+		                    newFrame.setVisible(true);  // Hiá»ƒn thá»‹ cá»­a sá»• má»›i
 
-		                    // Đóng cửa sổ hiện tại
-		                    frame.dispose();  // Đảm bảo cửa sổ cũ được đóng lại khi chuyển sang cửa sổ mới
-		                    System.out.println("Đã chuyển sang cửa sổ mới: " + guiClass.getName());
+		                    // ÄÃ³ng cá»­a sá»• hiá»‡n táº¡i
+		                    frame.dispose();  // Äáº£m báº£o cá»­a sá»• cÅ© Ä‘Æ°á»£c Ä‘Ã³ng láº¡i khi chuyá»ƒn sang cá»­a sá»• má»›i
+		                    System.out.println("ÄÃ£ chuyá»ƒn sang cá»­a sá»• má»›i: " + guiClass.getName());
 		                } else {
-		                    System.out.println("Gui không phải là một JFrame, xử lý khác: " + guiClass.getName());
+		                    System.out.println("Gui khÃ´ng pháº£i lÃ  má»™t JFrame, xá»­ lÃ½ khÃ¡c: " + guiClass.getName());
 		                }
 		            } catch (Exception ex) {
 		                ex.printStackTrace();
-		                System.out.println("Lỗi khi khởi tạo giao diện: " + guiClass.getName());
+		                System.out.println("Lá»—i khi khá»Ÿi táº¡o giao diá»‡n: " + guiClass.getName());
 		            }
 		        }
 		    };
@@ -815,17 +824,17 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 
 
 
-	// Hàm chung xử lý sự kiện
+	// HÃ m chung xá»­ lÃ½ sá»± kiá»‡n
 		public ActionListener createMenuActionListener(JFrame frame, Class<?> guiClass) {
 		    return new ActionListener() {
 		        @Override
 		        public void actionPerformed(ActionEvent e) {
-		            System.out.println("Đã vào actionPerformed"); // Kiểm tra xem có vào đây không
+		            System.out.println("ÄÃ£ vÃ o actionPerformed"); // Kiá»ƒm tra xem cÃ³ vÃ o Ä‘Ã¢y khÃ´ng
 		            try {
-		                System.out.println("Đang khởi tạo giao diện: " + guiClass.getName());
+		                System.out.println("Äang khá»Ÿi táº¡o giao diá»‡n: " + guiClass.getName());
 
 		                Object guiInstance = guiClass.getDeclaredConstructor().newInstance();
-		                System.out.println("Khởi tạo đối tượng thành công");
+		                System.out.println("Khá»Ÿi táº¡o Ä‘á»‘i tÆ°á»£ng thÃ nh cÃ´ng");
 
 		                if (guiInstance instanceof JFrame) {
 		                    JFrame newFrame = (JFrame) guiInstance;
@@ -834,15 +843,15 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		                    newFrame.setLocationRelativeTo(null);
 		                    newFrame.setVisible(true);
 
-		                    // Đóng cửa sổ hiện tại
-		                    frame.dispose();  // Đảm bảo cửa sổ cũ được đóng lại khi chuyển sang cửa sổ mới
-		                    System.out.println("Đã chuyển sang cửa sổ mới: " + guiClass.getName());
+		                    // ÄÃ³ng cá»­a sá»• hiá»‡n táº¡i
+		                    frame.dispose();  // Äáº£m báº£o cá»­a sá»• cÅ© Ä‘Æ°á»£c Ä‘Ã³ng láº¡i khi chuyá»ƒn sang cá»­a sá»• má»›i
+		                    System.out.println("ÄÃ£ chuyá»ƒn sang cá»­a sá»• má»›i: " + guiClass.getName());
 		                } else {
-		                    System.out.println("Gui không phải là một JFrame, xử lý khác: " + guiClass.getName());
+		                    System.out.println("Gui khÃ´ng pháº£i lÃ  má»™t JFrame, xá»­ lÃ½ khÃ¡c: " + guiClass.getName());
 		                }
 		            } catch (Exception ex) {
 		                ex.printStackTrace();
-		                System.out.println("Lỗi khi khởi tạo giao diện: " + guiClass.getName());
+		                System.out.println("Lá»—i khi khá»Ÿi táº¡o giao diá»‡n: " + guiClass.getName());
 		            }
 		        }
 		    };
@@ -880,47 +889,59 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		public List<NhanVien> getDanhSachNhanVienFromTable(JTable table) {
 		    List<NhanVien> danhSachNhanVien = new ArrayList<>();
 
-		    // Lấy model của JTable
+		    // Láº¥y model cá»§a JTable
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-		    // Duyệt qua tất cả các dòng trong bảng (bắt đầu từ dòng 0 đến model.getRowCount() - 1)
+		    // Duyá»‡t qua táº¥t cáº£ cÃ¡c dÃ²ng trong báº£ng (báº¯t Ä‘áº§u tá»« dÃ²ng 0 Ä‘áº¿n model.getRowCount() - 1)
 		    for (int i = 0; i < model.getRowCount(); i++) {
-		        // Tạo một đối tượng NhanVien mới
+		        // Táº¡o má»™t Ä‘á»‘i tÆ°á»£ng NhanVien má»›i
 		        NhanVien nv = new NhanVien();
 
 		        try {
-		            // Duyệt qua tất cả các cột trong bảng và gán giá trị vào đối tượng NhanVien
+		            // Duyá»‡t qua táº¥t cáº£ cÃ¡c cá»™t trong báº£ng vÃ  gÃ¡n giÃ¡ trá»‹ vÃ o Ä‘á»‘i tÆ°á»£ng NhanVien
 		            String[] fieldNames = {
 		                "maNhanVien", "tenNhanVien", "sDT", "gioiTinh", "ngaySinh", "ngayVaoLam", 
 		                "luongCanBan", "chucVu", "cMND", "trinhDo", "diaChi", "email", "matKhau", "trangThai"
 		            };
 
 		            for (int j = 0; j < fieldNames.length; j++) {
-		                // Lấy Field của lớp NhanVien
+		                // Láº¥y Field cá»§a lá»›p NhanVien
 		                Field field = NhanVien.class.getDeclaredField(fieldNames[j]);
-		                field.setAccessible(true);  // Cho phép truy cập trường private
+		                field.setAccessible(true);  // Cho phÃ©p truy cáº­p trÆ°á»ng private
 
-		                // Lấy giá trị từ bảng và gán vào trường tương ứng
-		                Object value = model.getValueAt(i, j);  // Lấy giá trị tại dòng i, cột j
+		                // Láº¥y giÃ¡ trá»‹ tá»« báº£ng vÃ  gÃ¡n vÃ o trÆ°á»ng tÆ°Æ¡ng á»©ng
+		                Object value = model.getValueAt(i, j);  // Láº¥y giÃ¡ trá»‹ táº¡i dÃ²ng i, cá»™t j
 
-		                // Xử lý các kiểu dữ liệu đặc biệt trước khi gán giá trị cho trường
+		                // Xá»­ lÃ½ cÃ¡c kiá»ƒu dá»¯ liá»‡u Ä‘áº·c biá»‡t trÆ°á»›c khi gÃ¡n giÃ¡ trá»‹ cho trÆ°á»ng
 		                if (value != null) {
 		                    value = convertFieldValue(value, field.getType());
-		                    field.set(nv, value);  // Gán giá trị vào trường tương ứng của đối tượng NhanVien
+		                    field.set(nv, value);  // GÃ¡n giÃ¡ trá»‹ vÃ o trÆ°á»ng tÆ°Æ¡ng á»©ng cá»§a Ä‘á»‘i tÆ°á»£ng NhanVien
 		                }
 		            }
 		        } catch (NoSuchFieldException | IllegalAccessException e) {
-		            e.printStackTrace(); // Xử lý ngoại lệ khi không thể truy cập trường
+		            e.printStackTrace(); // Xá»­ lÃ½ ngoáº¡i lá»‡ khi khÃ´ng thá»ƒ truy cáº­p trÆ°á»ng
 		        }
 
-		        // Thêm đối tượng NhanVien vào danh sách
+		        // ThÃªm Ä‘á»‘i tÆ°á»£ng NhanVien vÃ o danh sÃ¡ch
 		        danhSachNhanVien.add(nv);
 		    }
 
-		    return danhSachNhanVien; // Trả về danh sách nhân viên từ bảng
+		    return danhSachNhanVien; // Tráº£ vá» danh sÃ¡ch nhÃ¢n viÃªn tá»« báº£ng
 		}
 
-	
+		// PhÆ°Æ¡ng thá»©c chuyá»ƒn Ä‘á»•i giÃ¡ trá»‹ theo kiá»ƒu dá»¯ liá»‡u cá»§a trÆ°á»ng
+		private Object convertFieldValue(Object value, Class<?> fieldType) {
+		    if (fieldType == boolean.class || fieldType == Boolean.class) {
+		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
+		    } else if (fieldType == LocalDate.class) {
+		        return value instanceof String ? LocalDate.parse((String) value) : value;
+		    } else if (fieldType == double.class || fieldType == Double.class) {
+		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == ChucVu.class) {
+		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
+		    }
+		    return value;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -938,334 +959,436 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        txtTGTGTSP.setText("");
 			        txtCCDSP.setText("");
 			        txtCDSP.setText("");
-			        txtNSXSP.setText("");
+			      //  txtNSXSP.setText("");
 			        txtMHDSP.setText("");
-			        txtHSDSP.setText("");
+			      
 			        txtMLSP.setText("");
-			        
+			        dateChooser.setDate(null);
+		            dateChooser1.setDate(null);
 			        cboDVTSP.setSelectedIndex(0);
 			}
-			// Tạo hành động khi nhấn nút "Thêm Sản Phẩm"
+			// Táº¡o hÃ nh Ä‘á»™ng khi nháº¥n nÃºt "ThÃªm Sáº£n Pháº©m"
 			if (o.equals(btnThem)) {
-			    // Lấy dữ liệu từ các trường nhập liệu
+			    // Láº¥y thÃ´ng tin tá»« cÃ¡c trÆ°á»ng nháº­p liá»‡u
 			    String tenSP = txtTenSP.getText();
 			    String baoq = txtBQSP.getText();
-			    String giaBan = txtGBSP.getText();
-			    String ghiChu = txtGCSP.getText();
-			    String giaNhap = txtGNSP.getText();
-			    String soLuongTonKho = txtSLTKSP.getText();
-			    String thanhPhan = txtTPSP.getText();
-			    String thueGTGT = txtTGTGTSP.getText();
-			    String nhaSanXuat = txtNhaSXSP.getText();
-			    String hanSuDung = txtHSDSP.getText();
-			    String maHoaDon = txtMHDSP.getText();
-			    String maLoaiSP = txtMLSP.getText();
 			    String congDung = txtCDSP.getText();
 			    String chongChiDinh = txtCCDSP.getText();
-			    String donViTinh = cboDVTSP.getSelectedItem().toString();
-			    String ngaySanXuat = txtNSXSP.getText();
+			    String thanhPhan = txtTPSP.getText();
+			    String ghiChu = txtGCSP.getText();
+			    String nhaSanXuat = txtNhaSXSP.getText();
 
-			    // Kiểm tra dữ liệu nhập vào
-			    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || ghiChu.isEmpty() || giaNhap.isEmpty() ||
-			        soLuongTonKho.isEmpty() || thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() ||
-			        hanSuDung.isEmpty() || maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
-			        donViTinh.isEmpty() || ngaySanXuat.isEmpty()) {
-			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			        return;
-			    }
-
-			    // Gọi hàm checkData() để kiểm tra tính hợp lệ của dữ liệu
-			    if (!checkData()) {
-			        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			        return;
-			    }
-
-			    // Tạo đối tượng SanPham và gán giá trị vào các thuộc tính tương ứng
-			    SanPham sanPham = new SanPham();
+			    LocalDate hanSuDung, ngaySanXuat;
 			    try {
-			        // Gán các giá trị đã lấy vào đối tượng sanPham
-			        sanPham.setTenSanPham(tenSP);
-			        sanPham.setCongDung(congDung);
-			        sanPham.setGiaBan(Double.parseDouble(giaBan)); // Chuyển giá bán sang kiểu double
-			        sanPham.setGhiChu(ghiChu);
-			        sanPham.setGiaNhap(Double.parseDouble(giaNhap)); // Chuyển giá nhập sang kiểu double
-			        sanPham.setSoLuongTonkho(Integer.parseInt(soLuongTonKho)); // Chuyển số lượng tồn kho sang kiểu int
-			        sanPham.setThanhPhan(thanhPhan);
-			        sanPham.setThueGTGT(Double.parseDouble(thueGTGT)); // Chuyển thuế GTGT sang kiểu double
-			        sanPham.setNhaSanXuat(nhaSanXuat);
-
-			        // Chuyển đổi giá trị LocalDate từ chuỗi ngày tháng
-			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			        sanPham.setHanSuDung(LocalDate.parse(hanSuDung, formatter)); // Chuyển chuỗi ngày hết hạn thành LocalDate
-			        sanPham.setNgaySanXuat(LocalDate.parse(ngaySanXuat, formatter)); // Chuyển chuỗi ngày sản xuất thành LocalDate
-
-			        // Chuyển DonViTinh từ chuỗi sang enum DonViTinh
-			        DonViTinh donViTinhEnum = DonViTinh.valueOf(donViTinh.toUpperCase()); // Chuyển đổi sang enum
-			        sanPham.setDonViTinh(donViTinhEnum);
-
-			        // Thiết lập các mối quan hệ với LoaiSanPham và HoaDonNhap
-			        LoaiSanPham loaiSanPham = new LoaiSanPham();
-			        loaiSanPham.setMaLoai(maLoaiSP); // Giả sử bạn đã có phương thức setMaLoai trong lớp LoaiSanPham
-			        sanPham.setLoaiSanPham(loaiSanPham);
-
-			        HoaDonNhap hoaDonNhap = new HoaDonNhap();
-			        hoaDonNhap.setMaHoaDonNhap(maHoaDon); // Giả sử bạn đã có phương thức setMaHoaDon trong lớp HoaDonNhap
-			        sanPham.setHoaDonNhap(hoaDonNhap);
-
-			        // Chuyển đổi chuỗi chongChiDinh sang đối tượng, nếu cần
-			        sanPham.setChongChiDinh(chongChiDinh);
-
-			        // Lưu đối tượng sanPham vào cơ sở dữ liệu
-			        SanPham_DAO sanPhamDAO = new SanPham_DAO();
-			        sanPhamDAO.saveSanPham(sanPham);
-
-			        // Kiểm tra nếu tên sản phẩm đã tồn tại trong bảng
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
-			        boolean isProductExist = false;
-
-			        for (int i = 0; i < model.getRowCount(); i++) {
-			            String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
-			            if (existingProductName.equalsIgnoreCase(tenSP)) {
-			                isProductExist = true;
-			                break;
-			            }
+			        // Láº¥y ngÃ y tá»« dateChooser (háº¡n sá»­ dá»¥ng) vÃ  chuyá»ƒn Ä‘á»•i sang LocalDate
+			        Date selectedDateHSD = dateChooser.getDate();
+			        if (selectedDateHSD == null) {
+			            throw new DateTimeParseException("NgÃ y háº¡n sá»­ dá»¥ng khÃ´ng há»£p lá»‡!", "", 0);
 			        }
+			        hanSuDung = selectedDateHSD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-			        if (isProductExist) {
-			            JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại trong bảng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			            return;
+			        // Láº¥y ngÃ y tá»« dateChooser1 (ngÃ y sáº£n xuáº¥t) vÃ  chuyá»ƒn Ä‘á»•i sang LocalDate
+			        Date selectedDateNSX = dateChooser1.getDate();
+			        if (selectedDateNSX == null) {
+			            throw new DateTimeParseException("NgÃ y sáº£n xuáº¥t khÃ´ng há»£p lá»‡!", "", 0);
 			        }
-
-			        // Tạo mã sản phẩm theo công thức: SP + 4 chữ số bắt đầu từ 0010
-			        int rowCount = model.getRowCount();
-			        String maSP = String.format("SP%04d", rowCount + 10);  // Bắt đầu từ SP0010 và tăng dần
-
-			        // Thêm mã loại sản phẩm, ngày sản xuất và chuỗi 123456789 + 5 chữ số bắt đầu từ 00001
-			        String loaiSP = maLoaiSP;  // Loại sản phẩm
-			        String formattedDate = ngaySanXuat.replace("-", "");  // Định dạng ngày sản xuất dạng yyyyMMdd
-			        maSP += loaiSP + formattedDate + "123456789" + String.format("%05d", rowCount + 1);
-
-			        // Thêm dòng mới vào bảng
-			        model.addRow(new Object[]{
-			            maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT, maHoaDon, maLoaiSP
-			        });
-
-			        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
-
-			        // Làm sạch các trường nhập liệu sau khi thêm sản phẩm
-			        txtTenSP.setText("");
-			        txtBQSP.setText("");
-			        txtGBSP.setText("");
-			        txtGCSP.setText("");
-			        txtGNSP.setText("");
-			        txtSLTKSP.setText("");
-			        txtTPSP.setText("");
-			        txtTGTGTSP.setText("");
-			        txtNhaSXSP.setText("");
-			        txtHSDSP.setText("");
-			        txtMHDSP.setText("");
-			        txtMLSP.setText("");
-			        txtCDSP.setText("");
-			        txtCCDSP.setText("");
-			        cboDVTSP.setSelectedIndex(0);
-			        txtNSXSP.setText("");
-
-			    } catch (NumberFormatException ex) {
-			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng số cho các trường giá trị!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        ngaySanXuat = selectedDateNSX.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			        
+			    } catch (DateTimeParseException ex) {
+			        JOptionPane.showMessageDialog(null, "NgÃ y khÃ´ng Ä‘Ãºng Ä‘á»‹nh dáº¡ng hoáº·c khÃ´ng há»£p lá»‡!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
 			    }
+
+			    double giaBan, giaNhap, thueGTGT;
+			    int soLuongTonKho;
+			    try {
+			        giaBan = Double.parseDouble(txtGBSP.getText());
+			        giaNhap = Double.parseDouble(txtGNSP.getText());
+			        thueGTGT = Double.parseDouble(txtTGTGTSP.getText());
+			        soLuongTonKho = Integer.parseInt(txtSLTKSP.getText());
+			    } catch (NumberFormatException ex) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng nháº­p Ä‘Ãºng Ä‘á»‹nh dáº¡ng sá»‘ cho giÃ¡ hoáº·c sá»‘ lÆ°á»£ng!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    String donViTinhStr = cboDVTSP.getSelectedItem().toString();
+			    DonViTinh donViTinh = DonViTinh.valueOf(donViTinhStr);
+
+			    // Kiá»ƒm tra dá»¯ liá»‡u nháº­p vÃ o
+			    if (tenSP.isEmpty() || baoq.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
+			        thanhPhan.isEmpty() || ghiChu.isEmpty() || nhaSanXuat.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Láº¥y thÃ´ng tin tá»« combobox loáº¡i sáº£n pháº©m
+			    LoaiSanPham loaiSanPham = dao_lsp.findLoaiSanPhamById(txtMLSP.getText());
+			    if (loaiSanPham == null) {
+			        JOptionPane.showMessageDialog(null, "Loáº¡i sáº£n pháº©m khÃ´ng tá»“n táº¡i!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    HoaDonNhap hoaDonNhap = dao_hdn.findHoaDonNhapByMa(txtMHDSP.getText());
+			    if (hoaDonNhap == null) {
+			        JOptionPane.showMessageDialog(null, "HÃ³a Ä‘Æ¡n nháº­p  khÃ´ng tá»“n táº¡i!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+			    // Táº¡o mÃ£ sáº£n pháº©m tá»± sinh
+			    String maSP = dao_sp.maTuSinhSanPham(loaiSanPham);
+
+			    // Táº¡o Ä‘á»‘i tÆ°á»£ng sáº£n pháº©m
+			    SanPham sp = new SanPham();
+			    sp.setMaSanPham(maSP);
+			    sp.setTenSanPham(tenSP);
+			    sp.setGiaBan(giaBan);
+			    sp.setCongDung(congDung);
+			    sp.setHanSuDung(hanSuDung);
+			    sp.setBaoQuan(baoq);
+			    sp.setChongChiDinh(chongChiDinh);
+			    sp.setNgaySanXuat(ngaySanXuat);
+			    sp.setThanhPhan(thanhPhan);
+			    sp.setSoLuongTonkho(soLuongTonKho);
+			    sp.setGhiChu(ghiChu);
+			    sp.setNhaSanXuat(nhaSanXuat);
+			    sp.setDonViTinh(donViTinh);
+			    sp.setThueGTGT(thueGTGT);
+			    sp.setGiaNhap(giaNhap);
+			    sp.setHoaDonNhap(hoaDonNhap);
+			    sp.setLoaiSanPham(loaiSanPham);
+
+			    // LÆ°u sáº£n pháº©m vÃ o database
+			    boolean t = dao_sp.createSanPham(sp);
+			    if (t) {
+			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        model.addRow(new Object[] {
+			            maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap,
+			            hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT,hoaDonNhap.getMaHoaDonNhap(), loaiSanPham.getMaLoai()
+			        });
+			        JOptionPane.showMessageDialog(null, "ThÃªm sáº£n pháº©m vÃ o báº£ng thÃ nh cÃ´ng!");
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Lá»—i khi lÆ°u sáº£n pháº©m vÃ o database", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			    }
+
+			    // LÃ m sáº¡ch cÃ¡c trÆ°á»ng nháº­p liá»‡u sau khi thÃªm sáº£n pháº©m
+			    txtTenSP.setText("");
+			    txtBQSP.setText("");
+			    txtGBSP.setText("");
+			    txtGCSP.setText("");
+			    txtGNSP.setText("");
+			    txtSLTKSP.setText("");
+			    txtTPSP.setText("");
+			    txtTGTGTSP.setText("");
+			    txtNhaSXSP.setText("");
+			//    txtHSDSP.setText("");
+			  //  txtNSXSP.setText("");
+			    txtMLSP.setText("");
+			    txtCDSP.setText("");
+			    txtCCDSP.setText("");
+			  //  txtHSDSP.setText("");
+			    cboDVTSP.setSelectedIndex(0);
+			    dateChooser.setDate(null);
+	            dateChooser1.setDate(null);
 			}
 
+			
 
 			if (o.equals(btnXoa)) {
-			    int selectedRow = table.getSelectedRow();
-			    if (selectedRow != -1) {
-			    	  int confirmation = JOptionPane.showConfirmDialog(
-				        	    null,
-				        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
-				        	    "Xác nhận",  
-				        	    JOptionPane.YES_NO_OPTION
-				        	);
-				        if (confirmation == JOptionPane.YES_OPTION) {
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
-			        model.removeRow(selectedRow);
+				if (o.equals(btnXoa)) {
+				    int row = table.getSelectedRow();
 
-			        JOptionPane.showMessageDialog(null, "Đã xóa sản phẩm khỏi bảng!");
-			    } }else {
-
-			        JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			    }
-			}
-			
-			if(o.equals(btnSua)) {
-		        int selectedRow = table.getSelectedRow();
-		        if (selectedRow == -1) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm để sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-
-		        String tenSP = txtTenSP.getText();
-		        String baoq = txtBQSP.getText();
-		        String giaBan = txtGBSP.getText();
-		        String ghiChu = txtGCSP.getText();
-		        String giaNhap = txtGNSP.getText();
-		        String soLuongTonKho = txtSLTKSP.getText();
-		        String thanhPhan = txtTPSP.getText();
-		        String thueGTGT = txtTGTGTSP.getText();
-		        String nhaSanXuat = txtNhaSXSP.getText();
-		        String hanSuDung = txtHSDSP.getText();
-		        String maHoaDon = txtMHDSP.getText();
-		        String maLoaiSP = txtMLSP.getText();
-		        String congDung = txtCDSP.getText();
-		        String chongChiDinh = txtCCDSP.getText();
-		        String donViTinh = cboDVTSP.getSelectedItem().toString();
-		        String ngaySanXuat = txtNSXSP.getText();
-
-		        if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || ghiChu.isEmpty() || giaNhap.isEmpty() ||
-		            soLuongTonKho.isEmpty() || thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() ||
-		            hanSuDung.isEmpty() || maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
-		            donViTinh.isEmpty() || ngaySanXuat.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-
-		        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-		        model.setValueAt(tenSP, selectedRow, 1);
-		        model.setValueAt(baoq, selectedRow, 2);
-		        model.setValueAt(chongChiDinh, selectedRow, 3);
-		        model.setValueAt(congDung, selectedRow, 4);
-		        model.setValueAt(donViTinh, selectedRow, 5);
-		        model.setValueAt(ghiChu, selectedRow, 6);
-		        model.setValueAt(giaBan, selectedRow, 7);
-		        model.setValueAt(giaNhap, selectedRow, 8);
-		        model.setValueAt(hanSuDung, selectedRow, 9);
-		        model.setValueAt(ngaySanXuat, selectedRow, 10);
-		        model.setValueAt(nhaSanXuat, selectedRow, 11);
-		        model.setValueAt(soLuongTonKho, selectedRow, 12);
-		        model.setValueAt(thanhPhan, selectedRow, 13);
-		        model.setValueAt(thueGTGT, selectedRow, 14);
-		        model.setValueAt(maHoaDon, selectedRow, 15);
-		        model.setValueAt(maLoaiSP, selectedRow, 16);
-
-		        model.fireTableDataChanged();
-
-		        JOptionPane.showMessageDialog(null, "Sửa sản phẩm thành công!");
-
-		        // Làm sạch các trường nhập liệu sau khi sửa sản phẩm
-		        txtTenSP.setText("");
-		        txtBQSP.setText("");
-		        txtGBSP.setText("");
-		        txtGCSP.setText("");
-		        txtGNSP.setText("");
-		        txtSLTKSP.setText("");
-		        txtTPSP.setText("");
-		        txtTGTGTSP.setText("");
-		        txtNhaSXSP.setText("");
-		        txtHSDSP.setText("");
-		        txtMHDSP.setText("");
-		        txtMLSP.setText("");
-		        txtCDSP.setText("");
-		        txtCCDSP.setText("");
-		        cboDVTSP.setSelectedIndex(0);
-		        txtNSXSP.setText("");
-		    }
-		
-			
-
-
-
-			 if (o.equals(btnTim)) {
-				    String maSP = txtNhap.getText().trim(); // Lấy mã nhân viên từ ô nhập liệu tìm kiếm
-
-				    if (maSP.isEmpty()) {
-				        JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phâm cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    // Kiá»ƒm tra xem ngÆ°á»i dÃ¹ng Ä‘Ã£ chá»n hÃ ng nÃ o chÆ°a
+				    if (row == -1) {
+				        JOptionPane.showMessageDialog(null, "Vui lÃ²ng chá»n sáº£n pháº©m cáº§n xÃ³a!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
 				        return;
 				    }
 
-				    SanPham sp = dao_sp.findSanPhamById(maSP); // Tìm nhân viên theo mã
+				    // Láº¥y mÃ£ sáº£n pháº©m tá»« hÃ ng Ä‘Æ°á»£c chá»n
+				    String maSanPham = table.getValueAt(row, 0).toString();
 
-				    if (sp != null) {
-				        DefaultTableModel model = (DefaultTableModel) table.getModel();
-				        model.setRowCount(0); // Xóa hết các dòng cũ trong bảng
+				    // XÃ¡c nháº­n ngÆ°á»i dÃ¹ng cÃ³ muá»‘n xÃ³a hay khÃ´ng
+				    int confirmation = JOptionPane.showConfirmDialog(
+				        null,
+				        "Báº¡n cÃ³ cháº¯c cháº¯n muá»‘n xÃ³a thÃ´ng tin sáº£n pháº©m nÃ y khÃ´ng?",
+				        "XÃ¡c nháº­n",
+				        JOptionPane.YES_NO_OPTION
+				    );
 
-				        try {
-				            Field[] fields = SanPham.class.getDeclaredFields(); // Lấy tất cả các trường trong lớp NhanVien
-				            Object[] rowData = new Object[fields.length]; // Mảng chứa dữ liệu cho một dòng trong bảng
+				    if (confirmation == JOptionPane.YES_OPTION) {
+				        // Gá»i DAO Ä‘á»ƒ xÃ³a sáº£n pháº©m
+				        boolean isDeleted = dao_sp.deleteSanPham(maSanPham);
 
-				            // Lấy giá trị của mỗi trường trong đối tượng nhanVien và thêm vào mảng rowData
-				            for (int i = 0; i < fields.length; i++) {
-				                fields[i].setAccessible(true); // Cho phép truy cập trường private
-				                if ("hoaDonNhap".equals(fields[i].getName()) || "loaiSanPham".equals(fields[i].getName())) {
-				                    // Bỏ qua các trường hoaDonNhap và loaiSanPham
-				                    rowData[i] = null; 
-				                } else {
-				                    rowData[i] = fields[i].get(sp); // Lấy giá trị của trường từ đối tượng
-				                }
-				            }
+				        if (isDeleted) {
+				            // XÃ³a sáº£n pháº©m khá»i báº£ng hiá»ƒn thá»‹
+				            DefaultTableModel model = (DefaultTableModel) table.getModel();
+				            model.removeRow(row);
 
-				            // Thêm dữ liệu vào bảng
-				            model.addRow(rowData);
-
-				            JOptionPane.showMessageDialog(null, "Tìm thấy sản pham  " + maSP);
-				        } catch (IllegalAccessException e1) {
-				            e1.printStackTrace();
+				            JOptionPane.showMessageDialog(null, "XÃ³a sáº£n pháº©m khá»i báº£ng thÃ nh cÃ´ng!");
+				        } else {
+				            JOptionPane.showMessageDialog(null, "XÃ³a sáº£n pháº©m trong cÆ¡ sá»Ÿ dá»¯ liá»‡u bá»‹ lá»—i!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
 				        }
-				    } else {
-				        JOptionPane.showMessageDialog(null, "Không tìm thấy sản pham  với mã: " + maSP, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 				    }
-				}
 
-			if (o.equals(btnThoat)) {
-			    displaySanPhamsInTable();
+				    // XÃ³a cÃ¡c trÆ°á»ng nháº­p liá»‡u
+				    txtTenSP.setText("");
+				    txtBQSP.setText("");
+				    txtGBSP.setText("");
+				    txtGCSP.setText("");
+				    txtGNSP.setText("");
+				    txtSLTKSP.setText("");
+				    txtTPSP.setText("");
+				    txtTGTGTSP.setText("");
+				    txtNhaSXSP.setText("");
+				//    txtHSDSP.setText("");
+				  //  txtNSXSP.setText("");
+				    txtMLSP.setText("");
+				    txtCDSP.setText("");
+				    txtCCDSP.setText("");
+				  //  txtHSDSP.setText("");
+				    cboDVTSP.setSelectedIndex(0);
+				    dateChooser.setDate(null);
+		            dateChooser1.setDate(null);
+				}}
+			if (o.equals(btnSua)) {
+			    // Kiá»ƒm tra xem cÃ³ dÃ²ng nÃ o Ä‘Æ°á»£c chá»n trong báº£ng chÆ°a
+			    int row = table.getSelectedRow();
+			    if (row == -1) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng chá»n sáº£n pháº©m cáº§n sá»­a!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Láº¥y mÃ£ sáº£n pháº©m tá»« dÃ²ng Ä‘Ã£ chá»n
+			    String maSP = table.getValueAt(row, 0).toString();
+
+			    // Láº¥y thÃ´ng tin tá»« cÃ¡c trÆ°á»ng nháº­p liá»‡u
+			    String tenSP = txtTenSP.getText();
+			    String baoq = txtBQSP.getText();
+			    String congDung = txtCDSP.getText();
+			    String chongChiDinh = txtCCDSP.getText();
+			    String thanhPhan = txtTPSP.getText();
+			    String ghiChu = txtGCSP.getText();
+			    String nhaSanXuat = txtNhaSXSP.getText();
+
+			    LocalDate hanSuDung, ngaySanXuat;
+			    try {
+			        // Láº¥y ngÃ y tá»« dateChooser vÃ  chuyá»ƒn Ä‘á»•i sang LocalDate
+			        Date selectedDateHSD = dateChooser.getDate();
+			        Date selectedDateNSX = dateChooser1.getDate();
+			        if (selectedDateHSD == null || selectedDateNSX == null) {
+			            throw new DateTimeParseException("NgÃ y khÃ´ng há»£p lá»‡!", "", 0);
+			        }
+			        hanSuDung = selectedDateHSD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			        ngaySanXuat = selectedDateNSX.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			    } catch (DateTimeParseException ex) {
+			        JOptionPane.showMessageDialog(null, "NgÃ y khÃ´ng Ä‘Ãºng Ä‘á»‹nh dáº¡ng hoáº·c khÃ´ng há»£p lá»‡!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    double giaBan, giaNhap, thueGTGT;
+			    int soLuongTonKho;
+			    try {
+			        giaBan = Double.parseDouble(txtGBSP.getText());
+			        giaNhap = Double.parseDouble(txtGNSP.getText());
+			        thueGTGT = Double.parseDouble(txtTGTGTSP.getText());
+			        soLuongTonKho = Integer.parseInt(txtSLTKSP.getText());
+			    } catch (NumberFormatException ex) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng nháº­p Ä‘Ãºng Ä‘á»‹nh dáº¡ng sá»‘ cho giÃ¡ hoáº·c sá»‘ lÆ°á»£ng!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    String donViTinhStr = cboDVTSP.getSelectedItem().toString();
+			    DonViTinh donViTinh = DonViTinh.valueOf(donViTinhStr);
+
+			    // Kiá»ƒm tra dá»¯ liá»‡u nháº­p vÃ o
+			    if (tenSP.isEmpty() || baoq.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
+			        thanhPhan.isEmpty() || ghiChu.isEmpty() || nhaSanXuat.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng nháº­p Ä‘áº§y Ä‘á»§ thÃ´ng tin!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Láº¥y thÃ´ng tin tá»« combobox loáº¡i sáº£n pháº©m
+			    LoaiSanPham loaiSanPham = dao_lsp.findLoaiSanPhamById(txtMLSP.getText());
+			    if (loaiSanPham == null) {
+			        JOptionPane.showMessageDialog(null, "Loáº¡i sáº£n pháº©m khÃ´ng tá»“n táº¡i!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    HoaDonNhap hoaDonNhap = dao_hdn.findHoaDonNhapByMa(txtMHDSP.getText());
+			    if (hoaDonNhap == null) {
+			        JOptionPane.showMessageDialog(null, "HÃ³a Ä‘Æ¡n nháº­p khÃ´ng tá»“n táº¡i!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Táº¡o Ä‘á»‘i tÆ°á»£ng sáº£n pháº©m
+			    SanPham sp = new SanPham();
+			    sp.setMaSanPham(maSP);
+			    sp.setTenSanPham(tenSP);
+			    sp.setGiaBan(giaBan);
+			    sp.setCongDung(congDung);
+			    sp.setHanSuDung(hanSuDung);
+			    sp.setBaoQuan(baoq);
+			    sp.setChongChiDinh(chongChiDinh);
+			    sp.setNgaySanXuat(ngaySanXuat);
+			    sp.setThanhPhan(thanhPhan);
+			    sp.setSoLuongTonkho(soLuongTonKho);
+			    sp.setGhiChu(ghiChu);
+			    sp.setNhaSanXuat(nhaSanXuat);
+			    sp.setDonViTinh(donViTinh);
+			    sp.setThueGTGT(thueGTGT);
+			    sp.setGiaNhap(giaNhap);
+			    sp.setHoaDonNhap(hoaDonNhap);
+			    sp.setLoaiSanPham(loaiSanPham);
+
+			    // Cáº­p nháº­t sáº£n pháº©m trong database
+			    boolean updateSuccess = dao_sp.updateSanPham(sp);
+			    if (updateSuccess) {
+			        // Cáº­p nháº­t thÃ´ng tin trong báº£ng JTable
+			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        model.setValueAt(tenSP, row, 1);
+			        model.setValueAt(baoq, row, 2);
+			        model.setValueAt(chongChiDinh, row, 3);
+			        model.setValueAt(congDung, row, 4);
+			        model.setValueAt(donViTinh, row, 5);
+			        model.setValueAt(ghiChu, row, 6);
+			        model.setValueAt(giaBan, row, 7);
+			        model.setValueAt(giaNhap, row, 8);
+			        model.setValueAt(hanSuDung, row, 9);
+			        model.setValueAt(ngaySanXuat, row, 10);
+			        model.setValueAt(nhaSanXuat, row, 11);
+			        model.setValueAt(soLuongTonKho, row, 12);
+			        model.setValueAt(thanhPhan, row, 13);
+			        model.setValueAt(thueGTGT, row, 14);
+			        model.setValueAt(hoaDonNhap.getMaHoaDonNhap(), row, 15);
+			        model.setValueAt(loaiSanPham.getMaLoai(), row, 16);
+
+			        JOptionPane.showMessageDialog(null, "Cáº­p nháº­t thÃ´ng tin sáº£n pháº©m thÃ nh cÃ´ng!");
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Lá»—i khi cáº­p nháº­t sáº£n pháº©m trong database", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			    }
+
+			    // LÃ m sáº¡ch cÃ¡c trÆ°á»ng nháº­p liá»‡u
+			    txtTenSP.setText("");
+			    txtBQSP.setText("");
+			    txtGBSP.setText("");
+			    txtGCSP.setText("");
+			    txtGNSP.setText("");
+			    txtSLTKSP.setText("");
+			    txtTPSP.setText("");
+			    txtTGTGTSP.setText("");
+			    txtNhaSXSP.setText("");
+			    cboDVTSP.setSelectedIndex(0);
+			    dateChooser.setDate(null);
+			    dateChooser1.setDate(null);
+			    txtMLSP.setText("");
+			    txtCDSP.setText("");
+			    txtCCDSP.setText("");
 			}
+			if (o.equals(btnTim)) {
+			    String maSP = txtNhap.getText().trim();
 
+			    if (maSP.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lÃ²ng nháº­p mÃ£ sáº£n pháº©m cáº§n tÃ¬m!", "Lá»—i", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    searchInTable(maSP);  // Gá»i phÆ°Æ¡ng thá»©c tÃ¬m trong báº£ng
+			    JOptionPane.showMessageDialog(null, "ÄÃ£ tÃ¬m kiáº¿m sáº£n pháº©m vá»›i mÃ£: " + maSP);
+			}
+				
+			 if(o.equals(btnThoat)) {
+				 displaySanPhamsInTable();
+			 }
+			
 		}
-
-		
+			
 
 		 @Override
-		    public void mouseClicked(MouseEvent e) {
-			 int row = table.getSelectedRow();
-			    if (row != -1) {
-			        // Lấy dữ liệu từ các cột của dòng được chọn
-			        String tenSP = table.getValueAt(row, 1).toString();
-			        String baoQuan = table.getValueAt(row, 2).toString();
-			        String congDung = table.getValueAt(row, 4).toString();
-			        String donViTinh = table.getValueAt(row, 5).toString();
-			        String ghiChu = table.getValueAt(row, 6).toString();
-			        String giaBan = table.getValueAt(row, 7).toString();
-			        String giaNhap = table.getValueAt(row, 8).toString();
-			        String hanSuDung = table.getValueAt(row, 9).toString();
-			        String ngaySanXuat = table.getValueAt(row, 10).toString();
-			        String nhaSanXuat = table.getValueAt(row, 11).toString();
-			        String soLuongTonKho = table.getValueAt(row, 12).toString();
-			        String thanhPhan = table.getValueAt(row, 13).toString();
-			        String thueGTGT = table.getValueAt(row, 14).toString();
-			        String maHoaDon = table.getValueAt(row, 15).toString();
-			        String maLoaiSP = table.getValueAt(row, 16).toString();
-			        String chongChiDinh = table.getValueAt(row, 3).toString();
+		 public void mouseClicked(MouseEvent e) {
+			    int selectedRow = table.getSelectedRow();
+			    
+			    if (selectedRow != -1) {
+			        String maSanPham = table.getValueAt(selectedRow, 0).toString();
+			        String tenSanPham = table.getValueAt(selectedRow, 1).toString();
+			        String baoQuan = table.getValueAt(selectedRow, 2).toString();
+			        String congDung = table.getValueAt(selectedRow, 4).toString();
+			        String chongChiDinh = table.getValueAt(selectedRow, 3).toString();
+			        
+			        // Láº¥y ngÃ y sá»­ dá»¥ng vÃ  ngÃ y sáº£n xuáº¥t tá»« báº£ng (kiá»ƒu LocalDate)
+			        LocalDate hanSuDungLocalDate = (LocalDate) table.getValueAt(selectedRow, 9);
+			        LocalDate ngaySanXuatLocalDate = (LocalDate) table.getValueAt(selectedRow, 10);
 
-			        // Hiển thị dữ liệu lên các trường nhập liệu
-			        txtTenSP.setText(tenSP);
+			        // Chuyá»ƒn Ä‘á»•i LocalDate sang Date
+			        Date hanSuDung = Date.from(hanSuDungLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			        Date ngaySanXuat = Date.from(ngaySanXuatLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			        
+			        String giaBan = table.getValueAt(selectedRow, 7).toString();
+			        String giaNhap = table.getValueAt(selectedRow, 8).toString();
+			        String thanhPhan = table.getValueAt(selectedRow, 13).toString();
+			        String soLuongTonKho = table.getValueAt(selectedRow, 12).toString();
+			        String thueGTGT = table.getValueAt(selectedRow, 14).toString();
+			        String nhaSanXuat = table.getValueAt(selectedRow, 11).toString();
+			        String maHoaDon = table.getValueAt(selectedRow, 15).toString();
+			        String maLoaiSanPham = table.getValueAt(selectedRow, 16).toString();
+			        String ghiChu= table.getValueAt(selectedRow, 6).toString();
+			        
+			        // Hiá»ƒn thá»‹ thÃ´ng tin lÃªn cÃ¡c trÆ°á»ng trong form
+			        txtTenSP.setText(tenSanPham);
 			        txtBQSP.setText(baoQuan);
-			        txtGCSP.setText(ghiChu); // Chỉ gọi setText cho ghi chú một lần
+			        txtCDSP.setText(congDung);
 			        txtGBSP.setText(giaBan);
 			        txtGNSP.setText(giaNhap);
-			        txtHSDSP.setText(hanSuDung);
-			        txtNSXSP.setText(ngaySanXuat);
-			        txtNhaSXSP.setText(nhaSanXuat);
-			        txtSLTKSP.setText(soLuongTonKho);
 			        txtTPSP.setText(thanhPhan);
+			        txtSLTKSP.setText(soLuongTonKho);
 			        txtTGTGTSP.setText(thueGTGT);
+			        txtNhaSXSP.setText(nhaSanXuat);
 			        txtMHDSP.setText(maHoaDon);
-			        txtMLSP.setText(maLoaiSP);
+			        txtMLSP.setText(maLoaiSanPham);
 			        txtCCDSP.setText(chongChiDinh);
-			        txtCDSP.setText(congDung);
+			        txtGCSP.setText(ghiChu);
+			        // Äáº·t ngÃ y vÃ o cÃ¡c JDateChooser
+			        dateChooser.setDate(hanSuDung); // Háº¡n sá»­ dá»¥ng
+			        dateChooser1.setDate(ngaySanXuat); // NgÃ y sáº£n xuáº¥t
 			        
-			        // Nếu cần, bạn có thể chọn giá trị trong JComboBox cho đơn vị tính
-			        // cboDVTSP.setSelectedItem(donViTinh);
-			    }
-		    }
+			        // Náº¿u cáº§n, báº¡n cÃ³ thá»ƒ chá»n giÃ¡ trá»‹ trong JComboBox cho Ä‘Æ¡n vá»‹ tÃ­nh
+			        String donViTinhValue = table.getValueAt(selectedRow, 5).toString(); // Láº¥y giÃ¡ trá»‹ cá»§a cá»™t "ÄÆ¡n vá»‹ tÃ­nh"
+
+			        switch (donViTinhValue) {
+			        case "ML":
+			            cboDVTSP.setSelectedItem("ML");
+			            break;
+			        case "MG":
+			            cboDVTSP.setSelectedItem("MG");
+			            break;
+			        case "VIEN":
+			            cboDVTSP.setSelectedItem("ViÃªn");
+			            break;
+			        case "CÃI":
+			            cboDVTSP.setSelectedItem("CÃ¡i");
+			            break;
+			        case "Há»˜P":
+			            cboDVTSP.setSelectedItem("Há»™p");
+			            break;
+			        case "GRAM":
+			            cboDVTSP.setSelectedItem("Gram");
+			            break;
+			        case "Vá»ˆ":
+			            cboDVTSP.setSelectedItem("Vá»‰");
+			            break;
+			        case "MIáº¾NG":
+			            cboDVTSP.setSelectedItem("Miáº¿ng");
+			            break;
+			        case "Lá»Œ":
+			            cboDVTSP.setSelectedItem("Lá»");
+			            break;
+			        case "GÃ“I":
+			            cboDVTSP.setSelectedItem("GÃ³i");
+			            break;
+			        default:
+			            // Náº¿u khÃ´ng cÃ³ giÃ¡ trá»‹ phÃ¹ há»£p, cÃ³ thá»ƒ chá»n giÃ¡ trá»‹ máº·c Ä‘á»‹nh hoáº·c Ä‘á»ƒ trá»‘ng
+			            cboDVTSP.setSelectedItem(null);
+			            break;
+			        }}
+			}
+
 
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -1291,399 +1414,115 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			
 		}
 		public void displaySanPhamsInTable() {
-			List<SanPham> sanPhams = entityManager.createQuery(
-			        "SELECT sp FROM SanPham sp " +
-			        "LEFT JOIN FETCH sp.loaiSanPham " +  // Đảm bảo loaiSanPham được tải
-			        "LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
-			        .getResultList();
+		    List<SanPham> sanPhams = entityManager.createQuery(
+		        "SELECT sp FROM SanPham sp LEFT JOIN FETCH sp.loaiSanPham LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
+		        .getResultList();
 
 		    if (sanPhams == null || sanPhams.isEmpty()) {
-		        System.out.println("Không có sản phẩm để hiển thị.");
+		        System.out.println("KhÃ´ng cÃ³ sáº£n pháº©m Ä‘á»ƒ hiá»ƒn thá»‹.");
 		        return;
 		    }
 
-		    System.out.println("Số lượng sản phẩm lấy về: " + sanPhams.size());  // Gỡ lỗi: kiểm tra số lượng sản phẩm
-
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
-		    model.setRowCount(0);  // Xóa tất cả dòng trước khi thêm mới
+		    model.setRowCount(0);
 
 		    for (SanPham sp : sanPhams) {
-		        try {
-		            // Truy xuất các trường trong lớp SanPham và gỡ lỗi chi tiết
-		            Object maSanPham = getFieldValue(sp, "maSanPham");
-		            Object tenSanPham = getFieldValue(sp, "tenSanPham");
-		            Object giaBan = getFieldValue(sp, "giaBan");
-		            Object congDung = getFieldValue(sp, "congDung");
-		            Object hanSuDung = getFieldValue(sp, "hanSuDung");
-		            Object baoQuan = getFieldValue(sp, "baoQuan");
-		            Object chongChiDinh = getFieldValue(sp, "chongChiDinh");
-		            Object ngaySanXuat = getFieldValue(sp, "ngaySanXuat");
-		            Object thanhPhan = getFieldValue(sp, "thanhPhan");
-		            Object soLuongTonkho = getFieldValue(sp, "soLuongTonkho");
-		            Object ghiChu = getFieldValue(sp, "ghiChu", "Không có ghi chú");
-		            Object nhaSanXuat = getFieldValue(sp, "nhaSanXuat");
-		            Object donViTinh = getFieldValue(sp, "donViTinh");
-		            Object thueGTGT = getFieldValue(sp, "thueGTGT");
-		            Object giaNhap = getFieldValue(sp, "giaNhap");
+		        String maSanPham = sp.getMaSanPham();
+		        String tenSanPham = sp.getTenSanPham();
+		        double giaBan = sp.getGiaBan();
+		        String congDung = sp.getCongDung();
+		        LocalDate hanSuDung = sp.getHanSuDung();
+		        String baoQuan = sp.getBaoQuan();
+		        String chongChiDinh = sp.getChongChiDinh();
+		        LocalDate ngaySanXuat = sp.getNgaySanXuat();
+		        String thanhPhan = sp.getThanhPhan();
+		        int soLuongTonkho = sp.getSoLuongTonkho();
+		        String ghiChu = (sp.getGhiChu() != null) ? sp.getGhiChu() : "KhÃ´ng cÃ³ ghi chÃº"; // Kiá»ƒm tra ghi chÃº
+		        String nhaSanXuat = sp.getNhaSanXuat();
+		        DonViTinh donViTinh = sp.getDonViTinh();
+		        double thueGTGT = sp.getThueGTGT();
+		        double giaNhap = sp.getGiaNhap();
+		        
+		        // Láº¥y mÃ£ loáº¡i sáº£n pháº©m vÃ  mÃ£ hÃ³a Ä‘Æ¡n
+		        String loaiSanPhamStr = (sp.getLoaiSanPham() != null) ? sp.getLoaiSanPham().getMaLoai() : "KhÃ´ng xÃ¡c Ä‘á»‹nh";
+		        String hoaDonNhapStr = (sp.getHoaDonNhap() != null) ? sp.getHoaDonNhap().getMaHoaDonNhap() : "KhÃ´ng xÃ¡c Ä‘á»‹nh";
 
-		            // Truy xuất thông tin liên quan đến loại sản phẩm và hóa đơn nhập
-		            String loaiSanPham = getLoaiSanPham(sp);
-		            String hoaDonNhap = getHoaDonNhap(sp);
-
-		            System.out.println("Thêm sản phẩm: " + tenSanPham + " - " + loaiSanPham);  // Gỡ lỗi: xem thông tin sản phẩm thêm vào
-
-		            // Thêm dữ liệu vào model của JTable
-		            model.addRow(new Object[]{
-		                maSanPham, tenSanPham, baoQuan, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung,
-		                ngaySanXuat, nhaSanXuat, soLuongTonkho, thanhPhan, thueGTGT, hoaDonNhap, loaiSanPham
-		            });
-
-		        } catch (Exception e) {
-		            System.err.println("Lỗi khi xử lý sản phẩm: " + e.getMessage());
-		            e.printStackTrace();
-		        }
-		    }
-
-		    // Kiểm tra nếu JTable đã được cập nhật
-		    System.out.println("Cập nhật JTable xong.");
-		}
-
-		// Phương thức hỗ trợ lấy giá trị trường và xử lý lỗi
-		private Object getFieldValue(Object obj, String fieldName) {
-		    return getFieldValue(obj, fieldName, null);  // Trả về null nếu không tìm thấy
-		}
-
-		// Phương thức hỗ trợ lấy giá trị trường với giá trị mặc định
-		private Object getFieldValue(Object obj, String fieldName, Object defaultValue) {
-		    try {
-		        Field field = obj.getClass().getDeclaredField(fieldName);
-		        field.setAccessible(true);
-		        Object value = field.get(obj);
-		        return value != null ? value : defaultValue;
-		    } catch (NoSuchFieldException e) {
-		        System.err.println("Lỗi: Không tìm thấy trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
-		    } catch (IllegalAccessException e) {
-		        System.err.println("Lỗi: Không thể truy cập trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
-		    }
-		    return defaultValue;  // Nếu không tìm thấy trường hoặc có lỗi, trả về giá trị mặc định
-		}
-
-		// Lấy loaiSanPham từ đối tượng loaiSanPham
-		private String getLoaiSanPham(SanPham sp) {
-		    try {
-		        Object loaiSanPhamObj = getFieldValue(sp, "loaiSanPham");
-		        if (loaiSanPhamObj != null) {
-		            // Lấy giá trị maLoai từ đối tượng loaiSanPham
-		            Object maLoaiValue = getFieldValue(loaiSanPhamObj, "maLoai");  // Sửa tên trường này
-		            return maLoaiValue != null ? maLoaiValue.toString() : "Không xác định";
-		        } else {
-		            return "Không xác định";
-		        }
-		    } catch (Exception e) {
-		        System.err.println("Lỗi khi truy xuất trường 'maLoai' từ đối tượng loaiSanPham");
-		        e.printStackTrace();
-		        return "Không xác định";
-		    }
-		}
-
-
-		// Lấy hoaDonNhap từ đối tượng hoaDonNhap
-		private String getHoaDonNhap(SanPham sp) {
-		    try {
-		        Object hoaDonNhapObj = getFieldValue(sp, "hoaDonNhap");
-		        if (hoaDonNhapObj != null) {
-		            // Lấy giá trị maHoaDonNhap từ đối tượng hoaDonNhap
-		            Object maHoaDonNhapValue = getFieldValue(hoaDonNhapObj, "maHoaDonNhap");
-		            return maHoaDonNhapValue != null ? maHoaDonNhapValue.toString() : "Không xác định";
-		        } else {
-		            return "Không xác định";
-		        }
-		    } catch (Exception e) {
-		        System.err.println("Lỗi khi truy xuất trường 'maHoaDonNhap' từ đối tượng hoaDonNhap");
-		        e.printStackTrace();
-		        return "Không xác định";
+		        // ThÃªm dÃ²ng vÃ o báº£ng
+		        model.addRow(new Object[]{
+		            maSanPham, tenSanPham, baoQuan, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung,
+		            ngaySanXuat, nhaSanXuat, soLuongTonkho, thanhPhan, thueGTGT, hoaDonNhapStr, loaiSanPhamStr
+		        });
 		    }
 		}
 
 		//
 		public List<SanPham> getDanhSachSanPhamFromTable(JTable table) {
 		    List<SanPham> danhSachSanPham = new ArrayList<>();
+
+		    // Láº¥y model cá»§a JTable
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
 
+		    // Duyá»‡t qua táº¥t cáº£ cÃ¡c dÃ²ng trong báº£ng (báº¯t Ä‘áº§u tá»« dÃ²ng 0 Ä‘áº¿n model.getRowCount() - 1)
 		    for (int i = 0; i < model.getRowCount(); i++) {
+		        // Táº¡o má»™t Ä‘á»‘i tÆ°á»£ng SanPham má»›i
 		        SanPham sp = new SanPham();
+
 		        try {
+		            // Duyá»‡t qua táº¥t cáº£ cÃ¡c cá»™t trong báº£ng vÃ  gÃ¡n giÃ¡ trá»‹ vÃ o Ä‘á»‘i tÆ°á»£ng SanPham
 		            String[] fieldNames = {
-		                "maSanPham", "tenSanPham", "baoQuan", "chongChiDinh", "congDung", "donViTinh", 
-		                "ghiChu", "giaBan", "giaNhap", "hanSuDung", "ngaySanXuat", "nhaSanXuat", 
-		                "soLuongTonkho", "thanhPhan", "thueGTGT", "maHoaDonNhap", "maLoai"
+		                "maSanPham", "tenSanPham","baoQuan", "chongChiDinh","congDung",  "donViTinh","ghiChu","giaBan", "giaNhap", "hanSuDung",  
+		                 "ngaySanXuat","nhaSanXuat", "soLuongTonkho",  "thanhPhan", 
+		                 "thueGTGT",  "hoaDonNhap", "loaiSanPham"
 		            };
+		            
 
 		            for (int j = 0; j < fieldNames.length; j++) {
+		                // Láº¥y Field cá»§a lá»›p SanPham
 		                Field field = SanPham.class.getDeclaredField(fieldNames[j]);
-		                field.setAccessible(true);
-		                Object value = model.getValueAt(i, j);
-		                System.out.println("Đang xử lý trường: " + fieldNames[j] + ", Giá trị từ bảng: " + value);
+		                field.setAccessible(true);  // Cho phÃ©p truy cáº­p trÆ°á»ng private
 
-		                if (fieldNames[j].equals("maHoaDonNhap") && value != null) {
-		                    String maHoaDonNhap = (String) value;
-		                    HoaDonNhap hoaDonNhap = dao_hdn.getHoaDonNhapByMa(maHoaDonNhap);
-		                    field.set(sp, hoaDonNhap);  // Gán đối tượng HoaDonNhap
-		                } else if (value != null) {
+		                // Láº¥y giÃ¡ trá»‹ tá»« báº£ng vÃ  gÃ¡n vÃ o trÆ°á»ng tÆ°Æ¡ng á»©ng
+		                Object value = model.getValueAt(i, j);  // Láº¥y giÃ¡ trá»‹ táº¡i dÃ²ng i, cá»™t j
+
+		                // Xá»­ lÃ½ cÃ¡c kiá»ƒu dá»¯ liá»‡u Ä‘áº·c biá»‡t trÆ°á»›c khi gÃ¡n giÃ¡ trá»‹ cho trÆ°á»ng
+		                if (value != null) {
 		                    value = convertFieldValue(value, field.getType());
-		                    field.set(sp, value);
-		                } else {
-		                    System.out.println("Giá trị của trường " + fieldNames[j] + " là null.");
+		                    field.set(sp, value);  // GÃ¡n giÃ¡ trá»‹ vÃ o trÆ°á»ng tÆ°Æ¡ng á»©ng cá»§a Ä‘á»‘i tÆ°á»£ng SanPham
 		                }
 		            }
 		        } catch (NoSuchFieldException | IllegalAccessException e) {
-		            System.err.println("Lỗi khi xử lý trường trong lớp SanPham: " + e.getMessage());
-		            e.printStackTrace();
-		        } catch (Exception e) {
-		            System.err.println("Lỗi không xác định khi xử lý sản phẩm: " + e.getMessage());
-		            e.printStackTrace();
+		            e.printStackTrace(); // Xá»­ lÃ½ ngoáº¡i lá»‡ khi khÃ´ng thá»ƒ truy cáº­p trÆ°á»ng
 		        }
 
+		        // ThÃªm Ä‘á»‘i tÆ°á»£ng SanPham vÃ o danh sÃ¡ch
 		        danhSachSanPham.add(sp);
 		    }
-		    
-		    return danhSachSanPham;
+
+		    return danhSachSanPham; // Tráº£ vá» danh sÃ¡ch sáº£n pháº©m tá»« báº£ng
 		}
 
-
-
-		// Phương thức chuyển đổi kiểu dữ liệu
-		private Object convertFieldValue(Object value, Class<?> fieldType) {
-		    if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-		        return Integer.parseInt(value.toString());  // Chuyển đổi thành Integer
-		    } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
-		        return Double.parseDouble(value.toString());  // Chuyển đổi thành Double
-		    } else if (fieldType.equals(BigDecimal.class)) {
-		        return new BigDecimal(value.toString());  // Chuyển đổi thành BigDecimal
-		    } else if (fieldType.equals(Date.class)) {
-		        try {
-		            // Chuyển đổi thành Date (giả sử giá trị là String)
-		            return new SimpleDateFormat("yyyy-MM-dd").parse(value.toString());
-		        } catch (ParseException e) {
-		            e.printStackTrace();
-		            return null;
-		        }
-		    } else if (fieldType.isEnum()) {
-		        // Chuyển đổi thành Enum nếu là kiểu Enum
-		        return Enum.valueOf((Class<Enum>) fieldType, value.toString());
-		    } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-		        return Boolean.parseBoolean(value.toString());  // Chuyển đổi thành Boolean
+		// PhÆ°Æ¡ng thá»©c chuyá»ƒn Ä‘á»•i giÃ¡ trá»‹ theo kiá»ƒu dá»¯ liá»‡u cá»§a trÆ°á»ng
+		private Object convertFieldValue1(Object value, Class<?> fieldType) {
+		    if (fieldType == boolean.class || fieldType == Boolean.class) {
+		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
+		    } else if (fieldType == LocalDate.class) {
+		        return value instanceof String ? LocalDate.parse((String) value) : value;
+		    } else if (fieldType == double.class || fieldType == Double.class) {
+		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == ChucVu.class) {
+		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
 		    }
-		    return value;  // Trả về giá trị gốc nếu không cần chuyển đổi
+		    return value;
+		}
+		private void searchInTable(String maSP) {
+		    DefaultTableModel model = (DefaultTableModel) table.getModel();
+		    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+		    table.setRowSorter(sorter);
+
+		    // Táº¡o bá»™ lá»c tÃ¬m kiáº¿m cho cá»™t mÃ£ sáº£n pháº©m (giáº£ sá»­ cá»™t mÃ£ sáº£n pháº©m lÃ  cá»™t Ä‘áº§u tiÃªn)
+		    RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + maSP, 0);
+		    sorter.setRowFilter(filter);
 		}
 
-
-		
-		private String getLoaiSanPham1(SanPham sp) {
-		    try {
-		        // Lấy trường maLoaiSanPham trong SanPham
-		        Field maLoaiSanPhamField = SanPham.class.getDeclaredField("maLoaiSanPham");
-		        maLoaiSanPhamField.setAccessible(true);
-		        Object maLoaiSanPhamValue = maLoaiSanPhamField.get(sp);
-
-		        return maLoaiSanPhamValue != null ? (String) maLoaiSanPhamValue : "Không xác định";
-		    } catch (NoSuchFieldException | IllegalAccessException e) {
-		        System.err.println("Lỗi khi truy xuất trường maLoaiSanPham");
-		        return "Không xác định";
-		    }
-		}
-
-		private String getHoaDonNhap1(SanPham sp) {
-		    try {
-		        // Lấy trường maHoaDonNhap trong SanPham
-		        Field maHoaDonNhapField = SanPham.class.getDeclaredField("maHoaDonNhap");
-		        maHoaDonNhapField.setAccessible(true);
-		        Object maHoaDonNhapValue = maHoaDonNhapField.get(sp);
-
-		        return maHoaDonNhapValue != null ? (String) maHoaDonNhapValue : "Không xác định";
-		    } catch (NoSuchFieldException | IllegalAccessException e) {
-		        System.err.println("Lỗi khi truy xuất trường maHoaDonNhap");
-		        return "Không xác định";
-		    }
-		}
-		private void validateSanPham(SanPham sp) throws Exception {
-			// Sử dụng reflection để truy cập các trường của đối tượng SanPham
-		    Field[] fields = SanPham.class.getDeclaredFields();
-
-		    for (Field field : fields) {
-		        field.setAccessible(true); // Cho phép truy cập vào các trường private
-
-		        // Kiểm tra và gán giá trị cho các trường
-		        if (field.getName().equals("hoaDonNhap")) {
-		            // Kiểm tra xem hoaDonNhap có null không, nếu có thì khởi tạo
-		            if (field.get(sp) == null) {
-		                field.set(sp, new HoaDonNhap());
-		            }
-		        }
-		        // Kiểm tra từng trường và thực hiện xác thực
-		        switch (field.getName()) {
-		            case "maSanPham":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Mã sản phẩm không được để trống");
-		                }
-		                break;
-		            case "tenSanPham":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Tên sản phẩm không được để trống");
-		                }
-		                break;
-		            case "giaBan":
-		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
-		                    throw new Exception("Giá bán phải lớn hơn 0");
-		                }
-		                break;
-		            case "congDung":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Công dụng không được để trống");
-		                }
-		                break;
-		            case "hanSuDung":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Hạn sử dụng không hợp lệ");
-		                }
-		                break;
-		            case "baoQuan":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Bảo quản không được để trống");
-		                }
-		                break;
-		            case "chongChiDinh":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Chống chỉ định không được để trống");
-		                }
-		                break;
-		            case "ngaySanXuat":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Ngày sản xuất không hợp lệ");
-		                }
-		                break;
-		            case "thanhPhan":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Thành phần không được để trống");
-		                }
-		                break;
-		            case "soLuongTonkho":
-		                if (field.get(sp) == null || (int) field.get(sp) < 0) {
-		                    throw new Exception("Số lượng tồn kho không hợp lệ");
-		                }
-		                break;
-		            case "ghiChu":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Ghi chú không được để trống");
-		                }
-		                break;
-		            case "nhaSanXuat":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Nhà sản xuất không được để trống");
-		                }
-		                break;
-		            case "donViTinh":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Đơn vị tính không được để trống");
-		                }
-		                break;
-		            case "thueGTGT":
-		                if (field.get(sp) == null || (double) field.get(sp) < 0) {
-		                    throw new Exception("Thuế GTGT không hợp lệ");
-		                }
-		                break;
-		            case "giaNhap":
-		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
-		                    throw new Exception("Giá nhập phải lớn hơn 0");
-		                }
-		                break;
-		            default:
-		                break;
-		        }
-		    }
-
-		    // Kiểm tra Loại sản phẩm và Hóa đơn nhập
-		   // if (sp.loaiSanPham == null) sp.loaiSanPham = new LoaiSanPham("Không xác định");
-		  //  if (sp.hoaDonNhap == null) sp.hoaDonNhap = new HoaDonNhap("Không xác định");
-		}
-		public boolean checkData() {
-		    String tenSP = txtTenSP.getText().trim();
-		    String baoq = txtBQSP.getText().trim();
-		    String giaBan = txtGBSP.getText().trim();
-		    String ghiChu = txtGCSP.getText().trim();
-		    String giaNhap = txtGNSP.getText().trim();
-		    String soLuongTonKho = txtSLTKSP.getText().trim();
-		    String thanhPhan = txtTPSP.getText().trim();
-		    String thueGTGT = txtTGTGTSP.getText().trim();
-		    String nhaSanXuat = txtNhaSXSP.getText().trim();
-		    String hanSuDung = txtHSDSP.getText().trim();
-		    String maHoaDon = txtMHDSP.getText().trim();
-		    String maLoaiSP = txtMLSP.getText().trim();
-		    String congDung = txtCDSP.getText().trim();
-		    String chongChiDinh = txtCCDSP.getText().trim();
-		    String donViTinh = cboDVTSP.getSelectedItem().toString().trim();
-		    String ngaySanXuat = txtNSXSP.getText().trim();
-
-		    // Kiểm tra các trường bắt buộc không được để trống
-		    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || giaNhap.isEmpty() || soLuongTonKho.isEmpty() ||
-		        thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() || hanSuDung.isEmpty() ||
-		        maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() || ngaySanXuat.isEmpty()) {
-		        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra giá bán, giá nhập, và thuế GTGT phải là số hợp lệ
-		    try {
-		        Double.parseDouble(giaBan);
-		        Double.parseDouble(giaNhap);
-		        Double.parseDouble(thueGTGT);
-		    } catch (NumberFormatException e) {
-		        JOptionPane.showMessageDialog(null, "Giá bán, giá nhập, và thuế GTGT phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra số lượng tồn kho là số nguyên hợp lệ
-		    try {
-		        Integer.parseInt(soLuongTonKho);
-		    } catch (NumberFormatException e) {
-		        JOptionPane.showMessageDialog(null, "Số lượng tồn kho phải là số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra định dạng ngày tháng
-		    try {
-		        LocalDate hanSuDungDate = LocalDate.parse(hanSuDung);
-		        LocalDate ngaySanXuatDate = LocalDate.parse(ngaySanXuat);
-
-		        if (ngaySanXuatDate.isAfter(LocalDate.now())) {
-		            JOptionPane.showMessageDialog(null, "Ngày sản xuất không thể sau ngày hiện tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return false;
-		        }
-
-		        if (hanSuDungDate.isBefore(ngaySanXuatDate)) {
-		            JOptionPane.showMessageDialog(null, "Hạn sử dụng phải sau ngày sản xuất!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return false;
-		        }
-		    } catch (DateTimeParseException e) {
-		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-mm-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra mã loại sản phẩm có tồn tại trong bảng LoaiSanPham không
-		    LoaiSanPham loai = dao_lsp.findLoaiSanPhamByMa(maLoaiSP);  // Giả sử loaiSanPhamDAO là đối tượng truy cập dữ liệu của LoaiSanPham
-		    if (loai == null) {
-		        JOptionPane.showMessageDialog(null, "Mã loại sản phẩm không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra mã hóa đơn nhập có tồn tại trong bảng HoaDonNhap không
-		    HoaDonNhap hoaDon = dao_hdn.findHoaDonNhapByMa(maHoaDon);  // Giả sử hoaDonNhapDAO là đối tượng truy cập dữ liệu của HoaDonNhap
-		    if (hoaDon == null) {
-		        JOptionPane.showMessageDialog(null, "Mã hóa đơn nhập không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    return true;
-		}
 
 }

@@ -107,7 +107,6 @@ public class KhachHang_DAO {
         EntityManager em = emf.createEntityManager();
         EntityTransaction transaction = em.getTransaction();
         boolean isSuccess = false;
-
         try {
             transaction.begin(); // Bắt đầu giao dịch
             em.persist(e); // Thêm đối tượng KhachHang vào cơ sở dữ liệu
@@ -160,35 +159,47 @@ public class KhachHang_DAO {
 
 //
     public boolean delete(String maKhachHang) {
-        EntityManager entityManager = emf.createEntityManager();
+        EntityManager em = emf.createEntityManager();
         boolean isDeleted = false;
 
         try {
-            entityManager.getTransaction().begin();
+            em.getTransaction().begin();
 
-            // Thực hiện truy vấn DELETE trực tiếp trong cơ sở dữ liệu
-            int deletedCount = entityManager.createQuery("DELETE FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang")
-                                            .setParameter("maKhachHang", maKhachHang)
-                                            .executeUpdate();
+            // Xóa các bản ghi trong bảng chitiethoadon liên quan đến maHoaDonXuat của khách hàng
+            em.createQuery("DELETE FROM ChiTietHoaDon ct WHERE ct.hoaDonXuat.khachHang.maKhachHang = :maKhachHang")
+              .setParameter("maKhachHang", maKhachHang)
+              .executeUpdate();
+
+            // Xóa các hóa đơn xuất liên quan đến khách hàng
+            em.createQuery("DELETE FROM HoaDonXuat hd WHERE hd.khachHang.maKhachHang = :maKhachHang")
+              .setParameter("maKhachHang", maKhachHang)
+              .executeUpdate();
+
+            // Xóa khách hàng khỏi bảng KhachHang
+            int deletedCount = em.createQuery("DELETE FROM KhachHang kh WHERE kh.maKhachHang = :maKhachHang")
+                                 .setParameter("maKhachHang", maKhachHang)
+                                 .executeUpdate();
 
             if (deletedCount > 0) {
-                isDeleted = true; // Đánh dấu là xóa thành công
+                isDeleted = true; // Xóa thành công
             } else {
                 System.out.println("Không tìm thấy khách hàng với mã: " + maKhachHang);
             }
 
-            entityManager.getTransaction().commit();
+            em.getTransaction().commit();
         } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback(); // Khôi phục nếu có lỗi
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback(); // Khôi phục giao dịch nếu có lỗi
             }
             e.printStackTrace();
         } finally {
-            entityManager.close(); // Đảm bảo đóng entity manager
+            em.close(); // Đóng EntityManager
         }
 
-        return isDeleted; // Trả về true nếu đã xóa thành công
+        return isDeleted; // Trả về kết quả
     }
+
+
 
 //
     public boolean updateKhachHang(String maKhachHang, String tenKhachHang, String sDT, int diemTichLuy) {
@@ -548,37 +559,7 @@ public class KhachHang_DAO {
 
         return result;
     }
-    
-    // Lưu khách hàng vào cơ sở dữ liệu
-    public boolean save(KhachHang khachHang) {
-        // Tạo EntityManager để thao tác với cơ sở dữ liệu
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        
-        try {
-            transaction.begin();  // Bắt đầu giao dịch
-
-            // Lưu khách hàng vào cơ sở dữ liệu
-            em.persist(khachHang);
-
-            transaction.commit();  // Cam kết giao dịch
-
-            return true;  // Nếu thành công, trả về true
-        } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();  // Nếu có lỗi, hoàn tác giao dịch
-            }
-            e.printStackTrace();  // In ra lỗi
-            return false;  // Nếu có lỗi, trả về false
-        } finally {
-            em.close();  // Đảm bảo EntityManager được đóng sau khi sử dụng
-        }
-    }
-    // Đóng EntityManagerFactory
-    public void close() {
-        if (emf != null) emf.close();
-    }
-    
+  
     
     public static void main(String[] args) {
         KhachHang_DAO thongKeDao = new KhachHang_DAO();
@@ -612,36 +593,7 @@ public class KhachHang_DAO {
         }
     }
         
-    //xóa toàn bộ dữ iêu csdl
-    public boolean clearAllKhachHang() {
-        EntityManager entityManager = emf.createEntityManager();
-        boolean isCleared = false;
-
-        try {
-            entityManager.getTransaction().begin();
-            entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
-
-            // Xóa toàn bộ dữ liệu trong bảng KhachHang
-            String jpql = "DELETE FROM KhachHang";
-            Query query = entityManager.createQuery(jpql);
-            query.executeUpdate();
-
-            entityManager.getTransaction().commit();
-            isCleared = true; // Đánh dấu là xóa thành công
-           // JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ khách hàng thành công!");
-        } catch (Exception e) {
-            if (entityManager.getTransaction().isActive()) {
-                entityManager.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-
-        return isCleared;
-    }
-    
-    
+   
     public String layTenKhachHangByMa(String maKhachHang) {
         EntityManager em = emf.createEntityManager();
         String tenKhachHang = null;
@@ -666,6 +618,19 @@ public class KhachHang_DAO {
 
         return tenKhachHang;
     }
-    
+    ///////////
+    public List<KhachHang> findKhachHangByPartialId(String partialId) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            String queryStr = "SELECT kh FROM KhachHang kh WHERE kh.maKhachHang LIKE :partialId";
+            TypedQuery<KhachHang> query = em.createQuery(queryStr, KhachHang.class);
+            query.setParameter("partialId", partialId + "%");
+            List<KhachHang> resultList = query.getResultList();
+            return resultList != null ? resultList : new ArrayList<>();
+        } finally {
+            em.close();
+        }
+    }
+
     
 }
