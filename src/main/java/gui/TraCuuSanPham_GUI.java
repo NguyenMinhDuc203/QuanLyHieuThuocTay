@@ -6,7 +6,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-
+import gui.TrangChu_GUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +24,7 @@ public class TraCuuSanPham_GUI extends JFrame {
     private JTable bangSanPham;
     private JButton btnTimKiem, btnLamMoi;
     private SanPham_DAO sanPhamDAO;
+    private TrangChu_GUI trangChuGUI;
 
     public TraCuuSanPham_GUI() {
         getContentPane().setBackground(new Color(244, 253, 253)); // White background
@@ -40,27 +41,15 @@ public class TraCuuSanPham_GUI extends JFrame {
         setTitle("Tra cứu sản phẩm");
         setBounds(0, 0, 1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        // Menu Bar setup
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setBorderPainted(false);
-        menuBar.setOpaque(true);
-        menuBar.setBackground(new Color(26, 133, 94)); // Dark green menu bar
-        menuBar.setPreferredSize(new Dimension(getWidth(), 70));
-        setJMenuBar(menuBar);
-
-        // Create menus
-        JMenu mnHome = createMenu("Trang Chủ", "/gui/house-solid.png");
-        JMenu mnManage = createMenu("Quản Lý", "/gui/list-check-solid.png");
-        JMenu mnSales = createMenu("Bán Hàng", "/gui/cart-shopping-solid.png");
-        JMenu mnStats = createMenu("Thống Kê", "/gui/clipboard-solid.png");
-        JMenu mnLookup = createMenu("Tra Cứu", "/gui/circle-question-solid.png");
-
-        menuBar.add(mnHome);
-        menuBar.add(mnManage);
-        menuBar.add(mnSales);
-        menuBar.add(mnStats);
-        menuBar.add(mnLookup);
+        
+    	//Menu
+		trangChuGUI = new TrangChu_GUI();
+		JMenuBar menuBar = trangChuGUI.createMenuBar();
+		menuBar.setBorderPainted(false);
+		menuBar.setOpaque(true);
+		menuBar.setBackground(new Color(26, 133, 94));
+		menuBar.setBounds(0, 0, 1395, 70);
+		add(menuBar);
 
         // Panel tìm kiếm (Search Panel)
         JPanel timKiemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 20));

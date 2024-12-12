@@ -18,7 +18,6 @@ import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-<<<<<<< HEAD
 
 import jakarta.persistence.NoResultException;
 
@@ -27,10 +26,9 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 
-=======
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
+
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -352,13 +350,7 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
- // Hàm lấy tên nhân viên theo mã nhân viên
-=======
-    
-    
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
- // Hàm lấy tên nhân viên theo mã nhân viên
+
  // Hàm lấy tên nhân viên theo mã nhân viên
     public String layTenNhanVienByMa(String maNhanVien) {
         EntityManager em = emf.createEntityManager();
@@ -377,22 +369,11 @@ public class NhanVien_DAO {
             System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
         } catch (Exception e) {
             // Xử lý các lỗi khác nếu có
-<<<<<<< HEAD
 
     }
 		return tenNhanVien; 
         }
- 
 
-=======
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-
-        return tenNhanVien;
-    }
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
     public String layMaNhanVienTheoTenTK(String tenTK) {
 	    EntityManager entityManager = emf.createEntityManager();
 	    String maNhanVien = null;
@@ -475,10 +456,6 @@ public class NhanVien_DAO {
 
         return isDeleted; // Trả về true nếu đã xóa thành công
     }
-<<<<<<< HEAD
-=======
-    ////////////
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
     public boolean updatenhanVien(NhanVien nv) {
         EntityManager em = emf.createEntityManager();
         boolean isUpdated = false;
@@ -519,26 +496,14 @@ public class NhanVien_DAO {
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback(); // Rollback nếu có lỗi
-            }
-<<<<<<< HEAD
 
-=======
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
             e.printStackTrace();
+            }
         } finally {
             em.close();
         }
-
-<<<<<<< HEAD
-
-        return isUpdated;
-    }
-
-=======
        
         return isUpdated;
     }
 
-
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
 }

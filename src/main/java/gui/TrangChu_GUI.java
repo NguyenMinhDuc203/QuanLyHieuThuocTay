@@ -10,7 +10,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import entity.NhanVien;
-
+import gui.BanHang_GUI;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -241,6 +241,7 @@ public class TrangChu_GUI extends JFrame {
 		btnNewButton.setIcon(new ImageIcon(scaledImageBt));
 		btnNewButton.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
 		btnNewButton.setHorizontalTextPosition(SwingConstants.LEFT);
+		btnNewButton.addMouseListener(createMenuMouseAdapter(this, DangNhap_GUI.class));
 		
 	}
 	public JMenuBar createMenuBar() {
@@ -253,30 +254,44 @@ public class TrangChu_GUI extends JFrame {
     JMenu homeMenu = createMenu("Trang Chủ", "/gui/house-solid.png");
     menuBar.add(homeMenu);
     
-    // Menu Quản Lý
-    JMenuItem manageMenuItem1 = createMenuItem("Sản Phẩm");
-    JMenuItem manageMenuItem2 = createMenuItem("Nhân Viên");
-    JMenuItem manageMenuItem3 = createMenuItem("Khách Hàng");
+    String ChucVu = BanHang_GUI.maNVDangNhap.substring(0, 4);
+    if (ChucVu.equalsIgnoreCase("NVBH")) {
+    	// Menu Quản Lý
+        JMenuItem manageMenuItem3 = createMenuItem("Khách Hàng");
 
-    JMenu manageMenu = createMenu("Quản Lý", "/gui/list-check-solid.png");
-    manageMenu.add(manageMenuItem1);
-    manageMenu.add(manageMenuItem2);
-    manageMenu.add(manageMenuItem3);
-    menuBar.add(manageMenu);
+        JMenu manageMenu = createMenu("Quản Lý", "/gui/list-check-solid.png");
+        manageMenu.add(manageMenuItem3);
+        menuBar.add(manageMenu);
+        
+     // Menu Bán Hàng
+        JMenu salesMenu = createMenu("Bán Hàng", "/gui/cart-shopping-solid.png");
+        menuBar.add(salesMenu);
+        
+        manageMenuItem3.addActionListener(createMenuActionListener(this, QuanLyKhachHang_GUI.class));
+        salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+    } else {
+    	// Menu Quản Lý
+        JMenuItem manageMenuItem1 = createMenuItem("Sản Phẩm");
+        JMenuItem manageMenuItem2 = createMenuItem("Nhân Viên");
 
-    // Menu Bán Hàng
-    JMenu salesMenu = createMenu("Bán Hàng", "/gui/cart-shopping-solid.png");
-    menuBar.add(salesMenu);
+        JMenu manageMenu = createMenu("Quản Lý", "/gui/list-check-solid.png");
+        manageMenu.add(manageMenuItem1);
+        manageMenu.add(manageMenuItem2);
+        menuBar.add(manageMenu);
+        
+        manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
+        manageMenuItem2.addActionListener(createMenuActionListener(this, QuanLyNhanVien_GUI.class));
+    }
 
     // Menu Thống Kê
     JMenuItem statsMenuItem1 = createMenuItem("Doanh Số");
-    JMenuItem statsMenuItem2 = createMenuItem("Nhân Viên");
+    //JMenuItem statsMenuItem2 = createMenuItem("Nhân Viên");
     JMenuItem statsMenuItem3 = createMenuItem("Khách Hàng");
     JMenuItem statsMenuItem4 = createMenuItem("Sản Phẩm");
     
     JMenu statsMenu = createMenu("Thống Kê", "/gui/clipboard-solid.png");
     statsMenu.add(statsMenuItem1);
-    statsMenu.add(statsMenuItem2);
+    //statsMenu.add(statsMenuItem2);
     statsMenu.add(statsMenuItem3);
     statsMenu.add(statsMenuItem4);
     menuBar.add(statsMenu);
@@ -303,14 +318,11 @@ public class TrangChu_GUI extends JFrame {
     
   //  salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
     homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
-    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
     
-    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
-    manageMenuItem2.addActionListener(createMenuActionListener(this, QuanLyNhanVien_GUI.class));
-    manageMenuItem3.addActionListener(createMenuActionListener(this, QuanLyKhachHang_GUI.class));
+    
 
     statsMenuItem1.addActionListener(createMenuActionListener(this, ThongKeDoanhSo_GUI.class));
-    statsMenuItem2.addActionListener(createMenuActionListener(this, ThongKeNhanVien_GUI.class));
+    //statsMenuItem2.addActionListener(createMenuActionListener(this, ThongKeNhanVien_GUI.class));
     statsMenuItem3.addActionListener(createMenuActionListener(this, ThongKeKhachHang_GUI.class));
     statsMenuItem4.addActionListener(createMenuActionListener(this, ThongKeSanPham_GUI.class));
 

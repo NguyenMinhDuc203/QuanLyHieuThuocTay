@@ -674,11 +674,6 @@ public class SanPham_DAO {
 
 		    return maSanPham;
 		}
-<<<<<<< HEAD
-=======
-
->>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
-
     
 }
  
