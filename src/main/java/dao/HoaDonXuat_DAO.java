@@ -4,6 +4,7 @@ import entity.HoaDonXuat;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
+import gui.ThongKeDoanhSo_GUI;
 import entity.ChiTietHoaDon;
 import dao.SanPham_DAO;
 import jakarta.persistence.EntityManager;
@@ -142,41 +143,7 @@ public class HoaDonXuat_DAO {
         return hoaDon;
     }
 
-    // Phương thức lấy danh sách doanh số
-    public List<Object[]> thongKeDoanhSo() {
-        EntityManager em = emf.createEntityManager();
-        List<Object[]> result = null;
-
-        try {
-            String jpql = """
-                SELECT hdx.maHoaDonXuat, 
-                       nv.maNhanVien, 
-                       kh.maKhachHang, 
-                       hdx.ngayTao,SUM(cthd.soLuong * sp.giaBan * (1 + sp.thueGTGT))
-                    FROM HoaDonXuat hdx
-                    JOIN hdx.khachHang kh
-                    JOIN hdx.nhanVien nv
-                    JOIN ChiTietHoaDon cthd ON cthd.hoaDonXuat = hdx
-                    JOIN cthd.sanPham sp
-                    GROUP BY hdx.maHoaDonXuat, nv.maNhanVien, kh.maKhachHang, hdx.ngayTao
-                """;
-
-                TypedQuery<Object[]> query = em.createQuery(jpql, Object[].class);
-                result = query.getResultList();
-
-                if (result.isEmpty()) {
-                    System.out.println("Không có kết quả nào trả về từ truy vấn.");
-                } else {
-                    System.out.println("Truy vấn thành công, số lượng kết quả: " + result.size());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                em.close();
-            }
-
-            return result;
-        }
+    
         
         
         public ArrayList<Object[]> layDanhSachHoaDon(String searchTerm, String searchType) {
@@ -570,15 +537,33 @@ public class HoaDonXuat_DAO {
             }
         }
 
-
-        
-
         // Đóng EntityManagerFactory
         public void close() {
             if (emf != null) emf.close();
         }
 
-       
+//        public static void main(String[] args) {
+//            HoaDonXuat_DAO dao = new HoaDonXuat_DAO();
+//
+//            // Kiểm tra thống kê theo ngày
+//            LocalDate ngay = LocalDate.of(2024, 05, 02); // Thay đổi theo ngày bạn muốn kiểm tra
+//            System.out.println("\nThống kê doanh số theo ngày: " + ngay);
+//            List<Object[]> ketQuaNgay = dao.thongKeDoanhSoTheoNgay(ngay);
+//            for (Object[] row : ketQuaNgay) {
+//                System.out.println("Mã Hóa Đơn: " + row[0] + ", Mã Nhân Viên: " + row[1] + ", Mã Khách Hàng: " + row[2] + ", Ngày Tạo: " + row[3] + ", Tổng Tiền: " + row[4]);
+//            }
+//
+//            // Kiểm tra thống kê theo tháng
+//            LocalDate thang = LocalDate.of(2024, 05, 02); // Chỉ cần tháng và năm, ngày không quan trọng
+//            System.out.println("\nThống kê doanh số theo tháng: " + thang.getMonthValue() + "/" + thang.getYear());
+//            List<Object[]> ketQuaThang = dao.thongKeDoanhSoTheoThang(thang);
+//            for (Object[] row : ketQuaThang) {
+//                System.out.println("Mã Hóa Đơn: " + row[0] + ", Mã Nhân Viên: " + row[1] + ", Mã Khách Hàng: " + row[2] + ", Ngày Tạo: " + row[3] + ", Tổng Tiền: " + row[4]);
+//            }
+//
+//            dao.close();
+//        }
+
     
 
 

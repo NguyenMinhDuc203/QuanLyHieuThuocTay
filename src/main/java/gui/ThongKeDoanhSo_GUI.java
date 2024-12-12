@@ -25,6 +25,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -335,15 +337,22 @@ public class ThongKeDoanhSo_GUI extends JFrame {
 	    panel_1.add(textField_1);
 	    
 	    
-	    JMenu btnThongKe = new JMenu("Thống Kê");
-	    btnThongKe.setMnemonic('.');
-	    btnThongKe.setIcon(null);
-	    btnThongKe.setOpaque(true);
-	    btnThongKe.setForeground(Color.WHITE);
-	    btnThongKe.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    btnThongKe.setBackground(new Color(46, 139, 87));
-	    btnThongKe.setBounds(615, 218, 152, 45);
-	    panel_1.add(btnThongKe);
+//	    JMenu btnThongKe = new JMenu("Thống Kê");
+//	    btnThongKe.setMnemonic('.');
+//	    btnThongKe.setIcon(null);
+//	    btnThongKe.setOpaque(true);
+//	    btnThongKe.setForeground(Color.WHITE);
+//	    btnThongKe.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
+//	    btnThongKe.setBackground(new Color(46, 139, 87));
+//	    btnThongKe.setBounds(615, 218, 152, 45);
+//	    panel_1.add(btnThongKe);
+
+	    JButton btnNewButton = new JButton("Thống Kê");
+        btnNewButton.setBounds(600, 290, 158, 62);
+        panel.add(btnNewButton);
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnNewButton.setBackground(new Color(46, 139, 87));
+        btnNewButton.setForeground(Color.WHITE);
 	    
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
@@ -374,7 +383,7 @@ public class ThongKeDoanhSo_GUI extends JFrame {
 	    	new Object[][] {
 	    	},
 	    	new String[] {
-	    		"M\u00E3 h\u00F3a \u0111\u01A1n", "M\u00E3 nh\u00E2n vi\u00EAn", "M\u00E3 kh\u00E1ch h\u00E0ng", "Ng\u00E0y mua", "T\u1ED5ng ti\u1EC1n"
+	    		"Mã hóa đơn", "Mã nhân viên", "Mã khách hàng", "Ngày mua", "Tổng tiền"
 	    	}
 	    ));
 
@@ -462,70 +471,49 @@ public class ThongKeDoanhSo_GUI extends JFrame {
             }
         });
         
-//		
-//		btnThongKe.addActionListener(new ActionListener() {
-//		    @Override
-//		    public void actionPerformed(ActionEvent e) {
-//		        thongKe(); // Call thongKe when the button is pressed
-//		    }
-//		    
-//		    private void thongKe() {
-//		       
-//		        // Clear old data in the table
-//		        tableModel.setRowCount(0);
-//		        
-//		
-//		        // Get the list of products by category
-//		        List<SanPham> products = hoaDon.thongKeSanPhamTheoLoaiMa(maLoai);
-//		        
-//		        // Check for null or empty list before updating the table
-//		        if (products != null && !products.isEmpty()) {
-//		            for (SanPham sp : products) {
-//		                int soLuongDaBan = sanPhamDao.tinhSoLuongDaBan(sp.getMaSanPham());
-//		                
-//		                // Check the selected range and add product if it falls within the selected range
-//		                if (rdbtnNewRadioButton.isSelected() && soLuongDaBan <= 20) {
-//		                    addProductToTable(sp, soLuongDaBan);
-//		                    totalSold += soLuongDaBan; // Count total sold
-//		                    totalProducts++; // Count total products
-//		                } else if (rdbtnNewRadioButton_1.isSelected() && soLuongDaBan > 20 && soLuongDaBan <= 50) {
-//		                    addProductToTable(sp, soLuongDaBan);
-//		                    totalSold += soLuongDaBan;
-//		                    totalProducts++;
-//		                } else if (rdbtnNewRadioButton_2.isSelected() && soLuongDaBan > 50 && soLuongDaBan <= 100) {
-//		                    addProductToTable(sp, soLuongDaBan);
-//		                    totalSold += soLuongDaBan;
-//		                    totalProducts++;
-//		                } else if (rdbtnNewRadioButton_3.isSelected() && soLuongDaBan > 100) {
-//		                    addProductToTable(sp, soLuongDaBan);
-//		                    totalSold += soLuongDaBan;
-//		                    totalProducts++;
-//		                }
-//		                
-//		            }
-//		            
-//		            // Update the text fields with calculated totals
-//		            textField.setText(String.valueOf(totalProducts));
-//		            textField_1.setText(String.valueOf(totalSold));
-//		        } else {
-//		            System.out.println("Không có sản phẩm nào thuộc loại: " + maLoai);
-//		        }
-//		    }
-//		
-//		    private void addProductToTable(SanPham sp, int soLuongDaBan) {
-//		        tableModel.addRow(new Object[]{
-//		            sp.getMaSanPham(),
-//		            sp.getTenSanPham(),
-//		            sp.getLoaiSanPham() != null ? sp.getLoaiSanPham().getTenLoai() : "N/A",
-//		            sp.getHanSuDung(),
-//		            soLuongDaBan,
-//		            sp.getSoLuongTonkho()
-//		        });
-//		    }
-//		});
-//
 
-   
+
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LocalDate selectedDate = LocalDate.ofInstant(dateChooser.getDate().toInstant(), ZoneId.systemDefault());
+
+                List<Object[]> result = null;
+                if (rdbtnOption1.isSelected()) {
+                    // Fetch data for the specific day
+                    result = dao.thongKeDoanhSoTheoNgay(selectedDate);
+                } else if (rdbtnOption2.isSelected()) {
+                    // Fetch data for the specific month
+                    result = dao.thongKeDoanhSoTheoThang(selectedDate);
+                }
+
+                // Update the table with the retrieved data
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.setRowCount(0); // Clear the existing table data
+
+                // Variables to store total quantity and total amount
+                int totalQuantity = 0;
+                double totalAmount = 0.0;
+
+                // Loop through the result and add it to the table
+                if (result != null) {
+                    for (Object[] row : result) {
+                        model.addRow(row);
+                        
+                        // Calculate the total quantity and total amount from the result
+                        double amount = (Double) row[4];  // Assuming the 5th column ("Tổng tiền") is at index 4
+                        totalAmount += amount;
+                        totalQuantity++;
+                    }
+
+                    // Update the JLabel values
+                    textField.setText(""+totalQuantity);
+                    textField_1.setText("" + totalAmount);
+                } else {
+                    System.out.println("Không có dữ liệu");
+                }
+            }
+        });
 		scrollPane.setViewportView(table);
 		
     }

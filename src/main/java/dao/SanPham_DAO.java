@@ -3,6 +3,7 @@ package dao;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
@@ -25,7 +26,6 @@ import java.lang.reflect.Field;
 
     
 public class SanPham_DAO {
-   // private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
     private EntityManagerFactory emf;
     private Connection connection;
 
@@ -201,19 +201,19 @@ public class SanPham_DAO {
     }
 
     // Phương thức cập nhật sản phẩm
-    public void updateSanPham(SanPham sp) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(sp);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-        }
-    }
+//    public void updateSanPham(SanPham sp) {
+//        EntityManager em = emf.createEntityManager();
+//        try {
+//            em.getTransaction().begin();
+//            em.merge(sp);
+//            em.getTransaction().commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            em.getTransaction().rollback();
+//        } finally {
+//            em.close();
+//        }
+//    }
 
     // Phương thức xóa sản phẩm theo ID
     public void deleteSanPham(int id) {
@@ -531,6 +531,20 @@ public class SanPham_DAO {
 
 		    return isDeleted; // Trả về kết quả
 		}
+	  
+//	  public void updateSanPham(SanPham sp) {
+//	        EntityManager em = emf.createEntityManager();
+//	        try {
+//	            em.getTransaction().begin();
+//	            em.merge(sp);
+//	            em.getTransaction().commit();
+//	        } catch (Exception e) {
+//	            e.printStackTrace();
+//	            em.getTransaction().rollback();
+//	        } finally {
+//	            em.close();
+//	        }
+//	    }
 //sửa
 	  public boolean updateSanPham(SanPham sanPham) {
 		    EntityManager em = emf.createEntityManager();
