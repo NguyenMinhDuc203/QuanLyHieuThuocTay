@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "maHoaDon": "",
+    "sdtKhachHang": "",
+    "tenKhachHang": "",
+    "ngayTaoHoaDon": "2024-12-12",
+    "donHang": [
+      {
+        "maSanPham": "SP0060LK1606202312345678900006",
+        "tenSanPham": "Loperamide 2mg",
+        "soLuong": 2,
+        "donGia": 247.5
+      },
+      {
+        "maSanPham": "SP0070LSPYT1707202312345678900007",
+        "tenSanPham": "Băng gạc y tế",
+        "soLuong": 3,
+        "donGia": 247.5
+      }
+    ]
+  }
+]

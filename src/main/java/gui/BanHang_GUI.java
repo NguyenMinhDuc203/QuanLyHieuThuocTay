@@ -707,7 +707,7 @@ public class BanHang_GUI extends JFrame {
       JScrollPane scrollPane_2 = new JScrollPane();
       scrollPane_2.setBounds(30, 73, 659, 584);
       DonHoanThanhPane.add(scrollPane_2);
-      
+//      Hoàn thành table 1
       table_3 = new JTable();
       table_3.setModel(new DefaultTableModel(
       	new Object[][] {
@@ -723,7 +723,7 @@ public class BanHang_GUI extends JFrame {
       JScrollPane scrollPane_2_1 = new JScrollPane();
       scrollPane_2_1.setBounds(699, 11, 648, 459);
       DonHoanThanhPane.add(scrollPane_2_1);
-      
+//      Hoàn thành table 2
       table_4 = new JTable();
       table_4.setModel(new DefaultTableModel(
       	new Object[][] {
@@ -844,7 +844,7 @@ public class BanHang_GUI extends JFrame {
       JScrollPane scrollPane_3 = new JScrollPane();
       scrollPane_3.setBounds(10, 208, 629, 495);
       DonTraPane.add(scrollPane_3);
-      
+//      Đổi trả table 1
       table_5 = new JTable();
       table_5.setModel(new DefaultTableModel(
       	new Object[][] {
@@ -1041,7 +1041,7 @@ public class BanHang_GUI extends JFrame {
       JScrollPane scrollPane_4 = new JScrollPane();
       scrollPane_4.setBounds(25, 224, 585, 152);
       panel_5.add(scrollPane_4);
-      
+//      Đổi trả table 2
       table_6 = new JTable();
       table_6.setModel(new DefaultTableModel(
       	new Object[][] {
@@ -1965,7 +1965,8 @@ public class BanHang_GUI extends JFrame {
     	    textField_6.setText("");
     	    textField_8.setText("");
     	   
-    	});
+    	}
+      );
       
 
       loadDonTamData();
@@ -2208,13 +2209,31 @@ public class BanHang_GUI extends JFrame {
     	        // Kiểm tra nếu có dòng nào được chọn
     	        if (selectedRow != -1) {
     	            // Lấy các giá trị trong dòng đó
-    	            String maHoaDon = (String) modelTable3.getValueAt(selectedRow, 0);
+    	        	
+//    	        	lấy của LLy
+//    	        	String maHoaDon = textField_2.getText();
+//    	              String ngayTaoStr = textField_3.getText();
+//    	              DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");  // Định dạng ngày tháng bạn nhập vào
+//    	              LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);              
+//    	              Double tongTien = Double.parseDouble(textField_9.getText());
+//    	              Double tienThoi = Double.parseDouble(textField_8.getText());
+    	        	
+    	        	
+//    	            String maHoaDon = (String) modelTable3.getValueAt(selectedRow, 0);
+    	        	String maHoaDon = textField_2.getText();
     	            String maNhanVien = (String) modelTable3.getValueAt(selectedRow, 1);
-    	            String maKhachHang = (String) modelTable3.getValueAt(selectedRow, 2);
-    	            java.sql.Date ngayMuaSQL = (java.sql.Date) modelTable3.getValueAt(selectedRow, 3);
-    	            String ngayMua = ngayMuaSQL.toString();
-    	            String maGiamGia = (String) modelTable3.getValueAt(selectedRow, 4);
-    	            Double value = (Double) modelTable3.getValueAt(selectedRow, 5);  // Giả sử bạn đang lấy giá trị kiểu Double từ bảng
+//    	            String maKhachHang = (String) modelTable3.getValueAt(selectedRow, 2);
+    	            String maKhachHang = "KH"+textField.getText();
+//    	            java.sql.Date ngayMuaSQL = (java.sql.Date) modelTable3.getValueAt(selectedRow, 3);
+//    	            String ngayMua = ngayMuaSQL.toString();
+    	            String ngayTaoStr = textField_3.getText();
+  	              DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");  // Định dạng ngày tháng bạn nhập vào
+  	              LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);
+    	            String ngayMua = ngayTao.toString();
+//    	            String maGiamGia = (String) modelTable3.getValueAt(selectedRow, 4);
+    	            Double maGG = (Double) modelTable3.getValueAt(selectedRow, 4);
+    	            String maGiamGia = maGG.toString();
+    	            Double value = (Double) modelTable3.getValueAt(selectedRow, 4);  // Giả sử bạn đang lấy giá trị kiểu Double từ bảng
     	            String thanhTien = String.valueOf(value);
     	            // Gọi hàm truy vấn tên khách hàng và tên nhân viên từ DAO
     	            String tenKhachHang = khachHangDAO.layTenKhachHangByMa(maKhachHang);
@@ -2257,6 +2276,9 @@ public class BanHang_GUI extends JFrame {
     	        }
     	    }
     	});
+      
+      
+
       
       
       btnNewButton_7.addActionListener(new ActionListener() {
