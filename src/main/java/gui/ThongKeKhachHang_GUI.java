@@ -5,6 +5,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
+
+import dao.KhachHang_DAO;
+
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -17,8 +20,13 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
@@ -43,7 +51,11 @@ public class ThongKeKhachHang_GUI extends JFrame {
     private JPanel contentPane;
     private JTextField textField_1;
     private JTable table;
+<<<<<<< HEAD
    private TrangChu_GUI trangChuGUI;
+=======
+    private KhachHang_DAO dao;
+>>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
 
     /**
      * Launch the application.
@@ -66,7 +78,7 @@ public class ThongKeKhachHang_GUI extends JFrame {
      */
     public ThongKeKhachHang_GUI() {
     	
-
+    	dao = new KhachHang_DAO();
     	
     	
     	
@@ -164,44 +176,26 @@ public class ThongKeKhachHang_GUI extends JFrame {
 	    panel_1.add(rdbtnOption2);
 	    panel_1.add(rdbtnOption3);
 	    
-	    JLabel lblNewLabel_1_1 = new JLabel("Chọn thời gian");
-	    lblNewLabel_1_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_1.setBounds(864, 10, 152, 37);
-	    panel_1.add(lblNewLabel_1_1);
-	    
-	    JDateChooser dateChooser = new JDateChooser();
-	    dateChooser.setDateFormatString("dd/MM/yyyy");
-	    dateChooser.getCalendarButton().setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    dateChooser.setBounds(1026, 10, 347, 37);
-	    panel_1.add(dateChooser);
-	    
-	    JLabel lblNewLabel_1_2 = new JLabel("Kết quả");
-	    lblNewLabel_1_2.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_2.setBounds(894, 79, 76, 37);
-	    panel_1.add(lblNewLabel_1_2);
+	 
 	    
 	    JLabel lblNewLabel_1_2_1 = new JLabel("Số lượng khách hàng");
 	    lblNewLabel_1_2_1.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    lblNewLabel_1_2_1.setBounds(918, 142, 215, 37);
+	    lblNewLabel_1_2_1.setBounds(992, 105, 215, 37);
 	    panel_1.add(lblNewLabel_1_2_1);
 	    
 	    textField_1 = new JTextField();
 	    textField_1.setEditable(false);
 	    textField_1.setColumns(10);
-	    textField_1.setBounds(1129, 147, 244, 37);
+	    textField_1.setBounds(1003, 165, 244, 37);
 	    panel_1.add(textField_1);
-	    
-	    
-	    JMenu btnThongKe = new JMenu("Thống Kê");
-	    btnThongKe.setMnemonic('.');
-	    btnThongKe.setIcon(null);
-	    btnThongKe.setOpaque(true);
-	    btnThongKe.setForeground(Color.WHITE);
-	    btnThongKe.setFont(new Font("Leelawadee UI", Font.BOLD, 20));
-	    btnThongKe.setBackground(new Color(46, 139, 87));
-	    btnThongKe.setBounds(615, 218, 152, 45);
-	    panel_1.add(btnThongKe);
 
+	    
+	    JButton btnNewButton = new JButton("Thống Kê");
+        btnNewButton.setBounds(700, 290, 158, 62);
+        panel.add(btnNewButton);
+        btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 20));
+        btnNewButton.setBackground(new Color(46, 139, 87));
+        btnNewButton.setForeground(Color.WHITE);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(null);
@@ -232,7 +226,7 @@ public class ThongKeKhachHang_GUI extends JFrame {
 	    	new Object[][] {
 	    	},
 	    	new String[] {
-	    		"M\u00E3 kh\u00E1ch h\u00E0ng", "T\u00EAn kh\u00E1ch h\u00E0ng", "S\u1ED1 l\u1EA7n mua", "T\u1ED5ng ti\u1EC1n"
+	    		"Mã khách hàng", "Tên khách hàng", "Số lần mua", "Tổng tiền"
 	    	}
 	    ));
 
@@ -260,6 +254,8 @@ public class ThongKeKhachHang_GUI extends JFrame {
                 return c;
             }
         });
+
+
      // Ngăn di chuyển cột
         table.getTableHeader().setReorderingAllowed(false);
 
@@ -308,6 +304,49 @@ public class ThongKeKhachHang_GUI extends JFrame {
 
 
 		scrollPane.setViewportView(table);
-		
+		btnNewButton.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        // Lấy ngày được chọn từ JDateChooser
+		        
+		        List<Object[]> result = null;
+
+		        // Kiểm tra lựa chọn radio button
+		        if (rdbtnOption1.isSelected()) {
+		            // Lấy dữ liệu thống kê cho khách hàng mới
+		            result = dao.thongKeSoLanMuaBang1();
+		        } else if (rdbtnOption2.isSelected()) {
+		            // Lấy dữ liệu thống kê cho khách hàng quen
+		            result = dao.thongKeSoLanMuaLonHon2NhoHon5();
+		        } else if (rdbtnOption3.isSelected()) {
+		            // Lấy dữ liệu thống kê cho khách hàng thân thiết
+		            result = dao.thongKeSoLanMuaLonHon5();
+		        }
+
+		        // Cập nhật bảng với dữ liệu lấy được
+		        DefaultTableModel model = (DefaultTableModel) table.getModel();
+		        model.setRowCount(0); // Xóa dữ liệu cũ trong bảng
+
+		        // Biến để tính tổng số lượng và tổng tiền
+		        int totalCustomers = 0;
+
+		        // Lặp qua kết quả và thêm vào bảng
+		        if (result != null) {
+		            for (Object[] row : result) {
+		                model.addRow(row);  // Thêm một hàng vào bảng
+
+		                // Tính tổng số tiền từ kết quả (giả sử cột "Tổng tiền" ở vị trí index 3)
+		                totalCustomers++;
+		            }
+
+		            // Cập nhật các JLabel hiển thị tổng số khách hàng và tổng tiền
+		            textField_1.setText("" + totalCustomers); // Hiển thị tổng tiền
+		        } else {
+		            System.out.println("Không có dữ liệu");
+		        }
+		    }
+		});
+
     }
+    
 }

@@ -183,7 +183,12 @@ public class BanHang_GUI extends JFrame {
 	  khachHangDAO = new KhachHang_DAO();
 	  hoaDonXuatDAO = new HoaDonXuat_DAO();
 	  nhanVienDAO = new NhanVien_DAO();
+<<<<<<< HEAD
 	  NumberFormat formatter2 = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));  // Định dạng theo tiền tệ Việt Nam
+=======
+	  
+	  donTamDAO = new DonTam_DAO();
+>>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -476,7 +481,7 @@ public class BanHang_GUI extends JFrame {
 
       	},
       	new String[] {
-      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn S\u1EA3n Ph\u1EA9m", "S\u1ED1 L\u01B0\u1EE3ng", "Gi\u00E1 B\u00E1n", "Thu\u1EBF GTGT", "Gi\u1EA3m Gi\u00E1", "Th\u00E0nh Ti\u1EC1n"
+      		"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng", "Giá Bán", "Thuế GTGT", "Giảm Giá", "Thành tiền"
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
@@ -505,7 +510,7 @@ public class BanHang_GUI extends JFrame {
 
       txtNhpMSn = new JTextField();
       txtNhpMSn.setFont(new Font("Leelawadee UI", Font.PLAIN, 20));
-      txtNhpMSn.setText("Nhập mã sản phẩm");
+//      txtNhpMSn.setText("Nhập mã sản phẩm");
       txtNhpMSn.setBounds(70, 11, 437, 40);
       BanHangPane.add(txtNhpMSn);
       txtNhpMSn.setColumns(10);
@@ -612,12 +617,26 @@ public class BanHang_GUI extends JFrame {
       scrollPane_1.setBounds(10, 65, 558, 528);
       DonTamPane.add(scrollPane_1);
       
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
       table_1 = new JTable();
       table_1.setModel(new DefaultTableModel(
       	new Object[][] {
       	},
       	new String[] {
-      		"M\u00E3 H\u00F3a \u0110\u01A1n", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o H\u00F3a \u0110\u01A1n"
+      		"M\u00E3 H\u00F3a \u0110\u01A1n", "SDT Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o"
       	}
       ) {
       	boolean[] columnEditables = new boolean[] {
@@ -629,18 +648,7 @@ public class BanHang_GUI extends JFrame {
       });
       giaoDienTable(table_1);
       scrollPane_1.setViewportView(table_1);
-      
-     
-    	
 
-
-
-      
-      
-      
-      
-      
-      
       JScrollPane scrollPane_1_1 = new JScrollPane();
       scrollPane_1_1.setBounds(607, 11, 740, 671);
       DonTamPane.add(scrollPane_1_1);
@@ -651,7 +659,7 @@ public class BanHang_GUI extends JFrame {
       		
       	},
       	new String[] {
-      		"M\u00E3 s\u1EA3n ph\u1EA9m", "T\u00EAn s\u1EA3n ph\u1EA9m", "S\u1ED1 l\u01B0\u1EE3ng", "\u0110\u01A1n gi\u00E1"
+      		"Mã Sản Phẩm", "Tên Sản Phẩm", "Số Lượng", "Đơn Giá"
       	}
       ));
       giaoDienTable(table_2);
@@ -1390,6 +1398,21 @@ public class BanHang_GUI extends JFrame {
     	  }
     	 
       });
+      
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      
+      
       // Thêm sự kiện cho các nút chuyển panel
       btnBanHang.addActionListener(e -> {
           CardLayout cardLayout = (CardLayout) panelContent.getLayout();
@@ -1600,6 +1623,164 @@ public class BanHang_GUI extends JFrame {
           }
       });
 
+// Lưu đơn tạm 
+
+      
+      btnNewButton_1_1.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent evt) {
+    	        // Lấy thông tin đơn tạm từ các trường nhập liệu
+    	        String maHoaDon = textField_2.getText();  // Mã hóa đơn
+    	        String sdtKhachHang = textField.getText();  // Lấy số điện thoại khách hàng từ textField
+    	        String tenKhachHang = textField_1.getText();  // Tên khách hàng
+    	        LocalDate ngayTaoHoaDon = LocalDate.now();  // Ngày tạo hóa đơn là ngày hiện tại
+
+    	        // Lấy thông tin chi tiết đơn tạm từ bảng
+    	        java.util.List<ChiTietDonTam> chiTietDonTamList = new ArrayList<>();
+    	        DefaultTableModel model = (DefaultTableModel) table.getModel();  // Lấy model của bảng
+
+    	        // Duyệt qua các dòng trong bảng và lấy dữ liệu chi tiết hóa đơn
+    	        for (int i = 0; i < model.getRowCount(); i++) {
+    	            String maSanPham = (String) model.getValueAt(i, 0);  // Mã sản phẩm
+    	            String tenSanPham = (String) model.getValueAt(i, 1);  // Tên sản phẩm
+
+    	            // Kiểm tra và ép kiểu số lượng (int)
+    	            int soLuong = 0;
+    	            try {
+    	                soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());  // Ép kiểu số lượng
+    	            } catch (NumberFormatException ex) {
+    	                System.out.println("Lỗi chuyển đổi số lượng: " + ex.getMessage());
+    	                continue;  // Nếu có lỗi chuyển đổi, bỏ qua dòng này
+    	            }
+
+    	            // Kiểm tra và ép kiểu đơn giá (double)
+    	            double donGia = 0.0;
+    	            try {
+    	                donGia = Double.parseDouble(textField_9.getText());  // Ép kiểu đơn giá
+    	            } catch (NumberFormatException ex) {
+    	                System.out.println("Lỗi chuyển đổi đơn giá: " + ex.getMessage());
+    	                continue;  // Nếu có lỗi chuyển đổi, bỏ qua dòng này
+    	            }
+
+    	            // Tạo đối tượng ChiTietDonTam và thêm vào danh sách
+    	            ChiTietDonTam chiTiet = new ChiTietDonTam(maSanPham, tenSanPham, soLuong, donGia);
+    	            chiTietDonTamList.add(chiTiet);
+    	        }
+
+    	        // Kiểm tra xem danh sách chi tiết có dữ liệu không
+    	        if (chiTietDonTamList.isEmpty()) {
+    	            System.out.println("Danh sách chi tiết đơn tạm không có dữ liệu.");
+    	            return;  // Nếu không có chi tiết, dừng lại
+    	        }
+
+    	        // Tạo đối tượng DonTam và lưu vào danh sách
+    	        DonTam donTam = new DonTam(maHoaDon, sdtKhachHang, tenKhachHang, ngayTaoHoaDon, chiTietDonTamList);
+
+    	        // Gọi phương thức lưu đơn tạm vào file JSON (hoặc cơ sở dữ liệu)
+    	        DonTam_DAO donTamDao = new DonTam_DAO();
+    	        donTamDao.addDonTam(donTam);  // Lưu đối tượng DonTam
+    	        System.out.println("Đơn tạm đã được lưu thành công.");
+
+    	        // Làm mới dữ liệu hiển thị trên bảng
+    	        updateDonTamTable();
+    	     // Xóa trắng bảng
+    	        model.setRowCount(0);  // Xóa toàn bộ dữ liệu trong bảng
+
+    	        // Xóa dữ liệu trong các trường nhập liệu
+    	        textField_2.setText("");
+    	        textField.setText("");
+    	        textField_1.setText("");
+    	        textField_9.setText("");
+    	        // Chuyển sang pane Đơn Tạm
+    	        CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+    	        cardLayout.show(panelContent, "DonTamPane");
+    	    }
+    	});
+      
+      
+      
+      
+//  Xử lý đơn tạm 
+      btnNewButton_4_2.addActionListener(new ActionListener() {
+    	    public void actionPerformed(ActionEvent e) {
+    	        // Lấy dòng đang được chọn trong table_1
+    	        int selectedRow = table_1.getSelectedRow();
+    	        if (selectedRow == -1) {
+    	            JOptionPane.showMessageDialog(null, "Vui lòng chọn một hóa đơn!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	            return;
+    	        }
+
+    	        // Gán giá trị từ table_1 vào các text field
+    	        DefaultTableModel model1 = (DefaultTableModel) table_1.getModel();
+    	        String maHoaDon = (String) model1.getValueAt(selectedRow, 0);
+    	        String sdtKhachHang = (String) model1.getValueAt(selectedRow, 1);
+    	        String tenKhachHang = (String) model1.getValueAt(selectedRow, 2);
+
+    	        textField_2.setText(maHoaDon);
+    	        textField_1.setText(sdtKhachHang);
+    	        textField.setText(tenKhachHang);
+
+    	        // Lấy dữ liệu từ table_2 và thêm vào table
+    	        DefaultTableModel model2 = (DefaultTableModel) table_2.getModel();
+    	        DefaultTableModel modelTable = (DefaultTableModel) table.getModel();
+
+    	        SanPham_DAO sanPhamDAO = new SanPham_DAO();
+
+    	        // Duyệt qua từng dòng của table_2
+    	        for (int i = 0; i < model2.getRowCount(); i++) {
+    	            String maSanPham = (String) model2.getValueAt(i, 0); // Mã sản phẩm
+    	            int soLuong = Integer.parseInt(model2.getValueAt(i, 2).toString()); // Số lượng
+
+    	            // Gọi phương thức để lấy thông tin sản phẩm
+    	            SanPham sanPham = sanPhamDAO.getSanPhamByMaSanPham(maSanPham);
+    	            if (sanPham != null) {
+    	                // Lấy thông tin cần thiết
+    	                double giaBan = sanPham.getGiaBan();
+    	                double thueGTGT = giaBan * 10 / 100; // Giả sử thuế GTGT là 10%
+    	                double giamGia = giaBan * 0 / 100;  // Giả sử giảm giá là 0%
+    	                double thanhTien = (giaBan + thueGTGT - giamGia) * soLuong;
+
+    	                // Thêm dòng mới vào table
+    	                modelTable.addRow(new Object[]{
+    	                    maSanPham,
+    	                    sanPham.getTenSanPham(),
+    	                    soLuong,
+    	                    giaBan,
+    	                    thueGTGT,
+    	                    giamGia,
+    	                    thanhTien
+    	                });
+    	            } else {
+    	                JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm: " + maSanPham, "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	            }
+    	        }
+
+    	        // Cập nhật tổng tiền
+    	        double tongThanhTien = 0.0;
+    	        for (int i = 0; i < modelTable.getRowCount(); i++) {
+    	            double thanhTien = (double) modelTable.getValueAt(i, 6); // Cột "Thành Tiền"
+    	            tongThanhTien += thanhTien;
+    	        }
+    	        textField_9.setText(String.format("%.2f", tongThanhTien));
+    	        // Xóa đơn tạm
+    	        DonTam_DAO donTamDAO = new DonTam_DAO();
+    	        boolean isDeleted = donTamDAO.xoaDonTam(maHoaDon);
+    	        if (isDeleted) {
+    	            JOptionPane.showMessageDialog(null, "Đơn tạm đã được xóa.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+    	            // Xóa dòng đã chọn khỏi bảng table_1
+    	            ((DefaultTableModel) table_1.getModel()).removeRow(selectedRow);
+    	        } else {
+    	            JOptionPane.showMessageDialog(null, "Không thể xóa đơn tạm. Vui lòng thử lại.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    	        }
+    	     // Chuyển sang pane Bán hàng
+    	        CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+    	        cardLayout.show(panelContent, "BanHangPane");
+    	    }
+    	});
+
+
+    	
 
     
    // Xử lý sự kiện thêm sản phẩm
@@ -1711,41 +1892,7 @@ public class BanHang_GUI extends JFrame {
               }
           }
       });
-//      btnNewButton_2.addActionListener(new ActionListener() {
-//          @Override
-//          public void actionPerformed(ActionEvent e) {
-//              // Lấy thông tin từ các trường nhập liệu
-//              String soDienThoai = textField.getText();
-//              String hoTen = textField_1.getText();
-////              String loaiKhach = (String) comboBox.getSelectedItem();
-////              boolean suDungMaGiamGia = chckbxNewCheckBox.isSelected();
-//
-//              // Kiểm tra nếu có thông tin trống
-//              if (soDienThoai.isEmpty() || hoTen.isEmpty()) {
-//                  JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin!");
-//                  return;
-//              }
-//
-//              // Tạo đối tượng khách hàng mới
-//              KhachHang khachHang = new KhachHang();
-//              khachHang.setSDT(soDienThoai);
-//              khachHang.setTenKhachHang(hoTen);
-//              khachHang.setMaKhachHang("KH"+soDienThoai);
-//              // Lưu khách hàng vào cơ sở dữ liệu (DAO)
-//              KhachHang_DAO khachHangDAO = new KhachHang_DAO();
-//              boolean isSaved = khachHangDAO.save(khachHang);
-//
-//              // Kiểm tra kết quả lưu
-//              if (isSaved) {
-//                  JOptionPane.showMessageDialog(null, "Thông tin khách hàng đã được lưu!");
-//                  // Cập nhật giao diện nếu cần
-//              } else {
-//                  JOptionPane.showMessageDialog(null, "Lỗi khi lưu thông tin khách hàng.");
-//              }
-//              
-//          }
-//          
-//      });
+
    // Thêm ActionListener cho nút NewButton_2
       btnNewButton_2.addActionListener(e -> {
           try {
@@ -1878,33 +2025,49 @@ public class BanHang_GUI extends JFrame {
 
       loadDonTamData();
 
-   // Lắng nghe sự kiện chọn dòng trên table_1
+  
+      
+      
+      
+      
+   // Lắng nghe sự kiện khi người dùng chọn một dòng trong table_1
       table_1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
           @Override
           public void valueChanged(ListSelectionEvent e) {
-              if (!e.getValueIsAdjusting()) { // Đảm bảo chỉ xử lý khi người dùng thực sự thay đổi dòng
-                  int selectedRow = table_1.getSelectedRow();
-                  if (selectedRow != -1) {
-                      String maHoaDon = table_1.getValueAt(selectedRow, 0).toString(); // Lấy mã hóa đơn từ dòng được chọn
-                      
-                      // Gọi lại phương thức getDonTamByMaHoaDon để lấy đơn tạm mới
-                      DonTam donTam = donTamDAO.getDonTamByMaHoaDon(maHoaDon);  // Gọi lại mỗi lần chọn dòng mới
-                      
-                      // Xóa hết các dòng trong table_2 trước khi cập nhật
-                      DefaultTableModel model = (DefaultTableModel) table_2.getModel();
-                      model.setRowCount(0);
+              if (!e.getValueIsAdjusting()) {
+                  int selectedRow = table_1.getSelectedRow();  // Lấy dòng được chọn
+                  if (selectedRow != -1) {  // Kiểm tra nếu có dòng được chọn
+                      // Trước tiên, xóa tất cả các dòng hiện có trong table_2
+                      DefaultTableModel model2 = (DefaultTableModel) table_2.getModel();
+                      model2.setRowCount(0);  // Xóa toàn bộ các dòng trong table_2
 
-                      // Kiểm tra nếu donTam có dữ liệu chi tiết
-                      if (donTam != null && donTam.getDonHang() != null && !donTam.getDonHang().isEmpty()) {
-                          loadChiTietDonTam(donTam.getDonHang());  // Cập nhật chi tiết vào table_2
-                      } else {
-                          loadChiTietDonTam(Collections.emptyList());  // Nếu không có dữ liệu, để bảng trống
-                          System.out.println("Không tìm thấy đơn hàng hoặc danh sách chi tiết rỗng cho mã hóa đơn: " + maHoaDon);
+                      // Lấy mã hóa đơn từ dòng được chọn
+                      String maHoaDon = (String) table_1.getValueAt(selectedRow, 0);
+
+                      // Gọi phương thức để lấy chi tiết hóa đơn từ DAO hoặc dữ liệu có sẵn
+                      DonTam_DAO donTamDao = new DonTam_DAO();
+                      DonTam donTam = donTamDao.getDonTamByMaHoaDon(maHoaDon);
+
+                      if (donTam != null) {
+                          // Cập nhật bảng table_2 với chi tiết của hóa đơn
+                          java.util.List<ChiTietDonTam> chiTietList = donTam.getDonHang();
+
+                          // Thêm dữ liệu chi tiết vào table_2
+                          for (ChiTietDonTam chiTiet : chiTietList) {
+                              model2.addRow(new Object[] {
+                                  chiTiet.getMaSanPham(),
+                                  chiTiet.getTenSanPham(),
+                                  chiTiet.getSoLuong(),
+                                  chiTiet.getDonGia()
+                              });
+                          }
                       }
                   }
               }
           }
       });
+
+
       table_3.addMouseListener(new MouseAdapter() {
     	    @Override
     	    public void mouseClicked(MouseEvent e) {
@@ -2017,15 +2180,24 @@ public class BanHang_GUI extends JFrame {
       
       btnNewButton_4.addActionListener(new ActionListener() {
     	    @Override
-    	    public void actionPerformed(ActionEvent e) {
-    	        // Xóa tất cả các hàng trong table_1
-    	        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
-    	        model.setRowCount(0);  // Đặt số lượng hàng bằng 0, điều này sẽ xóa tất cả các hàng trong bảng
-    	        
-    	        // Thông báo cho người dùng
-    	        JOptionPane.showMessageDialog(null, "Đã xóa tất cả các đơn trong bảng.");
+    	    public void actionPerformed(ActionEvent evt) {
+    	        int confirm = JOptionPane.showConfirmDialog(null, 
+    	            "Bạn có chắc chắn muốn xóa toàn bộ dữ liệu không?", 
+    	            "Xác nhận xóa", 
+    	            JOptionPane.YES_NO_OPTION);
+
+    	        if (confirm == JOptionPane.YES_OPTION) {
+    	            // Xóa toàn bộ dữ liệu
+    	            DonTam_DAO donTamDao = new DonTam_DAO();
+    	            donTamDao.clearAllDonTam(); // Gọi phương thức xóa
+
+    	            // Làm mới bảng hiển thị
+    	            updateDonTamTable();
+    	            JOptionPane.showMessageDialog(null, "Đã xóa toàn bộ dữ liệu.");
+    	        }
     	    }
     	});
+
       btnNewButton_4_1.addActionListener(new ActionListener() {
     	    @Override
     	    public void actionPerformed(ActionEvent e) {
@@ -2336,26 +2508,26 @@ private void loadDonTamData() {
         });
     }
 }
-// Phương thức để thêm chi tiết đơn hàng vào table_2
-private void loadChiTietDonTam(java.util.List<ChiTietDonTam> donHang) {
-    DefaultTableModel model = (DefaultTableModel) table_2.getModel();
-    
-    // Kiểm tra danh sách chi tiết và thêm vào table_2
-    if (donHang != null && !donHang.isEmpty()) {
-        for (ChiTietDonTam chiTiet : donHang) {
-            model.addRow(new Object[] {
-                chiTiet.getMaSanPham(),
-                chiTiet.getTenSanPham(),
-                chiTiet.getSoLuong(),
-                chiTiet.getDonGia()
-            });
-            System.out.println("Đã thêm vào table_2: " + chiTiet.getMaSanPham());
-        }
-    } else {
-        // Trường hợp không có chi tiết đơn hàng
-        System.out.println("Danh sách chi tiết đơn hàng là null hoặc rỗng!");
-    }
-}
+//// Phương thức để thêm chi tiết đơn hàng vào table_2
+//private void loadChiTietDonTam(java.util.List<ChiTietDonTam> donHang) {
+//    DefaultTableModel model = (DefaultTableModel) table_2.getModel();
+//    
+//    // Kiểm tra danh sách chi tiết và thêm vào table_2
+//    if (donHang != null && !donHang.isEmpty()) {
+//        for (ChiTietDonTam chiTiet : donHang) {
+//            model.addRow(new Object[] {
+//                chiTiet.getMaSanPham(),
+//                chiTiet.getTenSanPham(),
+//                chiTiet.getSoLuong(),
+//                chiTiet.getDonGia()
+//            });
+//            System.out.println("Đã thêm vào table_2: " + chiTiet.getMaSanPham());
+//        }
+//    } else {
+//        // Trường hợp không có chi tiết đơn hàng
+//        System.out.println("Danh sách chi tiết đơn hàng là null hoặc rỗng!");
+//    }
+//}
     public static void GeneratePdf (String maHD, String maKh) throws IOException {
         String path = maHD+".pdf";
 
@@ -2476,4 +2648,26 @@ private void loadChiTietDonTam(java.util.List<ChiTietDonTam> donHang) {
         
         System.out.println("PDF đã được tạo thành công tại: " + path);
     }
+ 
+ // Phương thức làm mới bảng hiển thị đơn tạm
+    private void updateDonTamTable() {
+        DonTam_DAO donTamDao = new DonTam_DAO();
+        java.util.List<DonTam> donTamList = donTamDao.readFromFile();  // Đọc lại dữ liệu từ file JSON
+
+        // Xóa dữ liệu cũ trên bảng
+        DefaultTableModel model = (DefaultTableModel) table_1.getModel();
+        model.setRowCount(0);
+
+        // Thêm dữ liệu mới vào bảng
+        for (DonTam donTam : donTamList) {
+            model.addRow(new Object[]{
+                donTam.getMaHoaDon(),
+                donTam.getSdtKhachHang(),
+                donTam.getTenKhachHang(),
+                donTam.getNgayTaoHoaDon().toString()
+            });
+        }
+    }
+    
+    
 }

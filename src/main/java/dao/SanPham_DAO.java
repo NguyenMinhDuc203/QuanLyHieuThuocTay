@@ -28,7 +28,6 @@ import java.lang.reflect.Field;
 
     
 public class SanPham_DAO {
-   // private static final Logger LOGGER = Logger.getLogger(SanPham_DAO.class.getName());
     private EntityManagerFactory emf;
     private Connection connection;
 
@@ -675,6 +674,10 @@ public class SanPham_DAO {
 
 		    return maSanPham;
 		}
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1bd206c4b2918ffccdcbc2388bd48674f8f06b1d
 
     
 }
