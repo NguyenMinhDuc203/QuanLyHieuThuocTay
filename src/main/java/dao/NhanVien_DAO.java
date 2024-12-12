@@ -1,3 +1,4 @@
+
 package dao;
 
 import java.security.SecureRandom;
@@ -17,11 +18,16 @@ import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+<<<<<<< HEAD
 
 import jakarta.persistence.NoResultException;
 
 import jakarta.persistence.EntityTransaction;
 
+=======
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -343,7 +349,13 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
+<<<<<<< HEAD
    
+=======
+    
+    
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
+ // Hàm lấy tên nhân viên theo mã nhân viên
  // Hàm lấy tên nhân viên theo mã nhân viên
     public String layTenNhanVienByMa(String maNhanVien) {
         EntityManager em = emf.createEntityManager();
@@ -362,9 +374,19 @@ public class NhanVien_DAO {
             System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
         } catch (Exception e) {
             // Xử lý các lỗi khác nếu có
+<<<<<<< HEAD
     }
 		return tenNhanVien; 
         }
+=======
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return tenNhanVien;
+    }
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
     public String layMaNhanVienTheoTenTK(String tenTK) {
 	    EntityManager entityManager = emf.createEntityManager();
 	    String maNhanVien = null;
@@ -488,12 +510,23 @@ public class NhanVien_DAO {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback(); // Rollback nếu có lỗi
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
             e.printStackTrace();
         } finally {
             em.close();
         }
 
+<<<<<<< HEAD
         return isUpdated;
     }
+=======
+       
+        return isUpdated;
+    }
+
+
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 }

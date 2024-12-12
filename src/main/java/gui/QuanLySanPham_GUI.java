@@ -17,19 +17,18 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 import org.hibernate.Hibernate;
+
+import com.toedter.calendar.JDateChooser;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -44,7 +43,6 @@ import entity.DonViTinh;
 import entity.HoaDonNhap;
 import entity.KhachHang;
 import entity.LoaiSanPham;
-import entity.NhaPhanPhoi;
 import entity.NhanVien;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
@@ -57,6 +55,7 @@ import java.sql.DriverManager;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
@@ -80,7 +79,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	private JButton btnXoaTrang;
 
 	private SanPham_DAO dao_sp = new SanPham_DAO();
-	private HoaDonNhap_DAO dao_hd= new HoaDonNhap_DAO();
+	
 	private JButton btnXoa;
 	private JButton btnSua;
 	private JButton btnTim;
@@ -107,11 +106,18 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		private JTextField txtCDSP;
 		private JTextField txtNSXSP;
 		private JTextField txtMHDSP;
-		private JTextField txtHSDSP;
+
 		private JTextField txtMLSP;
 		private EntityManager entityManager;
 		private JComboBox<Object> cboDVTSP;
+<<<<<<< HEAD
 		private TrangChu_GUI trangChuGUI;
+=======
+		private JDateChooser dateChooser;
+		private JDateChooser dateChooser1;
+		private Date dateChooserHSDSP;
+		
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 		
 	/**
 	 * Launch the application.
@@ -251,7 +257,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 				Image scaledImageLuu = bImageLuu.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 				
 				JScrollPane scrollPane = new JScrollPane();
-				scrollPane.setBounds(10, 520, 1515, 261);
+				scrollPane.setBounds(10, 520, 1527, 261);
 				panel.add(scrollPane);
 				table = new JTable();
 				table.setFont(new Font("Tahoma", Font.BOLD, 13));
@@ -271,9 +277,6 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 						return columnTypes[columnIndex];
 					}
 				});
-				// Lệnh để không cho phép chỉnh sửa bảng
-				table.setDefaultEditor(Object.class, null); // Vô hiệu hóa việc chỉnh sửa mọi cột trong bảng
-
 				table.getColumnModel().getColumn(1).setPreferredWidth(92);
 				table.getColumnModel().getColumn(5).setPreferredWidth(91);
 				table.getColumnModel().getColumn(9).setPreferredWidth(99);
@@ -343,7 +346,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								
 												
 												txtNhap = new JTextField();
-												txtNhap.setBounds(71, 49, 270, 30);
+												txtNhap.setBounds(71, 49, 240, 30);
 												panel_2.add(txtNhap);
 												txtNhap.setColumns(10);
 				
@@ -363,7 +366,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 btnTim.setBackground(new Color(46, 139, 87));
 								 
 								  btnThoat = new JButton("Thoát");
-								  btnThoat.setBounds(204, 89, 150, 35);
+								  btnThoat.setBounds(195, 90, 148, 37);
 								  panel_2.add(btnThoat);
 								  btnThoat.setOpaque(true);
 								  btnThoat.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -380,12 +383,12 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			panel_2_1.setBorder(titledBorder);
 								 			panel_2_1.setBackground(new Color(226, 250, 252));
 								 			
-								 			panel_2_1.setBounds(1165, 285, 372, 167);
+								 			panel_2_1.setBounds(1165, 315, 372, 161);
 								 			panel.add(panel_2_1);
 								 			 				 
 								 			 				 				// Nút "Sửa"
 								 			 				 				 btnSua = new JButton("Sửa");
-								 			 				 				 btnSua.setBounds(206, 31, 133, 37);
+								 			 				 				 btnSua.setBounds(203, 91, 148, 37);
 								 			 				 				 panel_2_1.add(btnSua);
 								 			 				 				 btnSua.setOpaque(true);
 								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -396,7 +399,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 
 								 			 				 				 				// Nút "Xóa"
 								 			 				 				 				 btnXoa = new JButton("Xóa");
-								 			 				 				 				 btnXoa.setBounds(206, 91, 133, 39);
+								 			 				 				 				 btnXoa.setBounds(203, 30, 148, 39);
 								 			 				 				 				 panel_2_1.add(btnXoa);
 								 			 				 				 				 btnXoa.setOpaque(true);
 								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -407,7 +410,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				 
 								 			 				 				 				 // Nút "Thêm"
 								 			 				 				 				  btnThem = new JButton("Thêm");
-								 			 				 				 				  btnThem.setBounds(32, 30, 133, 39);
+								 			 				 				 				  btnThem.setBounds(20, 30, 151, 39);
 								 			 				 				 				  panel_2_1.add(btnThem);
 								 			 				 				 				  btnThem.setOpaque(true);
 								 			 				 				 				  btnThem.setForeground(new Color(255, 255, 255));
@@ -418,7 +421,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  
 								 			 				 				 				  				// Nút "Xóa Trắng"
 								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
-								 			 				 				 				  			btnXoaTrang.setBounds(32, 93, 133, 35);
+								 			 				 				 				  			btnXoaTrang.setBounds(20, 92, 151, 35);
 								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
 								 			 				 				 				  			btnXoaTrang.setOpaque(true);
 								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -562,10 +565,10 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  lblTenNV_2.setBounds(448, 275, 280, 14);
 								 			 				 				 				  panel_1.add(lblTenNV_2);
 								 			 				 				 				  
-								 			 				 				 				  txtNSXSP = new JTextField();
-								 			 				 				 				  txtNSXSP.setColumns(10);
-								 			 				 				 				  txtNSXSP.setBounds(448, 294, 280, 30);
-								 			 				 				 				  panel_1.add(txtNSXSP);
+							 			 				 				 				  		dateChooser1 = new JDateChooser();
+							 			 				 				 				//  	dateChooser1.setColumns(10);
+							 			 				 				 				dateChooser1.setBounds(448, 294, 280, 30);
+								 			 				 				 				  panel_1.add(dateChooser1);
 								 			 				 				 				  
 								 			 				 				 				  txtMHDSP = new JTextField();
 								 			 				 				 				  txtMHDSP.setColumns(10);
@@ -581,16 +584,26 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 								 			 				 				 				  cboDVTSP.setBounds(23, 293, 280, 30);
 								 			 				 				 				  panel_1.add(cboDVTSP);
 								 			 				 				 				  
-								 			 				 				 				cboDVTSP.addItem("Viên");
+								 			 				 				 				cboDVTSP.addItem("VIEN");
 									 			 				 				 			
 									 			 				 				 			cboDVTSP.addItem("MG");
 									 			 				 				 			cboDVTSP.addItem("ML");
-									 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("Gram");
+								 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("LỌ");
+									 			 				 				 			cboDVTSP.addItem("HỘP");
+										 			 				 				 		cboDVTSP.addItem("VỈ");
+									 			 				 				 			cboDVTSP.addItem("GÓI");
+								 			 				 				 			
+									 			 				 				 			cboDVTSP.addItem("CÁI");
+									 			 				 				 			cboDVTSP.addItem("MIẾNG");
+								 			 				 				 			
 								 			 				 				 				  
-								 			 				 				 				  txtHSDSP = new JTextField();
-								 			 				 				 				  txtHSDSP.setColumns(10);
-								 			 				 				 				  txtHSDSP.setBounds(448, 235, 280, 30);
-								 			 				 				 				  panel_1.add(txtHSDSP);
+						 			 				 				 				  		dateChooser = new JDateChooser();
+						 			 				 				 				  //		dateChooser.setColumns(10);
+						 			 				 				 				  		dateChooser.setBounds(448, 235, 280, 30);
+								 			 				 				 				 panel_1.add(dateChooser);
+								 			 				 				 				  		
 								 			 				 				 				  
 								 			 				 				 				  JLabel lblTenNV_2_1_1 = new JLabel("Mã Loại Sản Phẩm ");
 								 			 				 				 				  lblTenNV_2_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -673,7 +686,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	    searchMenuItem3.addActionListener(createMenuActionListener(this, TraCuuKhachHang_GUI.class));
 	    searchMenuItem4.addActionListener(createMenuActionListener(this, TraCuuHoaDon_GUI.class));
 	    
-	   // salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
+	    salesMenu.addMouseListener(createMenuMouseAdapter(this, BanHang_GUI.class));
 	    homeMenu.addMouseListener(createMenuMouseAdapter(this, TrangChu_GUI.class));
 	    
 	    manageMenuItem1.addActionListener(createMenuActionListener(this, QuanLySanPham_GUI.class));
@@ -711,9 +724,9 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	        this.setVisible(false);
 	    }
 		public void openBanHang() {
-	//        BanHang_GUI banHang = new BanHang_GUI();
-	  //      banHang.setVisible(true);
-	    //    this.setVisible(false);
+	        BanHang_GUI banHang = new BanHang_GUI();
+	        banHang.setVisible(true);
+	        this.setVisible(false);
 	    }
 		public void openThongKeDoanhSo() {
 	        ThongKeDoanhSo_GUI thongKeDoanhSo = new ThongKeDoanhSo_GUI();
@@ -755,7 +768,7 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 	
 		public class DateUtils {
 		    
-		    // Phương thức chuyển đổi ngày từ "dd/MM/yyyy" sang "yyyy-MM-dd"
+		    // Phương thức chuyển đổi ngày từ "d/MM/yyyy" sang "yyyy-MM-dd"
 		    public static String convertDateToStandardFormat(String dateStr) {
 		        try {
 		            // Định dạng ngày gốc "d/MM/yyyy"
@@ -922,7 +935,19 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		    return danhSachNhanVien; // Trả về danh sách nhân viên từ bảng
 		}
 
-	
+		// Phương thức chuyển đổi giá trị theo kiểu dữ liệu của trường
+		private Object convertFieldValue(Object value, Class<?> fieldType) {
+		    if (fieldType == boolean.class || fieldType == Boolean.class) {
+		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
+		    } else if (fieldType == LocalDate.class) {
+		        return value instanceof String ? LocalDate.parse((String) value) : value;
+		    } else if (fieldType == double.class || fieldType == Double.class) {
+		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == ChucVu.class) {
+		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
+		    }
+		    return value;
+		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -940,334 +965,423 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			        txtTGTGTSP.setText("");
 			        txtCCDSP.setText("");
 			        txtCDSP.setText("");
-			        txtNSXSP.setText("");
+			      //  txtNSXSP.setText("");
 			        txtMHDSP.setText("");
-			        txtHSDSP.setText("");
+			      
 			        txtMLSP.setText("");
-			        
+			        dateChooser.setDate(null);
+		            dateChooser1.setDate(null);
 			        cboDVTSP.setSelectedIndex(0);
 			}
 			// Tạo hành động khi nhấn nút "Thêm Sản Phẩm"
 			if (o.equals(btnThem)) {
-			    // Lấy dữ liệu từ các trường nhập liệu
+			    // Lấy thông tin từ các trường nhập liệu
 			    String tenSP = txtTenSP.getText();
 			    String baoq = txtBQSP.getText();
-			    String giaBan = txtGBSP.getText();
-			    String ghiChu = txtGCSP.getText();
-			    String giaNhap = txtGNSP.getText();
-			    String soLuongTonKho = txtSLTKSP.getText();
-			    String thanhPhan = txtTPSP.getText();
-			    String thueGTGT = txtTGTGTSP.getText();
-			    String nhaSanXuat = txtNhaSXSP.getText();
-			    String hanSuDung = txtHSDSP.getText();
-			    String maHoaDon = txtMHDSP.getText();
-			    String maLoaiSP = txtMLSP.getText();
 			    String congDung = txtCDSP.getText();
 			    String chongChiDinh = txtCCDSP.getText();
-			    String donViTinh = cboDVTSP.getSelectedItem().toString();
-			    String ngaySanXuat = txtNSXSP.getText();
+			    String thanhPhan = txtTPSP.getText();
+			    String ghiChu = txtGCSP.getText();
+			    String nhaSanXuat = txtNhaSXSP.getText();
+
+			    LocalDate hanSuDung, ngaySanXuat;
+			    try {
+			        // Lấy ngày từ dateChooser (hạn sử dụng) và chuyển đổi sang LocalDate
+			        Date selectedDateHSD = dateChooser.getDate();
+			        if (selectedDateHSD == null) {
+			            throw new DateTimeParseException("Ngày hạn sử dụng không hợp lệ!", "", 0);
+			        }
+			        hanSuDung = selectedDateHSD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+			        // Lấy ngày từ dateChooser1 (ngày sản xuất) và chuyển đổi sang LocalDate
+			        Date selectedDateNSX = dateChooser1.getDate();
+			        if (selectedDateNSX == null) {
+			            throw new DateTimeParseException("Ngày sản xuất không hợp lệ!", "", 0);
+			        }
+			        ngaySanXuat = selectedDateNSX.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			        
+			    } catch (DateTimeParseException ex) {
+			        JOptionPane.showMessageDialog(null, "Ngày không đúng định dạng hoặc không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    double giaBan, giaNhap, thueGTGT;
+			    int soLuongTonKho;
+			    try {
+			        giaBan = Double.parseDouble(txtGBSP.getText());
+			        giaNhap = Double.parseDouble(txtGNSP.getText());
+			        thueGTGT = Double.parseDouble(txtTGTGTSP.getText());
+			        soLuongTonKho = Integer.parseInt(txtSLTKSP.getText());
+			    } catch (NumberFormatException ex) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng số cho giá hoặc số lượng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    String donViTinhStr = cboDVTSP.getSelectedItem().toString();
+			    DonViTinh donViTinh = DonViTinh.valueOf(donViTinhStr);
 
 			    // Kiểm tra dữ liệu nhập vào
-			    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || ghiChu.isEmpty() || giaNhap.isEmpty() ||
-			        soLuongTonKho.isEmpty() || thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() ||
-			        hanSuDung.isEmpty() || maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
-			        donViTinh.isEmpty() || ngaySanXuat.isEmpty()) {
+			    if (tenSP.isEmpty() || baoq.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
+			        thanhPhan.isEmpty() || ghiChu.isEmpty() || nhaSanXuat.isEmpty()) {
 			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			        return;
 			    }
 
-			    // Gọi hàm checkData() để kiểm tra tính hợp lệ của dữ liệu
-			    if (!checkData()) {
-			        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    // Lấy thông tin từ combobox loại sản phẩm
+			    LoaiSanPham loaiSanPham = dao_lsp.findLoaiSanPhamById(txtMLSP.getText());
+			    String loaiSP= loaiSanPham.getMaLoai();
+			    if (loaiSanPham == null) {
+			        JOptionPane.showMessageDialog(null, "Loại sản phẩm không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			        return;
 			    }
 
-			    // Tạo đối tượng SanPham và gán giá trị vào các thuộc tính tương ứng
-			    SanPham sanPham = new SanPham();
-			    try {
-			        // Gán các giá trị đã lấy vào đối tượng sanPham
-			        sanPham.setTenSanPham(tenSP);
-			        sanPham.setCongDung(congDung);
-			        sanPham.setGiaBan(Double.parseDouble(giaBan)); // Chuyển giá bán sang kiểu double
-			        sanPham.setGhiChu(ghiChu);
-			        sanPham.setGiaNhap(Double.parseDouble(giaNhap)); // Chuyển giá nhập sang kiểu double
-			        sanPham.setSoLuongTonkho(Integer.parseInt(soLuongTonKho)); // Chuyển số lượng tồn kho sang kiểu int
-			        sanPham.setThanhPhan(thanhPhan);
-			        sanPham.setThueGTGT(Double.parseDouble(thueGTGT)); // Chuyển thuế GTGT sang kiểu double
-			        sanPham.setNhaSanXuat(nhaSanXuat);
-
-			        // Chuyển đổi giá trị LocalDate từ chuỗi ngày tháng
-			        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-			        sanPham.setHanSuDung(LocalDate.parse(hanSuDung, formatter)); // Chuyển chuỗi ngày hết hạn thành LocalDate
-			        sanPham.setNgaySanXuat(LocalDate.parse(ngaySanXuat, formatter)); // Chuyển chuỗi ngày sản xuất thành LocalDate
-
-			        // Chuyển DonViTinh từ chuỗi sang enum DonViTinh
-			        DonViTinh donViTinhEnum = DonViTinh.valueOf(donViTinh.toUpperCase()); // Chuyển đổi sang enum
-			        sanPham.setDonViTinh(donViTinhEnum);
-
-			        // Thiết lập các mối quan hệ với LoaiSanPham và HoaDonNhap
-			        LoaiSanPham loaiSanPham = new LoaiSanPham();
-			        loaiSanPham.setMaLoai(maLoaiSP); // Giả sử bạn đã có phương thức setMaLoai trong lớp LoaiSanPham
-			        sanPham.setLoaiSanPham(loaiSanPham);
-
-			        HoaDonNhap hoaDonNhap = new HoaDonNhap();
-			        hoaDonNhap.setMaHoaDonNhap(maHoaDon); // Giả sử bạn đã có phương thức setMaHoaDon trong lớp HoaDonNhap
-			        sanPham.setHoaDonNhap(hoaDonNhap);
-
-			        // Chuyển đổi chuỗi chongChiDinh sang đối tượng, nếu cần
-			        sanPham.setChongChiDinh(chongChiDinh);
-
-			        // Lưu đối tượng sanPham vào cơ sở dữ liệu
-			        SanPham_DAO sanPhamDAO = new SanPham_DAO();
-			        sanPhamDAO.saveSanPham(sanPham);
-
-			        // Kiểm tra nếu tên sản phẩm đã tồn tại trong bảng
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
-			        boolean isProductExist = false;
-
-			        for (int i = 0; i < model.getRowCount(); i++) {
-			            String existingProductName = model.getValueAt(i, 1) != null ? model.getValueAt(i, 1).toString() : "";
-			            if (existingProductName.equalsIgnoreCase(tenSP)) {
-			                isProductExist = true;
-			                break;
-			            }
-			        }
-
-			        if (isProductExist) {
-			            JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại trong bảng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			            return;
-			        }
-
-			        // Tạo mã sản phẩm theo công thức: SP + 4 chữ số bắt đầu từ 0010
-			        int rowCount = model.getRowCount();
-			        String maSP = String.format("SP%04d", rowCount + 10);  // Bắt đầu từ SP0010 và tăng dần
-
-			        // Thêm mã loại sản phẩm, ngày sản xuất và chuỗi 123456789 + 5 chữ số bắt đầu từ 00001
-			        String loaiSP = maLoaiSP;  // Loại sản phẩm
-			        String formattedDate = ngaySanXuat.replace("-", "");  // Định dạng ngày sản xuất dạng yyyyMMdd
-			        maSP += loaiSP + formattedDate + "123456789" + String.format("%05d", rowCount + 1);
-
-			        // Thêm dòng mới vào bảng
-			        model.addRow(new Object[]{
-			            maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT, maHoaDon, maLoaiSP
-			        });
-
-			        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
-
-			        // Làm sạch các trường nhập liệu sau khi thêm sản phẩm
-			        txtTenSP.setText("");
-			        txtBQSP.setText("");
-			        txtGBSP.setText("");
-			        txtGCSP.setText("");
-			        txtGNSP.setText("");
-			        txtSLTKSP.setText("");
-			        txtTPSP.setText("");
-			        txtTGTGTSP.setText("");
-			        txtNhaSXSP.setText("");
-			        txtHSDSP.setText("");
-			        txtMHDSP.setText("");
-			        txtMLSP.setText("");
-			        txtCDSP.setText("");
-			        txtCCDSP.setText("");
-			        cboDVTSP.setSelectedIndex(0);
-			        txtNSXSP.setText("");
-
-			    } catch (NumberFormatException ex) {
-			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng số cho các trường giá trị!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    HoaDonNhap hoaDonNhap = dao_hdn.findHoaDonNhapByMa(txtMHDSP.getText());
+			    if (hoaDonNhap == null) {
+			        JOptionPane.showMessageDialog(null, "Hóa đơn nhập  không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
 			    }
+			    // Tạo mã sản phẩm tự sinh
+			    String maSP = dao_sp.maTuSinhSanPham(loaiSP);
+
+			    // Tạo đối tượng sản phẩm
+			    SanPham sp = new SanPham();
+			    sp.setMaSanPham(maSP);
+			    sp.setTenSanPham(tenSP);
+			    sp.setGiaBan(giaBan);
+			    sp.setCongDung(congDung);
+			    sp.setHanSuDung(hanSuDung);
+			    sp.setBaoQuan(baoq);
+			    sp.setChongChiDinh(chongChiDinh);
+			    sp.setNgaySanXuat(ngaySanXuat);
+			    sp.setThanhPhan(thanhPhan);
+			    sp.setSoLuongTonkho(soLuongTonKho);
+			    sp.setGhiChu(ghiChu);
+			    sp.setNhaSanXuat(nhaSanXuat);
+			    sp.setDonViTinh(donViTinh);
+			    sp.setThueGTGT(thueGTGT);
+			    sp.setGiaNhap(giaNhap);
+			    sp.setHoaDonNhap(hoaDonNhap);
+			    sp.setLoaiSanPham(loaiSanPham);
+
+			    // Lưu sản phẩm vào database
+			    boolean t = dao_sp.createSanPham(sp);
+			    if (t) {
+			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        model.addRow(new Object[] {
+			            maSP, tenSP, baoq, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap,
+			            hanSuDung, ngaySanXuat, nhaSanXuat, soLuongTonKho, thanhPhan, thueGTGT,hoaDonNhap.getMaHoaDonNhap(), loaiSanPham.getMaLoai()
+			        });
+			        JOptionPane.showMessageDialog(null, "Thêm sản phẩm vào bảng thành công!");
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Lỗi khi lưu sản phẩm vào database", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    }
+
+			    // Làm sạch các trường nhập liệu sau khi thêm sản phẩm
+			    txtTenSP.setText("");
+			    txtBQSP.setText("");
+			    txtGBSP.setText("");
+			    txtGCSP.setText("");
+			    txtGNSP.setText("");
+			    txtSLTKSP.setText("");
+			    txtTPSP.setText("");
+			    txtTGTGTSP.setText("");
+			    txtNhaSXSP.setText("");
+			//    txtHSDSP.setText("");
+			  //  txtNSXSP.setText("");
+			    txtMLSP.setText("");
+			    txtCDSP.setText("");
+			    txtCCDSP.setText("");
+			  //  txtHSDSP.setText("");
+			    cboDVTSP.setSelectedIndex(0);
+			    dateChooser.setDate(null);
+	            dateChooser1.setDate(null);
 			}
 
+			
 
 			if (o.equals(btnXoa)) {
-			    int selectedRow = table.getSelectedRow();
-			    if (selectedRow != -1) {
-			    	  int confirmation = JOptionPane.showConfirmDialog(
-				        	    null,
-				        	    "Bạn có chắc chắn muốn lưu thông tin nhân viên này không?", 
-				        	    "Xác nhận",  
-				        	    JOptionPane.YES_NO_OPTION
-				        	);
-				        if (confirmation == JOptionPane.YES_OPTION) {
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
-			        model.removeRow(selectedRow);
+				if (o.equals(btnXoa)) {
+				    int row = table.getSelectedRow();
 
-			        JOptionPane.showMessageDialog(null, "Đã xóa sản phẩm khỏi bảng!");
-			    } }else {
-
-			        JOptionPane.showMessageDialog(null, "Vui lòng chọn một sản phẩm để xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-			    }
-			}
-			
-			if(o.equals(btnSua)) {
-		        int selectedRow = table.getSelectedRow();
-		        if (selectedRow == -1) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm để sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-
-		        String tenSP = txtTenSP.getText();
-		        String baoq = txtBQSP.getText();
-		        String giaBan = txtGBSP.getText();
-		        String ghiChu = txtGCSP.getText();
-		        String giaNhap = txtGNSP.getText();
-		        String soLuongTonKho = txtSLTKSP.getText();
-		        String thanhPhan = txtTPSP.getText();
-		        String thueGTGT = txtTGTGTSP.getText();
-		        String nhaSanXuat = txtNhaSXSP.getText();
-		        String hanSuDung = txtHSDSP.getText();
-		        String maHoaDon = txtMHDSP.getText();
-		        String maLoaiSP = txtMLSP.getText();
-		        String congDung = txtCDSP.getText();
-		        String chongChiDinh = txtCCDSP.getText();
-		        String donViTinh = cboDVTSP.getSelectedItem().toString();
-		        String ngaySanXuat = txtNSXSP.getText();
-
-		        if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || ghiChu.isEmpty() || giaNhap.isEmpty() ||
-		            soLuongTonKho.isEmpty() || thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() ||
-		            hanSuDung.isEmpty() || maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
-		            donViTinh.isEmpty() || ngaySanXuat.isEmpty()) {
-		            JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-
-		        DefaultTableModel model = (DefaultTableModel) table.getModel();
-
-		        model.setValueAt(tenSP, selectedRow, 1);
-		        model.setValueAt(baoq, selectedRow, 2);
-		        model.setValueAt(chongChiDinh, selectedRow, 3);
-		        model.setValueAt(congDung, selectedRow, 4);
-		        model.setValueAt(donViTinh, selectedRow, 5);
-		        model.setValueAt(ghiChu, selectedRow, 6);
-		        model.setValueAt(giaBan, selectedRow, 7);
-		        model.setValueAt(giaNhap, selectedRow, 8);
-		        model.setValueAt(hanSuDung, selectedRow, 9);
-		        model.setValueAt(ngaySanXuat, selectedRow, 10);
-		        model.setValueAt(nhaSanXuat, selectedRow, 11);
-		        model.setValueAt(soLuongTonKho, selectedRow, 12);
-		        model.setValueAt(thanhPhan, selectedRow, 13);
-		        model.setValueAt(thueGTGT, selectedRow, 14);
-		        model.setValueAt(maHoaDon, selectedRow, 15);
-		        model.setValueAt(maLoaiSP, selectedRow, 16);
-
-		        model.fireTableDataChanged();
-
-		        JOptionPane.showMessageDialog(null, "Sửa sản phẩm thành công!");
-
-		        // Làm sạch các trường nhập liệu sau khi sửa sản phẩm
-		        txtTenSP.setText("");
-		        txtBQSP.setText("");
-		        txtGBSP.setText("");
-		        txtGCSP.setText("");
-		        txtGNSP.setText("");
-		        txtSLTKSP.setText("");
-		        txtTPSP.setText("");
-		        txtTGTGTSP.setText("");
-		        txtNhaSXSP.setText("");
-		        txtHSDSP.setText("");
-		        txtMHDSP.setText("");
-		        txtMLSP.setText("");
-		        txtCDSP.setText("");
-		        txtCCDSP.setText("");
-		        cboDVTSP.setSelectedIndex(0);
-		        txtNSXSP.setText("");
-		    }
-		
-			
-
-
-
-			 if (o.equals(btnTim)) {
-				    String maSP = txtNhap.getText().trim(); // Lấy mã nhân viên từ ô nhập liệu tìm kiếm
-
-				    if (maSP.isEmpty()) {
-				        JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phâm cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+				    // Kiểm tra xem người dùng đã chọn hàng nào chưa
+				    if (row == -1) {
+				        JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				        return;
 				    }
 
-				    SanPham sp = dao_sp.findSanPhamById(maSP); // Tìm nhân viên theo mã
+				    // Lấy mã sản phẩm từ hàng được chọn
+				    String maSanPham = table.getValueAt(row, 0).toString();
 
-				    if (sp != null) {
-				        DefaultTableModel model = (DefaultTableModel) table.getModel();
-				        model.setRowCount(0); // Xóa hết các dòng cũ trong bảng
+				    // Xác nhận người dùng có muốn xóa hay không
+				    int confirmation = JOptionPane.showConfirmDialog(
+				        null,
+				        "Bạn có chắc chắn muốn xóa thông tin sản phẩm này không?",
+				        "Xác nhận",
+				        JOptionPane.YES_NO_OPTION
+				    );
 
-				        try {
-				            Field[] fields = SanPham.class.getDeclaredFields(); // Lấy tất cả các trường trong lớp NhanVien
-				            Object[] rowData = new Object[fields.length]; // Mảng chứa dữ liệu cho một dòng trong bảng
+				    if (confirmation == JOptionPane.YES_OPTION) {
+				        // Gọi DAO để xóa sản phẩm
+				        boolean isDeleted = dao_sp.deleteSanPham(maSanPham);
 
-				            // Lấy giá trị của mỗi trường trong đối tượng nhanVien và thêm vào mảng rowData
-				            for (int i = 0; i < fields.length; i++) {
-				                fields[i].setAccessible(true); // Cho phép truy cập trường private
-				                if ("hoaDonNhap".equals(fields[i].getName()) || "loaiSanPham".equals(fields[i].getName())) {
-				                    // Bỏ qua các trường hoaDonNhap và loaiSanPham
-				                    rowData[i] = null; 
-				                } else {
-				                    rowData[i] = fields[i].get(sp); // Lấy giá trị của trường từ đối tượng
-				                }
-				            }
+				        if (isDeleted) {
+				            // Xóa sản phẩm khỏi bảng hiển thị
+				            DefaultTableModel model = (DefaultTableModel) table.getModel();
+				            model.removeRow(row);
 
-				            // Thêm dữ liệu vào bảng
-				            model.addRow(rowData);
-
-				            JOptionPane.showMessageDialog(null, "Tìm thấy sản pham  " + maSP);
-				        } catch (IllegalAccessException e1) {
-				            e1.printStackTrace();
+				            JOptionPane.showMessageDialog(null, "Xóa sản phẩm khỏi bảng thành công!");
+				        } else {
+				            JOptionPane.showMessageDialog(null, "Xóa sản phẩm trong cơ sở dữ liệu bị lỗi!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				        }
-				    } else {
-				        JOptionPane.showMessageDialog(null, "Không tìm thấy sản pham  với mã: " + maSP, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 				    }
-				}
 
-			if (o.equals(btnThoat)) {
-			    displaySanPhamsInTable();
+				    // Xóa các trường nhập liệu
+				    txtTenSP.setText("");
+				    txtBQSP.setText("");
+				    txtGBSP.setText("");
+				    txtGCSP.setText("");
+				    txtGNSP.setText("");
+				    txtSLTKSP.setText("");
+				    txtTPSP.setText("");
+				    txtTGTGTSP.setText("");
+				    txtNhaSXSP.setText("");
+				//    txtHSDSP.setText("");
+				  //  txtNSXSP.setText("");
+				    txtMLSP.setText("");
+				    txtCDSP.setText("");
+				    txtCCDSP.setText("");
+				  //  txtHSDSP.setText("");
+				    cboDVTSP.setSelectedIndex(0);
+				    dateChooser.setDate(null);
+		            dateChooser1.setDate(null);
+				}}
+			if (o.equals(btnSua)) {
+			    // Kiểm tra xem có dòng nào được chọn trong bảng chưa
+			    int row = table.getSelectedRow();
+			    if (row == -1) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Lấy mã sản phẩm từ dòng đã chọn
+			    String maSP = table.getValueAt(row, 0).toString();
+
+			    // Lấy thông tin từ các trường nhập liệu
+			    String tenSP = txtTenSP.getText();
+			    String baoq = txtBQSP.getText();
+			    String congDung = txtCDSP.getText();
+			    String chongChiDinh = txtCCDSP.getText();
+			    String thanhPhan = txtTPSP.getText();
+			    String ghiChu = txtGCSP.getText();
+			    String nhaSanXuat = txtNhaSXSP.getText();
+
+			    LocalDate hanSuDung, ngaySanXuat;
+			    try {
+			        // Lấy ngày từ dateChooser và chuyển đổi sang LocalDate
+			        Date selectedDateHSD = dateChooser.getDate();
+			        Date selectedDateNSX = dateChooser1.getDate();
+			        if (selectedDateHSD == null || selectedDateNSX == null) {
+			            throw new DateTimeParseException("Ngày không hợp lệ!", "", 0);
+			        }
+			        hanSuDung = selectedDateHSD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			        ngaySanXuat = selectedDateNSX.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			    } catch (DateTimeParseException ex) {
+			        JOptionPane.showMessageDialog(null, "Ngày không đúng định dạng hoặc không hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    double giaBan, giaNhap, thueGTGT;
+			    int soLuongTonKho;
+			    try {
+			        giaBan = Double.parseDouble(txtGBSP.getText());
+			        giaNhap = Double.parseDouble(txtGNSP.getText());
+			        thueGTGT = Double.parseDouble(txtTGTGTSP.getText());
+			        soLuongTonKho = Integer.parseInt(txtSLTKSP.getText());
+			    } catch (NumberFormatException ex) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đúng định dạng số cho giá hoặc số lượng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    String donViTinhStr = cboDVTSP.getSelectedItem().toString();
+			    DonViTinh donViTinh = DonViTinh.valueOf(donViTinhStr);
+
+			    // Kiểm tra dữ liệu nhập vào
+			    if (tenSP.isEmpty() || baoq.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() ||
+			        thanhPhan.isEmpty() || ghiChu.isEmpty() || nhaSanXuat.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Lấy thông tin từ combobox loại sản phẩm
+			    LoaiSanPham loaiSanPham = dao_lsp.findLoaiSanPhamById(txtMLSP.getText());
+			    if (loaiSanPham == null) {
+			        JOptionPane.showMessageDialog(null, "Loại sản phẩm không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    HoaDonNhap hoaDonNhap = dao_hdn.findHoaDonNhapByMa(txtMHDSP.getText());
+			    if (hoaDonNhap == null) {
+			        JOptionPane.showMessageDialog(null, "Hóa đơn nhập không tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    // Tạo đối tượng sản phẩm
+			    SanPham sp = new SanPham();
+			    sp.setMaSanPham(maSP);
+			    sp.setTenSanPham(tenSP);
+			    sp.setGiaBan(giaBan);
+			    sp.setCongDung(congDung);
+			    sp.setHanSuDung(hanSuDung);
+			    sp.setBaoQuan(baoq);
+			    sp.setChongChiDinh(chongChiDinh);
+			    sp.setNgaySanXuat(ngaySanXuat);
+			    sp.setThanhPhan(thanhPhan);
+			    sp.setSoLuongTonkho(soLuongTonKho);
+			    sp.setGhiChu(ghiChu);
+			    sp.setNhaSanXuat(nhaSanXuat);
+			    sp.setDonViTinh(donViTinh);
+			    sp.setThueGTGT(thueGTGT);
+			    sp.setGiaNhap(giaNhap);
+			    sp.setHoaDonNhap(hoaDonNhap);
+			    sp.setLoaiSanPham(loaiSanPham);
+
+			    // Cập nhật sản phẩm trong database
+			    boolean updateSuccess = dao_sp.updateSanPham(sp);
+			    
+			    if (updateSuccess) {
+			        JOptionPane.showMessageDialog(null, "Cập nhật thông tin sản phẩm thành công!");
+
+			        // Làm mới bảng bằng cách lấy lại dữ liệu từ CSDL
+			        displaySanPhamsInTable(); 
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Lỗi khi cập nhật sản phẩm trong database", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			    }
+
+
+			    // Làm sạch các trường nhập liệu
+			    txtTenSP.setText("");
+			    txtBQSP.setText("");
+			    txtGBSP.setText("");
+			    txtGCSP.setText("");
+			    txtGNSP.setText("");
+			    txtSLTKSP.setText("");
+			    txtTPSP.setText("");
+			    txtTGTGTSP.setText("");
+			    txtNhaSXSP.setText("");
+			    cboDVTSP.setSelectedIndex(0);
+			    dateChooser.setDate(null);
+			    dateChooser1.setDate(null);
+			    txtMLSP.setText("");
+			    txtCDSP.setText("");
+			    txtCCDSP.setText("");
 			}
+			if (o.equals(btnTim)) {
+			    String maSP = txtNhap.getText().trim();
 
+			    if (maSP.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Vui lòng nhập mã sản phẩm cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			        return;
+			    }
+
+			    searchInTable(maSP);  // Gọi phương thức tìm trong bảng
+			    JOptionPane.showMessageDialog(null, "Đã tìm kiếm sản phẩm với mã: " + maSP);
+			}
+				
+			 if(o.equals(btnThoat)) {
+				 displaySanPhamsInTable();
+			 }
+			
 		}
-
-		
+			
 
 		 @Override
-		    public void mouseClicked(MouseEvent e) {
-			 int row = table.getSelectedRow();
-			    if (row != -1) {
-			        // Lấy dữ liệu từ các cột của dòng được chọn
-			        String tenSP = table.getValueAt(row, 1).toString();
-			        String baoQuan = table.getValueAt(row, 2).toString();
-			        String congDung = table.getValueAt(row, 4).toString();
-			        String donViTinh = table.getValueAt(row, 5).toString();
-			        String ghiChu = table.getValueAt(row, 6).toString();
-			        String giaBan = table.getValueAt(row, 7).toString();
-			        String giaNhap = table.getValueAt(row, 8).toString();
-			        String hanSuDung = table.getValueAt(row, 9).toString();
-			        String ngaySanXuat = table.getValueAt(row, 10).toString();
-			        String nhaSanXuat = table.getValueAt(row, 11).toString();
-			        String soLuongTonKho = table.getValueAt(row, 12).toString();
-			        String thanhPhan = table.getValueAt(row, 13).toString();
-			        String thueGTGT = table.getValueAt(row, 14).toString();
-			        String maHoaDon = table.getValueAt(row, 15).toString();
-			        String maLoaiSP = table.getValueAt(row, 16).toString();
-			        String chongChiDinh = table.getValueAt(row, 3).toString();
+		 public void mouseClicked(MouseEvent e) {
+			    int selectedRow = table.getSelectedRow();
+			    
+			    if (selectedRow != -1) {
+			        String maSanPham = table.getValueAt(selectedRow, 0).toString();
+			        String tenSanPham = table.getValueAt(selectedRow, 1).toString();
+			        String baoQuan = table.getValueAt(selectedRow, 2).toString();
+			        String congDung = table.getValueAt(selectedRow, 4).toString();
+			        String chongChiDinh = table.getValueAt(selectedRow, 3).toString();
+			        
+			        // Lấy ngày sử dụng và ngày sản xuất từ bảng (kiểu LocalDate)
+			        LocalDate hanSuDungLocalDate = (LocalDate) table.getValueAt(selectedRow, 9);
+			        LocalDate ngaySanXuatLocalDate = (LocalDate) table.getValueAt(selectedRow, 10);
 
-			        // Hiển thị dữ liệu lên các trường nhập liệu
-			        txtTenSP.setText(tenSP);
+			        // Chuyển đổi LocalDate sang Date
+			        Date hanSuDung = Date.from(hanSuDungLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			        Date ngaySanXuat = Date.from(ngaySanXuatLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			        
+			        String giaBan = table.getValueAt(selectedRow, 7).toString();
+			        String giaNhap = table.getValueAt(selectedRow, 8).toString();
+			        String thanhPhan = table.getValueAt(selectedRow, 13).toString();
+			        String soLuongTonKho = table.getValueAt(selectedRow, 12).toString();
+			        String thueGTGT = table.getValueAt(selectedRow, 14).toString();
+			        String nhaSanXuat = table.getValueAt(selectedRow, 11).toString();
+			        String maHoaDon = table.getValueAt(selectedRow, 15).toString();
+			        String maLoaiSanPham = table.getValueAt(selectedRow, 16).toString();
+			        String ghiChu= table.getValueAt(selectedRow, 6).toString();
+			        
+			        // Hiển thị thông tin lên các trường trong form
+			        txtTenSP.setText(tenSanPham);
 			        txtBQSP.setText(baoQuan);
-			        txtGCSP.setText(ghiChu); // Chỉ gọi setText cho ghi chú một lần
+			        txtCDSP.setText(congDung);
 			        txtGBSP.setText(giaBan);
 			        txtGNSP.setText(giaNhap);
-			        txtHSDSP.setText(hanSuDung);
-			        txtNSXSP.setText(ngaySanXuat);
-			        txtNhaSXSP.setText(nhaSanXuat);
-			        txtSLTKSP.setText(soLuongTonKho);
 			        txtTPSP.setText(thanhPhan);
+			        txtSLTKSP.setText(soLuongTonKho);
 			        txtTGTGTSP.setText(thueGTGT);
+			        txtNhaSXSP.setText(nhaSanXuat);
 			        txtMHDSP.setText(maHoaDon);
-			        txtMLSP.setText(maLoaiSP);
+			        txtMLSP.setText(maLoaiSanPham);
 			        txtCCDSP.setText(chongChiDinh);
-			        txtCDSP.setText(congDung);
+			        txtGCSP.setText(ghiChu);
+			        // Đặt ngày vào các JDateChooser
+			        dateChooser.setDate(hanSuDung); // Hạn sử dụng
+			        dateChooser1.setDate(ngaySanXuat); // Ngày sản xuất
 			        
 			        // Nếu cần, bạn có thể chọn giá trị trong JComboBox cho đơn vị tính
-			        // cboDVTSP.setSelectedItem(donViTinh);
-			    }
-		    }
+			        String donViTinhValue = table.getValueAt(selectedRow, 5).toString(); // Lấy giá trị của cột "Đơn vị tính"
+
+			        switch (donViTinhValue) {
+			        case "ML":
+			            cboDVTSP.setSelectedItem("ML");
+			            break;
+			        case "MG":
+			            cboDVTSP.setSelectedItem("MG");
+			            break;
+			        case "VIEN":
+			            cboDVTSP.setSelectedItem("VIEN");
+			            break;
+			        case "CÁI":
+			            cboDVTSP.setSelectedItem("CÁI");
+			            break;
+			        case "HỘP":
+			            cboDVTSP.setSelectedItem("HỘP");
+			            break;
+			        case "GRAM":
+			            cboDVTSP.setSelectedItem("GRAM");
+			            break;
+			        case "VỈ":
+			            cboDVTSP.setSelectedItem("VỈ");
+			            break;
+			        case "MIẾNG":
+			            cboDVTSP.setSelectedItem("MIẾNG");
+			            break;
+			        case "LỌ":
+			            cboDVTSP.setSelectedItem("LỌ");
+			            break;
+			        case "GÓI":
+			            cboDVTSP.setSelectedItem("GÓI");
+			            break;
+			        default:
+			            // Nếu không có giá trị phù hợp, có thể chọn giá trị mặc định hoặc để trống
+			            cboDVTSP.setSelectedItem(null);
+			            break;
+			        }}
+			}
+
 
 		@Override
 		public void mousePressed(MouseEvent e) {
@@ -1293,399 +1407,115 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 			
 		}
 		public void displaySanPhamsInTable() {
-			List<SanPham> sanPhams = entityManager.createQuery(
-			        "SELECT sp FROM SanPham sp " +
-			        "LEFT JOIN FETCH sp.loaiSanPham " +  // Đảm bảo loaiSanPham được tải
-			        "LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
-			        .getResultList();
+		    List<SanPham> sanPhams = entityManager.createQuery(
+		        "SELECT sp FROM SanPham sp LEFT JOIN FETCH sp.loaiSanPham LEFT JOIN FETCH sp.hoaDonNhap", SanPham.class)
+		        .getResultList();
 
 		    if (sanPhams == null || sanPhams.isEmpty()) {
 		        System.out.println("Không có sản phẩm để hiển thị.");
 		        return;
 		    }
 
-		    System.out.println("Số lượng sản phẩm lấy về: " + sanPhams.size());  // Gỡ lỗi: kiểm tra số lượng sản phẩm
-
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
-		    model.setRowCount(0);  // Xóa tất cả dòng trước khi thêm mới
+		    model.setRowCount(0);
 
 		    for (SanPham sp : sanPhams) {
-		        try {
-		            // Truy xuất các trường trong lớp SanPham và gỡ lỗi chi tiết
-		            Object maSanPham = getFieldValue(sp, "maSanPham");
-		            Object tenSanPham = getFieldValue(sp, "tenSanPham");
-		            Object giaBan = getFieldValue(sp, "giaBan");
-		            Object congDung = getFieldValue(sp, "congDung");
-		            Object hanSuDung = getFieldValue(sp, "hanSuDung");
-		            Object baoQuan = getFieldValue(sp, "baoQuan");
-		            Object chongChiDinh = getFieldValue(sp, "chongChiDinh");
-		            Object ngaySanXuat = getFieldValue(sp, "ngaySanXuat");
-		            Object thanhPhan = getFieldValue(sp, "thanhPhan");
-		            Object soLuongTonkho = getFieldValue(sp, "soLuongTonkho");
-		            Object ghiChu = getFieldValue(sp, "ghiChu", "Không có ghi chú");
-		            Object nhaSanXuat = getFieldValue(sp, "nhaSanXuat");
-		            Object donViTinh = getFieldValue(sp, "donViTinh");
-		            Object thueGTGT = getFieldValue(sp, "thueGTGT");
-		            Object giaNhap = getFieldValue(sp, "giaNhap");
+		        String maSanPham = sp.getMaSanPham();
+		        String tenSanPham = sp.getTenSanPham();
+		        double giaBan = sp.getGiaBan();
+		        String congDung = sp.getCongDung();
+		        LocalDate hanSuDung = sp.getHanSuDung();
+		        String baoQuan = sp.getBaoQuan();
+		        String chongChiDinh = sp.getChongChiDinh();
+		        LocalDate ngaySanXuat = sp.getNgaySanXuat();
+		        String thanhPhan = sp.getThanhPhan();
+		        int soLuongTonkho = sp.getSoLuongTonkho();
+		        String ghiChu = (sp.getGhiChu() != null) ? sp.getGhiChu() : "Không có ghi chú"; // Kiểm tra ghi chú
+		        String nhaSanXuat = sp.getNhaSanXuat();
+		        DonViTinh donViTinh = sp.getDonViTinh();
+		        double thueGTGT = sp.getThueGTGT();
+		        double giaNhap = sp.getGiaNhap();
+		        
+		        // Lấy mã loại sản phẩm và mã hóa đơn
+		        String loaiSanPhamStr = (sp.getLoaiSanPham() != null) ? sp.getLoaiSanPham().getMaLoai() : "Không xác định";
+		        String hoaDonNhapStr = (sp.getHoaDonNhap() != null) ? sp.getHoaDonNhap().getMaHoaDonNhap() : "Không xác định";
 
-		            // Truy xuất thông tin liên quan đến loại sản phẩm và hóa đơn nhập
-		            String loaiSanPham = getLoaiSanPham(sp);
-		            String hoaDonNhap = getHoaDonNhap(sp);
-
-		            System.out.println("Thêm sản phẩm: " + tenSanPham + " - " + loaiSanPham);  // Gỡ lỗi: xem thông tin sản phẩm thêm vào
-
-		            // Thêm dữ liệu vào model của JTable
-		            model.addRow(new Object[]{
-		                maSanPham, tenSanPham, baoQuan, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung,
-		                ngaySanXuat, nhaSanXuat, soLuongTonkho, thanhPhan, thueGTGT, hoaDonNhap, loaiSanPham
-		            });
-
-		        } catch (Exception e) {
-		            System.err.println("Lỗi khi xử lý sản phẩm: " + e.getMessage());
-		            e.printStackTrace();
-		        }
-		    }
-
-		    // Kiểm tra nếu JTable đã được cập nhật
-		    System.out.println("Cập nhật JTable xong.");
-		}
-
-		// Phương thức hỗ trợ lấy giá trị trường và xử lý lỗi
-		private Object getFieldValue(Object obj, String fieldName) {
-		    return getFieldValue(obj, fieldName, null);  // Trả về null nếu không tìm thấy
-		}
-
-		// Phương thức hỗ trợ lấy giá trị trường với giá trị mặc định
-		private Object getFieldValue(Object obj, String fieldName, Object defaultValue) {
-		    try {
-		        Field field = obj.getClass().getDeclaredField(fieldName);
-		        field.setAccessible(true);
-		        Object value = field.get(obj);
-		        return value != null ? value : defaultValue;
-		    } catch (NoSuchFieldException e) {
-		        System.err.println("Lỗi: Không tìm thấy trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
-		    } catch (IllegalAccessException e) {
-		        System.err.println("Lỗi: Không thể truy cập trường '" + fieldName + "' trong lớp " + obj.getClass().getSimpleName());
-		    }
-		    return defaultValue;  // Nếu không tìm thấy trường hoặc có lỗi, trả về giá trị mặc định
-		}
-
-		// Lấy loaiSanPham từ đối tượng loaiSanPham
-		private String getLoaiSanPham(SanPham sp) {
-		    try {
-		        Object loaiSanPhamObj = getFieldValue(sp, "loaiSanPham");
-		        if (loaiSanPhamObj != null) {
-		            // Lấy giá trị maLoai từ đối tượng loaiSanPham
-		            Object maLoaiValue = getFieldValue(loaiSanPhamObj, "maLoai");  // Sửa tên trường này
-		            return maLoaiValue != null ? maLoaiValue.toString() : "Không xác định";
-		        } else {
-		            return "Không xác định";
-		        }
-		    } catch (Exception e) {
-		        System.err.println("Lỗi khi truy xuất trường 'maLoai' từ đối tượng loaiSanPham");
-		        e.printStackTrace();
-		        return "Không xác định";
-		    }
-		}
-
-
-		// Lấy hoaDonNhap từ đối tượng hoaDonNhap
-		private String getHoaDonNhap(SanPham sp) {
-		    try {
-		        Object hoaDonNhapObj = getFieldValue(sp, "hoaDonNhap");
-		        if (hoaDonNhapObj != null) {
-		            // Lấy giá trị maHoaDonNhap từ đối tượng hoaDonNhap
-		            Object maHoaDonNhapValue = getFieldValue(hoaDonNhapObj, "maHoaDonNhap");
-		            return maHoaDonNhapValue != null ? maHoaDonNhapValue.toString() : "Không xác định";
-		        } else {
-		            return "Không xác định";
-		        }
-		    } catch (Exception e) {
-		        System.err.println("Lỗi khi truy xuất trường 'maHoaDonNhap' từ đối tượng hoaDonNhap");
-		        e.printStackTrace();
-		        return "Không xác định";
+		        // Thêm dòng vào bảng
+		        model.addRow(new Object[]{
+		            maSanPham, tenSanPham, baoQuan, chongChiDinh, congDung, donViTinh, ghiChu, giaBan, giaNhap, hanSuDung,
+		            ngaySanXuat, nhaSanXuat, soLuongTonkho, thanhPhan, thueGTGT, hoaDonNhapStr, loaiSanPhamStr
+		        });
 		    }
 		}
 
 		//
 		public List<SanPham> getDanhSachSanPhamFromTable(JTable table) {
 		    List<SanPham> danhSachSanPham = new ArrayList<>();
+
+		    // Lấy model của JTable
 		    DefaultTableModel model = (DefaultTableModel) table.getModel();
 
+		    // Duyệt qua tất cả các dòng trong bảng (bắt đầu từ dòng 0 đến model.getRowCount() - 1)
 		    for (int i = 0; i < model.getRowCount(); i++) {
+		        // Tạo một đối tượng SanPham mới
 		        SanPham sp = new SanPham();
+
 		        try {
+		            // Duyệt qua tất cả các cột trong bảng và gán giá trị vào đối tượng SanPham
 		            String[] fieldNames = {
-		                "maSanPham", "tenSanPham", "baoQuan", "chongChiDinh", "congDung", "donViTinh", 
-		                "ghiChu", "giaBan", "giaNhap", "hanSuDung", "ngaySanXuat", "nhaSanXuat", 
-		                "soLuongTonkho", "thanhPhan", "thueGTGT", "maHoaDonNhap", "maLoai"
+		                "maSanPham", "tenSanPham","baoQuan", "chongChiDinh","congDung",  "donViTinh","ghiChu","giaBan", "giaNhap", "hanSuDung",  
+		                 "ngaySanXuat","nhaSanXuat", "soLuongTonkho",  "thanhPhan", 
+		                 "thueGTGT",  "hoaDonNhap", "loaiSanPham"
 		            };
+		            
 
 		            for (int j = 0; j < fieldNames.length; j++) {
+		                // Lấy Field của lớp SanPham
 		                Field field = SanPham.class.getDeclaredField(fieldNames[j]);
-		                field.setAccessible(true);
-		                Object value = model.getValueAt(i, j);
-		                System.out.println("Đang xử lý trường: " + fieldNames[j] + ", Giá trị từ bảng: " + value);
+		                field.setAccessible(true);  // Cho phép truy cập trường private
 
-		                if (fieldNames[j].equals("maHoaDonNhap") && value != null) {
-		                    String maHoaDonNhap = (String) value;
-		                    HoaDonNhap hoaDonNhap = dao_hdn.getHoaDonNhapByMa(maHoaDonNhap);
-		                    field.set(sp, hoaDonNhap);  // Gán đối tượng HoaDonNhap
-		                } else if (value != null) {
+		                // Lấy giá trị từ bảng và gán vào trường tương ứng
+		                Object value = model.getValueAt(i, j);  // Lấy giá trị tại dòng i, cột j
+
+		                // Xử lý các kiểu dữ liệu đặc biệt trước khi gán giá trị cho trường
+		                if (value != null) {
 		                    value = convertFieldValue(value, field.getType());
-		                    field.set(sp, value);
-		                } else {
-		                    System.out.println("Giá trị của trường " + fieldNames[j] + " là null.");
+		                    field.set(sp, value);  // Gán giá trị vào trường tương ứng của đối tượng SanPham
 		                }
 		            }
 		        } catch (NoSuchFieldException | IllegalAccessException e) {
-		            System.err.println("Lỗi khi xử lý trường trong lớp SanPham: " + e.getMessage());
-		            e.printStackTrace();
-		        } catch (Exception e) {
-		            System.err.println("Lỗi không xác định khi xử lý sản phẩm: " + e.getMessage());
-		            e.printStackTrace();
+		            e.printStackTrace(); // Xử lý ngoại lệ khi không thể truy cập trường
 		        }
 
+		        // Thêm đối tượng SanPham vào danh sách
 		        danhSachSanPham.add(sp);
 		    }
-		    
-		    return danhSachSanPham;
+
+		    return danhSachSanPham; // Trả về danh sách sản phẩm từ bảng
 		}
 
-
-
-		// Phương thức chuyển đổi kiểu dữ liệu
-		private Object convertFieldValue(Object value, Class<?> fieldType) {
-		    if (fieldType.equals(Integer.class) || fieldType.equals(int.class)) {
-		        return Integer.parseInt(value.toString());  // Chuyển đổi thành Integer
-		    } else if (fieldType.equals(Double.class) || fieldType.equals(double.class)) {
-		        return Double.parseDouble(value.toString());  // Chuyển đổi thành Double
-		    } else if (fieldType.equals(BigDecimal.class)) {
-		        return new BigDecimal(value.toString());  // Chuyển đổi thành BigDecimal
-		    } else if (fieldType.equals(Date.class)) {
-		        try {
-		            // Chuyển đổi thành Date (giả sử giá trị là String)
-		            return new SimpleDateFormat("yyyy-MM-dd").parse(value.toString());
-		        } catch (ParseException e) {
-		            e.printStackTrace();
-		            return null;
-		        }
-		    } else if (fieldType.isEnum()) {
-		        // Chuyển đổi thành Enum nếu là kiểu Enum
-		        return Enum.valueOf((Class<Enum>) fieldType, value.toString());
-		    } else if (fieldType.equals(Boolean.class) || fieldType.equals(boolean.class)) {
-		        return Boolean.parseBoolean(value.toString());  // Chuyển đổi thành Boolean
+		// Phương thức chuyển đổi giá trị theo kiểu dữ liệu của trường
+		private Object convertFieldValue1(Object value, Class<?> fieldType) {
+		    if (fieldType == boolean.class || fieldType == Boolean.class) {
+		        return value instanceof Boolean ? value : Boolean.parseBoolean(value.toString());
+		    } else if (fieldType == LocalDate.class) {
+		        return value instanceof String ? LocalDate.parse((String) value) : value;
+		    } else if (fieldType == double.class || fieldType == Double.class) {
+		        return value instanceof Double ? value : Double.parseDouble(value.toString());
+		    } else if (fieldType == ChucVu.class) {
+		        return value instanceof String ? ChucVu.valueOf((String) value) : value;
 		    }
-		    return value;  // Trả về giá trị gốc nếu không cần chuyển đổi
+		    return value;
+		}
+		private void searchInTable(String maSP) {
+		    DefaultTableModel model = (DefaultTableModel) table.getModel();
+		    TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+		    table.setRowSorter(sorter);
+
+		    // Tạo bộ lọc tìm kiếm cho cột mã sản phẩm (giả sử cột mã sản phẩm là cột đầu tiên)
+		    RowFilter<DefaultTableModel, Object> filter = RowFilter.regexFilter("(?i)" + maSP, 0);
+		    sorter.setRowFilter(filter);
 		}
 
-
-		
-		private String getLoaiSanPham1(SanPham sp) {
-		    try {
-		        // Lấy trường maLoaiSanPham trong SanPham
-		        Field maLoaiSanPhamField = SanPham.class.getDeclaredField("maLoaiSanPham");
-		        maLoaiSanPhamField.setAccessible(true);
-		        Object maLoaiSanPhamValue = maLoaiSanPhamField.get(sp);
-
-		        return maLoaiSanPhamValue != null ? (String) maLoaiSanPhamValue : "Không xác định";
-		    } catch (NoSuchFieldException | IllegalAccessException e) {
-		        System.err.println("Lỗi khi truy xuất trường maLoaiSanPham");
-		        return "Không xác định";
-		    }
-		}
-
-		private String getHoaDonNhap1(SanPham sp) {
-		    try {
-		        // Lấy trường maHoaDonNhap trong SanPham
-		        Field maHoaDonNhapField = SanPham.class.getDeclaredField("maHoaDonNhap");
-		        maHoaDonNhapField.setAccessible(true);
-		        Object maHoaDonNhapValue = maHoaDonNhapField.get(sp);
-
-		        return maHoaDonNhapValue != null ? (String) maHoaDonNhapValue : "Không xác định";
-		    } catch (NoSuchFieldException | IllegalAccessException e) {
-		        System.err.println("Lỗi khi truy xuất trường maHoaDonNhap");
-		        return "Không xác định";
-		    }
-		}
-		private void validateSanPham(SanPham sp) throws Exception {
-			// Sử dụng reflection để truy cập các trường của đối tượng SanPham
-		    Field[] fields = SanPham.class.getDeclaredFields();
-
-		    for (Field field : fields) {
-		        field.setAccessible(true); // Cho phép truy cập vào các trường private
-
-		        // Kiểm tra và gán giá trị cho các trường
-		        if (field.getName().equals("hoaDonNhap")) {
-		            // Kiểm tra xem hoaDonNhap có null không, nếu có thì khởi tạo
-		            if (field.get(sp) == null) {
-		                field.set(sp, new HoaDonNhap());
-		            }
-		        }
-		        // Kiểm tra từng trường và thực hiện xác thực
-		        switch (field.getName()) {
-		            case "maSanPham":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Mã sản phẩm không được để trống");
-		                }
-		                break;
-		            case "tenSanPham":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Tên sản phẩm không được để trống");
-		                }
-		                break;
-		            case "giaBan":
-		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
-		                    throw new Exception("Giá bán phải lớn hơn 0");
-		                }
-		                break;
-		            case "congDung":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Công dụng không được để trống");
-		                }
-		                break;
-		            case "hanSuDung":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Hạn sử dụng không hợp lệ");
-		                }
-		                break;
-		            case "baoQuan":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Bảo quản không được để trống");
-		                }
-		                break;
-		            case "chongChiDinh":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Chống chỉ định không được để trống");
-		                }
-		                break;
-		            case "ngaySanXuat":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Ngày sản xuất không hợp lệ");
-		                }
-		                break;
-		            case "thanhPhan":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Thành phần không được để trống");
-		                }
-		                break;
-		            case "soLuongTonkho":
-		                if (field.get(sp) == null || (int) field.get(sp) < 0) {
-		                    throw new Exception("Số lượng tồn kho không hợp lệ");
-		                }
-		                break;
-		            case "ghiChu":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Ghi chú không được để trống");
-		                }
-		                break;
-		            case "nhaSanXuat":
-		                if (field.get(sp) == null || ((String) field.get(sp)).isEmpty()) {
-		                    throw new Exception("Nhà sản xuất không được để trống");
-		                }
-		                break;
-		            case "donViTinh":
-		                if (field.get(sp) == null) {
-		                    throw new Exception("Đơn vị tính không được để trống");
-		                }
-		                break;
-		            case "thueGTGT":
-		                if (field.get(sp) == null || (double) field.get(sp) < 0) {
-		                    throw new Exception("Thuế GTGT không hợp lệ");
-		                }
-		                break;
-		            case "giaNhap":
-		                if (field.get(sp) == null || (double) field.get(sp) <= 0) {
-		                    throw new Exception("Giá nhập phải lớn hơn 0");
-		                }
-		                break;
-		            default:
-		                break;
-		        }
-		    }
-
-		    // Kiểm tra Loại sản phẩm và Hóa đơn nhập
-		   // if (sp.loaiSanPham == null) sp.loaiSanPham = new LoaiSanPham("Không xác định");
-		  //  if (sp.hoaDonNhap == null) sp.hoaDonNhap = new HoaDonNhap("Không xác định");
-		}
-		public boolean checkData() {
-		    String tenSP = txtTenSP.getText().trim();
-		    String baoq = txtBQSP.getText().trim();
-		    String giaBan = txtGBSP.getText().trim();
-		    String ghiChu = txtGCSP.getText().trim();
-		    String giaNhap = txtGNSP.getText().trim();
-		    String soLuongTonKho = txtSLTKSP.getText().trim();
-		    String thanhPhan = txtTPSP.getText().trim();
-		    String thueGTGT = txtTGTGTSP.getText().trim();
-		    String nhaSanXuat = txtNhaSXSP.getText().trim();
-		    String hanSuDung = txtHSDSP.getText().trim();
-		    String maHoaDon = txtMHDSP.getText().trim();
-		    String maLoaiSP = txtMLSP.getText().trim();
-		    String congDung = txtCDSP.getText().trim();
-		    String chongChiDinh = txtCCDSP.getText().trim();
-		    String donViTinh = cboDVTSP.getSelectedItem().toString().trim();
-		    String ngaySanXuat = txtNSXSP.getText().trim();
-
-		    // Kiểm tra các trường bắt buộc không được để trống
-		    if (tenSP.isEmpty() || baoq.isEmpty() || giaBan.isEmpty() || giaNhap.isEmpty() || soLuongTonKho.isEmpty() ||
-		        thanhPhan.isEmpty() || thueGTGT.isEmpty() || nhaSanXuat.isEmpty() || hanSuDung.isEmpty() ||
-		        maHoaDon.isEmpty() || maLoaiSP.isEmpty() || congDung.isEmpty() || chongChiDinh.isEmpty() || ngaySanXuat.isEmpty()) {
-		        JOptionPane.showMessageDialog(null, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra giá bán, giá nhập, và thuế GTGT phải là số hợp lệ
-		    try {
-		        Double.parseDouble(giaBan);
-		        Double.parseDouble(giaNhap);
-		        Double.parseDouble(thueGTGT);
-		    } catch (NumberFormatException e) {
-		        JOptionPane.showMessageDialog(null, "Giá bán, giá nhập, và thuế GTGT phải là số hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra số lượng tồn kho là số nguyên hợp lệ
-		    try {
-		        Integer.parseInt(soLuongTonKho);
-		    } catch (NumberFormatException e) {
-		        JOptionPane.showMessageDialog(null, "Số lượng tồn kho phải là số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra định dạng ngày tháng
-		    try {
-		        LocalDate hanSuDungDate = LocalDate.parse(hanSuDung);
-		        LocalDate ngaySanXuatDate = LocalDate.parse(ngaySanXuat);
-
-		        if (ngaySanXuatDate.isAfter(LocalDate.now())) {
-		            JOptionPane.showMessageDialog(null, "Ngày sản xuất không thể sau ngày hiện tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return false;
-		        }
-
-		        if (hanSuDungDate.isBefore(ngaySanXuatDate)) {
-		            JOptionPane.showMessageDialog(null, "Hạn sử dụng phải sau ngày sản xuất!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		            return false;
-		        }
-		    } catch (DateTimeParseException e) {
-		        JOptionPane.showMessageDialog(null, "Định dạng ngày không hợp lệ. Vui lòng nhập theo định dạng yyyy-mm-dd.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra mã loại sản phẩm có tồn tại trong bảng LoaiSanPham không
-		    LoaiSanPham loai = dao_lsp.findLoaiSanPhamByMa(maLoaiSP);  // Giả sử loaiSanPhamDAO là đối tượng truy cập dữ liệu của LoaiSanPham
-		    if (loai == null) {
-		        JOptionPane.showMessageDialog(null, "Mã loại sản phẩm không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    // Kiểm tra mã hóa đơn nhập có tồn tại trong bảng HoaDonNhap không
-		    HoaDonNhap hoaDon = dao_hdn.findHoaDonNhapByMa(maHoaDon);  // Giả sử hoaDonNhapDAO là đối tượng truy cập dữ liệu của HoaDonNhap
-		    if (hoaDon == null) {
-		        JOptionPane.showMessageDialog(null, "Mã hóa đơn nhập không tồn tại trong cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-		        return false;
-		    }
-
-		    return true;
-		}
 
 }

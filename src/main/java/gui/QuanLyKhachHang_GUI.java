@@ -1,3 +1,4 @@
+
 package gui;
 
 import java.awt.AlphaComposite;
@@ -350,7 +351,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								
 								// Nút "Tìm"
 								 btnTim = new JButton("Tìm Kiếm ");
-								 btnTim.setBounds(40, 140, 146, 47);
+								 btnTim.setBounds(24, 140, 161, 47);
 								 panel_2.add(btnTim);
 								 btnTim.setOpaque(true);
 								 btnTim.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -380,7 +381,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 
 								 			 				 				// Nút "Sửa"
 								 			 				 				 btnSua = new JButton("Sửa");
-								 			 				 				 btnSua.setBounds(35, 126, 161, 45);
+								 			 				 				 btnSua.setBounds(10, 126, 185, 45);
 								 			 				 				 panel_2_1.add(btnSua);
 								 			 				 				 btnSua.setOpaque(true);
 								 			 				 				 btnSua.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -391,7 +392,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 
 								 			 				 				 				// Nút "Xóa"
 								 			 				 				 				 btnXoa = new JButton("Xóa");
-								 			 				 				 				 btnXoa.setBounds(222, 126, 161, 45);
+								 			 				 				 				 btnXoa.setBounds(222, 126, 175, 45);
 								 			 				 				 				 panel_2_1.add(btnXoa);
 								 			 				 				 				 btnXoa.setOpaque(true);
 								 			 				 				 				 btnXoa.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -402,7 +403,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 				 
 								 			 				 				 				 // Nút "Thêm"
 								 			 				 				 				  btnThem = new JButton("Thêm");
-								 			 				 				 				  btnThem.setBounds(35, 37, 161, 45);
+								 			 				 				 				  btnThem.setBounds(10, 37, 186, 45);
 								 			 				 				 				  panel_2_1.add(btnThem);
 								 			 				 				 				  btnThem.setOpaque(true);
 								 			 				 				 				  btnThem.setForeground(new Color(255, 255, 255));
@@ -413,7 +414,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 								 			 				 				 				  
 								 			 				 				 				  				// Nút "Xóa Trắng"
 								 			 				 				 				  			btnXoaTrang = new JButton("Xóa Trắng");
-								 			 				 				 				  			btnXoaTrang.setBounds(222, 36, 161, 47);
+								 			 				 				 				  			btnXoaTrang.setBounds(212, 36, 185, 47);
 								 			 				 				 				  			panel_2_1.add(btnXoaTrang);
 								 			 				 				 				  			btnXoaTrang.setOpaque(true);
 								 			 				 				 				  			btnXoaTrang.setForeground(new Color(255, 255, 255)); // Đổi màu chữ thành trắng
@@ -668,6 +669,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 				        JOptionPane.showMessageDialog(null, "Khách hàng này đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 				        return;
 				    }
+				    
 				    String maKH =dao_kh.maTuSinhKhachHang(sdt);
 				    KhachHang kh= new KhachHang();
 				    kh.setMaKhachHang(maKH);
@@ -703,22 +705,28 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			        String maKhachHang = table.getValueAt(row, 0).toString();
 			       
 			        if (row == -1) {
-			            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			            JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần xóa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			            return;  
 			        }
 			        int confirmation = JOptionPane.showConfirmDialog(
 			        	    null,
-			        	    "Bạn có chắc chắn muốn xóa thông tin nhân viên này không?", 
+			        	    "Bạn có chắc chắn muốn xóa thông tin khách hàng  này không?", 
 			        	    "Xác nhận",  
 			        	    JOptionPane.YES_NO_OPTION
 			        	);
 			        if (confirmation == JOptionPane.YES_OPTION) {
-			       dao_kh.delete(maKhachHang);
-			        DefaultTableModel model = (DefaultTableModel) table.getModel();
+			        	
+			        boolean t=	dao_kh.delete(maKhachHang);
+			        if(t)
+			        {  DefaultTableModel model = (DefaultTableModel) table.getModel();
 			        model.removeRow(row);
 
 			        
-			        JOptionPane.showMessageDialog(null, "Xóa nhân viên khỏi bảng thành công!");
+			        JOptionPane.showMessageDialog(null, "Xóa khách hàng khỏi bảng thành công!");}
+			        else {
+				        JOptionPane.showMessageDialog(null, "xóa ở csdl bị lỗi");
+
+			        }
 			        }
 			        txtTenNV.setText("");
 			        txtSDT.setText("");
@@ -728,7 +736,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			    if(o.equals(btnSua)) {
 			        int row = table.getSelectedRow();
 			        if (row == -1) {
-			            JOptionPane.showMessageDialog(null, "Vui lòng chọn nhân viên cần sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+			            JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần sửa!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			            return;
 			        }
 
@@ -757,45 +765,46 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 			    }
 			  
 
-
 			    if (o.equals(btnTim)) {
-			        String maKH = txtNhap.getText().trim(); // Lấy mã khách hàng từ ô nhập liệu tìm kiếm
+			        String maKH = txtNhap.getText().trim();
 
 			        if (maKH.isEmpty()) {
 			            JOptionPane.showMessageDialog(null, "Vui lòng nhập mã khách hàng cần tìm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
 			            return;
 			        }
 
-			        KhachHang khachHang = dao_kh.findKhachHangById(maKH);
+			        List<KhachHang> khachHangs = dao_kh.findKhachHangByPartialId(maKH);
 
-			        if (khachHang != null) {
+			        if (khachHangs != null && !khachHangs.isEmpty()) {
 			            DefaultTableModel model = (DefaultTableModel) table.getModel();
 			            model.setRowCount(0);
 
 			            try {
-			                
-			                Field[] fields = KhachHang.class.getDeclaredFields();
-			                Object[] rowData = new Object[fields.length];
+			                for (KhachHang khachHang : khachHangs) {
+			                    Field[] fields = KhachHang.class.getDeclaredFields();
+			                    Object[] rowData = new Object[fields.length];
 
-			                for (int i = 0; i < fields.length; i++) {
-			                    fields[i].setAccessible(true); // Cho phép truy cập trường private
-			                    rowData[i] = fields[i].get(khachHang); // Lấy giá trị của trường từ đối tượng
+			                    for (int i = 0; i < fields.length; i++) {
+			                        fields[i].setAccessible(true);
+			                        rowData[i] = fields[i].get(khachHang);
+			                    }
+
+			                    model.addRow(rowData);
 			                }
 
-			                // Thêm dữ liệu vào bảng
-			                model.addRow(rowData);
-
-			                JOptionPane.showMessageDialog(null, "Tìm thấy khách hàng: " + maKH);
+			                JOptionPane.showMessageDialog(null, "Tìm thấy " + khachHangs.size() + " khách hàng với mã bắt đầu bằng: " + maKH);
 			            } catch (IllegalAccessException e1) {
 			                e1.printStackTrace();
 			            }
 			        } else {
-			            JOptionPane.showMessageDialog(null, "Không tìm thấy khách hàng với mã: " + maKH, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
+			            JOptionPane.showMessageDialog(null, "Không tìm thấy khách hàng với mã bắt đầu bằng: " + maKH, "Không tìm thấy", JOptionPane.INFORMATION_MESSAGE);
 			        }
 			    }
-			    	if(o.equals(btThoat)) {
-			    		displayKhachHangsInTable();
-			    	}
+
+			    if (o.equals(btThoat)) {
+			        displayKhachHangsInTable();
+			    }
+
 			    }
 
 
