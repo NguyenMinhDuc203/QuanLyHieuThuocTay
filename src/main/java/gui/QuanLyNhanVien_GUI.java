@@ -93,6 +93,7 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		private JRadioButton rdbNư;
 		private DateTimeFormatter formatter;
 		private AbstractButton txtCMND;
+		private TrangChu_GUI trangChuGUI;
 		
 		
 	/**
@@ -128,11 +129,13 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		setContentPane(contentPane);
 		contentPane.setLayout(null);		
 		//Menu
-				JMenuBar menuBar = createMenuBar();
+		//Menu
+				trangChuGUI = new TrangChu_GUI();
+				JMenuBar menuBar = trangChuGUI.createMenuBar();
 				menuBar.setBorderPainted(false);
 				menuBar.setOpaque(true);
 				menuBar.setBackground(new Color(26, 133, 94));
-				menuBar.setBounds(0, 0, 1338, 70);
+				menuBar.setBounds(0, 0, 1395, 70);
 				contentPane.add(menuBar);
 				
 				

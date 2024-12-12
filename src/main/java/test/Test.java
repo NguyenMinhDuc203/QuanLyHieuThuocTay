@@ -27,11 +27,6 @@ EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyH
 		em.close();
 		emf.close();
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 8368942d10b18efdd0aa5d17a25c27eb3233d78b
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			new DangNhap_GUI().setVisible(true);
@@ -39,10 +34,6 @@ EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyH
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-<<<<<<< HEAD
-=======
->>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
->>>>>>> 8368942d10b18efdd0aa5d17a25c27eb3233d78b
 	}
 
 }

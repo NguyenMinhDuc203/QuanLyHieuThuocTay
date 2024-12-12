@@ -132,7 +132,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener{
 
 		        if (result.equals("Đăng nhập thành công.")) {
 		            // Thiết lập mã nhân viên đăng nhập thông qua dao_nv
-		            BanHang_GUI.maNVDangNhap = dao_nv.layMaNhanVienTheoTenTK(tenTK);
+		            BanHang_GUI.maNVDangNhap = tenTK;
 		            openTrangChu();
 		        } else {
 		            JOptionPane.showMessageDialog(this, result);

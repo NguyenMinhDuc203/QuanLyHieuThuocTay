@@ -17,11 +17,11 @@ import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-<<<<<<< HEAD
+
 import jakarta.persistence.NoResultException;
-=======
+
 import jakarta.persistence.EntityTransaction;
->>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
+
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -343,9 +343,7 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
-    
-    
+   
  // Hàm lấy tên nhân viên theo mã nhân viên
     public String layTenNhanVienByMa(String maNhanVien) {
         EntityManager em = emf.createEntityManager();
@@ -364,7 +362,9 @@ public class NhanVien_DAO {
             System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
         } catch (Exception e) {
             // Xử lý các lỗi khác nếu có
-=======
+    }
+		return tenNhanVien; 
+        }
     public String layMaNhanVienTheoTenTK(String tenTK) {
 	    EntityManager entityManager = emf.createEntityManager();
 	    String maNhanVien = null;
@@ -447,7 +447,6 @@ public class NhanVien_DAO {
 
         return isDeleted; // Trả về true nếu đã xóa thành công
     }
-    ////////////
     public boolean updatenhanVien(NhanVien nv) {
         EntityManager em = emf.createEntityManager();
         boolean isUpdated = false;
@@ -489,19 +488,12 @@ public class NhanVien_DAO {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback(); // Rollback nếu có lỗi
             }
->>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
+
             e.printStackTrace();
         } finally {
             em.close();
         }
 
-<<<<<<< HEAD
-        return tenNhanVien;
-    }
-=======
         return isUpdated;
     }
-
->>>>>>> 0b57b80b5e940e6d57ca1a12bb9c8948b4980041
-
 }
