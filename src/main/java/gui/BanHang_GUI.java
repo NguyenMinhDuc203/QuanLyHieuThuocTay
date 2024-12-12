@@ -183,12 +183,11 @@ public class BanHang_GUI extends JFrame {
 	  khachHangDAO = new KhachHang_DAO();
 	  hoaDonXuatDAO = new HoaDonXuat_DAO();
 	  nhanVienDAO = new NhanVien_DAO();
-<<<<<<< HEAD
+
 	  
 	  donTamDAO = new DonTam_DAO();
-=======
+
 	  NumberFormat formatter2 = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));  // Định dạng theo tiền tệ Việt Nam
->>>>>>> 3e865fc6869cd1bf59b9bcfbb2c05adfb89438ee
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -1668,10 +1667,14 @@ public class BanHang_GUI extends JFrame {
     	        model.setRowCount(0);  // Xóa toàn bộ dữ liệu trong bảng
 
     	        // Xóa dữ liệu trong các trường nhập liệu
-    	        textField_2.setText("");
-    	        textField.setText("");
-    	        textField_1.setText("");
-    	        textField_9.setText("");
+    	       
+//    	        textField_2.setText("");
+//    	        textField.setText("");
+//    	        textField_1.setText("");
+//    	        textField_9.setText("");
+//    	        textField_5.setText("");
+//    	        textField_6.setText("");
+//    	        textField_8.setText("");
     	        // Chuyển sang pane Đơn Tạm
     	        CardLayout cardLayout = (CardLayout) panelContent.getLayout();
     	        cardLayout.show(panelContent, "DonTamPane");
@@ -1698,8 +1701,8 @@ public class BanHang_GUI extends JFrame {
     	        String tenKhachHang = (String) model1.getValueAt(selectedRow, 2);
 
     	        textField_2.setText(maHoaDon);
-    	        textField_1.setText(sdtKhachHang);
-    	        textField.setText(tenKhachHang);
+    	        textField_1.setText(tenKhachHang);
+    	        textField.setText(sdtKhachHang);
 
     	        // Lấy dữ liệu từ table_2 và thêm vào table
     	        DefaultTableModel model2 = (DefaultTableModel) table_2.getModel();
@@ -1743,6 +1746,7 @@ public class BanHang_GUI extends JFrame {
     	            tongThanhTien += thanhTien;
     	        }
     	        textField_9.setText(String.format("%.2f", tongThanhTien));
+    	        textField_5.setText(textField_9.getText());
     	        // Xóa đơn tạm
     	        DonTam_DAO donTamDAO = new DonTam_DAO();
     	        boolean isDeleted = donTamDAO.xoaDonTam(maHoaDon);
@@ -2267,9 +2271,9 @@ public class BanHang_GUI extends JFrame {
   	              LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);
     	            String ngayMua = ngayTao.toString();
 //    	            String maGiamGia = (String) modelTable3.getValueAt(selectedRow, 4);
-    	            Double maGG = (Double) modelTable3.getValueAt(selectedRow, 4);
-    	            String maGiamGia = maGG.toString();
-    	            Double value = (Double) modelTable3.getValueAt(selectedRow, 4);  // Giả sử bạn đang lấy giá trị kiểu Double từ bảng
+    	            int maGG = (Integer) modelTable3.getValueAt(selectedRow, 4);
+    	            String maGiamGia = String.valueOf(maGG);
+    	            Double value = (Double) modelTable3.getValueAt(selectedRow, 5);  // Giả sử bạn đang lấy giá trị kiểu Double từ bảng
     	            String thanhTien = String.valueOf(value);
     	            // Gọi hàm truy vấn tên khách hàng và tên nhân viên từ DAO
     	            String tenKhachHang = khachHangDAO.layTenKhachHangByMa(maKhachHang);
@@ -2310,6 +2314,8 @@ public class BanHang_GUI extends JFrame {
     	            // Hiển thị thông báo nếu chưa chọn dòng nào
     	            JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng trong bảng.");
     	        }
+    	        CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+    	        cardLayout.show(panelContent, "DonTraPane");
     	    }
     	});
       

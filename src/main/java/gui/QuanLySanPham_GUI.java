@@ -110,14 +110,11 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		private JTextField txtMLSP;
 		private EntityManager entityManager;
 		private JComboBox<Object> cboDVTSP;
-<<<<<<< HEAD
 		private TrangChu_GUI trangChuGUI;
-=======
 		private JDateChooser dateChooser;
 		private JDateChooser dateChooser1;
 		private Date dateChooserHSDSP;
 		
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 		
 	/**
 	 * Launch the application.

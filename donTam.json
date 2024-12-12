@@ -18,5 +18,19 @@
         "donGia": 247.5
       }
     ]
+  },
+  {
+    "maHoaDon": "HDBH131220247440423450001",
+    "sdtKhachHang": "0789012345",
+    "tenKhachHang": "Dương Mai G",
+    "ngayTaoHoaDon": "2024-12-13",
+    "donHang": [
+      {
+        "maSanPham": "SP0210LTTH08082024012345678900021",
+        "tenSanPham": "Pantoprazole 40mg",
+        "soLuong": 200,
+        "donGia": 17920.0
+      }
+    ]
   }
 ]

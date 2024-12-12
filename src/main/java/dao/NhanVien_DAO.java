@@ -18,16 +18,9 @@ import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-<<<<<<< HEAD
-
-import jakarta.persistence.NoResultException;
 
 import jakarta.persistence.EntityTransaction;
-
-=======
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -349,44 +342,34 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
-<<<<<<< HEAD
-   
-=======
-    
-    
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
+
  // Hàm lấy tên nhân viên theo mã nhân viên
- // Hàm lấy tên nhân viên theo mã nhân viên
-    public String layTenNhanVienByMa(String maNhanVien) {
-        EntityManager em = emf.createEntityManager();
-        String tenNhanVien = null;
+    // Hàm lấy tên nhân viên theo mã nhân viên
+       public String layTenNhanVienByMa(String maNhanVien) {
+           EntityManager em = emf.createEntityManager();
+           String tenNhanVien = null;
 
-        try {
-            // Sử dụng HQL để truy vấn tên nhân viên từ mã nhân viên
-            String jpql = "SELECT n.tenNhanVien FROM NhanVien n WHERE n.maNhanVien = :maNhanVien";
-            TypedQuery<String> query = em.createQuery(jpql, String.class);
-            query.setParameter("maNhanVien", maNhanVien);
+           try {
+               // Sử dụng HQL để truy vấn tên nhân viên từ mã nhân viên
+               String jpql = "SELECT n.tenNhanVien FROM NhanVien n WHERE n.maNhanVien = :maNhanVien";
+               TypedQuery<String> query = em.createQuery(jpql, String.class);
+               query.setParameter("maNhanVien", maNhanVien);
 
-            // Lấy kết quả
-            tenNhanVien = query.getSingleResult();
-        } catch (NoResultException e) {
-            // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
-            System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
-        } catch (Exception e) {
-            // Xử lý các lỗi khác nếu có
-<<<<<<< HEAD
-    }
-		return tenNhanVien; 
-        }
-=======
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
+               // Lấy kết quả
+               tenNhanVien = query.getSingleResult();
+           } catch (NoResultException e) {
+               // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
+               System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
+           } catch (Exception e) {
+               // Xử lý các lỗi khác nếu có
+               e.printStackTrace();
+           } finally {
+               em.close();
+           }
 
-        return tenNhanVien;
-    }
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
+           return tenNhanVien;
+       }
+
     public String layMaNhanVienTheoTenTK(String tenTK) {
 	    EntityManager entityManager = emf.createEntityManager();
 	    String maNhanVien = null;
@@ -510,23 +493,14 @@ public class NhanVien_DAO {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback(); // Rollback nếu có lỗi
             }
-<<<<<<< HEAD
-
-=======
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
             e.printStackTrace();
         } finally {
             em.close();
         }
 
-<<<<<<< HEAD
-        return isUpdated;
-    }
-=======
        
         return isUpdated;
     }
 
 
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 }
