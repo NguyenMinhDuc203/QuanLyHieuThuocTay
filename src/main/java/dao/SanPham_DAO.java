@@ -3,6 +3,7 @@ package dao;
 import entity.SanPham;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -201,19 +203,19 @@ public class SanPham_DAO {
     }
 
     // Phương thức cập nhật sản phẩm
-    public void updateSanPham(SanPham sp) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(sp);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            em.getTransaction().rollback();
-        } finally {
-            em.close();
-        }
-    }
+//    public void updateSanPham(SanPham sp) {
+//        EntityManager em = emf.createEntityManager();
+//        try {
+//            em.getTransaction().begin();
+//            em.merge(sp);
+//            em.getTransaction().commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            em.getTransaction().rollback();
+//        } finally {
+//            em.close();
+//        }
+//    }
 
     // Phương thức xóa sản phẩm theo ID
     public void deleteSanPham(int id) {
@@ -531,6 +533,20 @@ public class SanPham_DAO {
 
 		    return isDeleted; // Trả về kết quả
 		}
+	  
+//	  public void updateSanPham(SanPham sp) {
+//	        EntityManager em = emf.createEntityManager();
+//	        try {
+//	            em.getTransaction().begin();
+//	            em.merge(sp);
+//	            em.getTransaction().commit();
+//	        } catch (Exception e) {
+//	            e.printStackTrace();
+//	            em.getTransaction().rollback();
+//	        } finally {
+//	            em.close();
+//	        }
+//	    }
 //sửa
 	  public boolean updateSanPham(SanPham sanPham) {
 		    EntityManager em = emf.createEntityManager();
@@ -591,6 +607,44 @@ public class SanPham_DAO {
 		    } finally {
 		        em.close();
 		    }
+		}
+	  public String maTuSinhSanPham(String loaiSanPham) {
+		    EntityManager em = emf.createEntityManager();
+		    String maSanPham = null;
+
+		    try {
+		        // Đếm số lượng sản phẩm hiện tại trong loại sản phẩm
+		        String jpql = "SELECT COUNT(sp) FROM SanPham sp WHERE sp.loaiSanPham = :loaiSanPham";
+		        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+		        query.setParameter("loaiSanPham", loaiSanPham);
+		        Long count = query.getSingleResult();
+
+		        // Tạo 18 số ngẫu nhiên
+		        Random random = new Random();
+		        StringBuilder soNgauNhien = new StringBuilder();
+		        for (int i = 0; i < 18; i++) {
+		            soNgauNhien.append(random.nextInt(10));
+		        }
+
+		        // Lấy mã loại sản phẩm là chữ cái đầu tiên của loaiSanPham viết hoa
+		        String maLoaiSanPham = loaiSanPham.substring(0, 1).toUpperCase();
+
+		        // Tạo mã sản phẩm
+		        maSanPham = String.format("SP%04d%s%s%04d", 
+		            (count.intValue() + 1) * 10, // 4 số đầu
+		            maLoaiSanPham, // Mã loại sản phẩm
+		            soNgauNhien.toString(), // 18 số ngẫu nhiên
+		            (count.intValue() + 1)); // 4 số cuối
+
+		    } catch (Exception e) {
+		        System.err.println("Lỗi khi tự sinh mã sản phẩm: " + e.getMessage());
+		        e.printStackTrace();
+		        maSanPham = "SP0001"; // Bắt đầu lại từ "SP0001" nếu có lỗi
+		    } finally {
+		        em.close();
+		    }
+
+		    return maSanPham;
 		}
 
     
