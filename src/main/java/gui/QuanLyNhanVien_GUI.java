@@ -28,6 +28,7 @@ import javax.swing.table.JTableHeader;
 
 import com.toedter.calendar.JDateChooser;
 
+
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -96,12 +97,9 @@ public class QuanLyNhanVien_GUI extends JFrame implements MouseListener,ActionLi
 		private JRadioButton rdbNu;
 		private DateTimeFormatter formatter;
 		private AbstractButton txtCMND;
-<<<<<<< HEAD
 		private TrangChu_GUI trangChuGUI;
-=======
 		private JDateChooser dateChooser;
 		private JDateChooser dateChooser_1;
->>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 		
 		
 	/**

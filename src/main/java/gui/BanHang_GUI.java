@@ -615,12 +615,18 @@ public class BanHang_GUI extends JFrame {
       table_1 = new JTable();
       table_1.setModel(new DefaultTableModel(
       	new Object[][] {
-      		
       	},
       	new String[] {
       		"M\u00E3 H\u00F3a \u0110\u01A1n", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o H\u00F3a \u0110\u01A1n"
       	}
-      ));
+      ) {
+      	boolean[] columnEditables = new boolean[] {
+      		false, false, false
+      	};
+      	public boolean isCellEditable(int row, int column) {
+      		return columnEditables[column];
+      	}
+      });
       giaoDienTable(table_1);
       scrollPane_1.setViewportView(table_1);
       
@@ -1366,11 +1372,23 @@ public class BanHang_GUI extends JFrame {
               } 
           }
       });
-      btnNewButton_9.addActionListener(e -> {
+      btnNewButton_9_1.addActionListener(e -> {
     	  CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
-          textField_4.setText(textField_35.getText());
-          textField_5.setText(textField_36.getText()); 
+    	 
+      });
+      btnNewButton_9.addActionListener(e -> {
+    	  int diemTL = Integer.parseInt(textField_32.getText());
+    	  int diemCD = Integer.parseInt(textField_33.getText());
+    	  if (diemCD>diemTL) {
+    		  JOptionPane.showMessageDialog(null, "Điểm tích lũy không đủ");
+    	  } else {
+    		  CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+              cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
+              textField_4.setText(textField_35.getText());
+              textField_5.setText(textField_36.getText());
+    	  }
+    	 
       });
       // Thêm sự kiện cho các nút chuyển panel
       btnBanHang.addActionListener(e -> {
