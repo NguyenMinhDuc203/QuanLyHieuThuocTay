@@ -3,7 +3,11 @@ package gui;
 
 import dao.KhachHang_DAO;
 import dao.SanPham_DAO;
+<<<<<<< HEAD
 
+=======
+import gui.TrangChu_GUI;
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -20,7 +24,7 @@ public class TraCuuKhachHang_GUI extends JFrame {
     private JButton btnTimKiem, btnLamMoi;
     private KhachHang_DAO khachHangDAO;
     private SanPham_DAO sanPhamDAO;
-
+    private TrangChu_GUI trangChuGUI;
     public TraCuuKhachHang_GUI() {
         // Kết nối database
         try {
@@ -38,6 +42,7 @@ public class TraCuuKhachHang_GUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(new BorderLayout());
 
+<<<<<<< HEAD
         // Menu Bar setup
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBackground(new Color(26, 133, 94)); // Màu nền menu bar
@@ -55,6 +60,16 @@ public class TraCuuKhachHang_GUI extends JFrame {
         menuBar.add(mnSales);
         menuBar.add(mnStats);
         menuBar.add(mnLookup);
+=======
+      //Menu
+      		trangChuGUI = new TrangChu_GUI();
+      		JMenuBar menuBar = trangChuGUI.createMenuBar();
+      		menuBar.setBorderPainted(false);
+      		menuBar.setOpaque(true);
+      		menuBar.setBackground(new Color(26, 133, 94));
+      		menuBar.setBounds(0, 0, 1395, 70);
+      		add(menuBar);
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 
         // Panel Tìm kiếm Khách Hàng
         JPanel timKiemPanel = new JPanel();

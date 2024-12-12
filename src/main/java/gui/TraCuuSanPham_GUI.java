@@ -6,7 +6,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-
+import gui.TrangChu_GUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +24,7 @@ public class TraCuuSanPham_GUI extends JFrame {
     private JTable bangSanPham;
     private JButton btnTimKiem, btnLamMoi;
     private SanPham_DAO sanPhamDAO;
+    private TrangChu_GUI trangChuGUI;
 
     public TraCuuSanPham_GUI() {
         getContentPane().setBackground(new Color(244, 253, 253)); // White background
@@ -40,6 +41,7 @@ public class TraCuuSanPham_GUI extends JFrame {
         setTitle("Tra cứu sản phẩm");
         setBounds(0, 0, 1920, 1080);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+<<<<<<< HEAD
 
         // Menu Bar setup
         JMenuBar menuBar = new JMenuBar();
@@ -61,6 +63,17 @@ public class TraCuuSanPham_GUI extends JFrame {
         menuBar.add(mnSales);
         menuBar.add(mnStats);
         menuBar.add(mnLookup);
+=======
+        
+    	//Menu
+		trangChuGUI = new TrangChu_GUI();
+		JMenuBar menuBar = trangChuGUI.createMenuBar();
+		menuBar.setBorderPainted(false);
+		menuBar.setOpaque(true);
+		menuBar.setBackground(new Color(26, 133, 94));
+		menuBar.setBounds(0, 0, 1395, 70);
+		add(menuBar);
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 
         // Panel tìm kiếm (Search Panel)
         JPanel timKiemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 30, 20));

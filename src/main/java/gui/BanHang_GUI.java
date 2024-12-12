@@ -24,7 +24,7 @@ import java.awt.event.KeyListener;
 import gui.TrangChu_GUI;
 import local.ChiTietDonTam;
 import local.DonTam;
-
+import dao.MaGiamGia_DAO;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -160,6 +160,7 @@ public class BanHang_GUI extends JFrame {
 	private HoaDonXuat_DAO hoaDonXuatDAO;
 	private SanPham sanPham;
 	private NhanVien_DAO nhanVienDAO;
+	private MaGiamGia_DAO maGiamGiaDAO;
 
     private DonTam_DAO donTamDAO;  // DAO để lấy và lưu dữ liệu
     public static void main(String[] args) {
@@ -183,11 +184,19 @@ public class BanHang_GUI extends JFrame {
 	  khachHangDAO = new KhachHang_DAO();
 	  hoaDonXuatDAO = new HoaDonXuat_DAO();
 	  nhanVienDAO = new NhanVien_DAO();
+<<<<<<< HEAD
 
 	  
 	  donTamDAO = new DonTam_DAO();
 
 	  NumberFormat formatter2 = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));  // Định dạng theo tiền tệ Việt Nam
+=======
+	  maGiamGiaDAO = new MaGiamGia_DAO();
+	  NumberFormat formatter2 = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));  // Định dạng theo tiền tệ Việt Nam
+	  
+	  donTamDAO = new DonTam_DAO();
+
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
       // Cài đặt cửa sổ chính
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       setBounds(0, 0, 1920, 1080);  // Kích thước cửa sổ lớn
@@ -637,7 +646,14 @@ public class BanHang_GUI extends JFrame {
       	new String[] {
       		"M\u00E3 H\u00F3a \u0110\u01A1n", "SDT Kh\u00E1ch H\u00E0ng", "T\u00EAn Kh\u00E1ch H\u00E0ng", "Ng\u00E0y T\u1EA1o"
       	}
-      ));
+      ) {
+      	boolean[] columnEditables = new boolean[] {
+      		false, false, false
+      	};
+      	public boolean isCellEditable(int row, int column) {
+      		return columnEditables[column];
+      	}
+      });
       giaoDienTable(table_1);
       scrollPane_1.setViewportView(table_1);
 
@@ -1372,11 +1388,23 @@ public class BanHang_GUI extends JFrame {
               } 
           }
       });
-      btnNewButton_9.addActionListener(e -> {
+      btnNewButton_9_1.addActionListener(e -> {
     	  CardLayout cardLayout = (CardLayout) panelContent.getLayout();
           cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
-          textField_4.setText(textField_35.getText());
-          textField_5.setText(textField_36.getText()); 
+    	 
+      });
+      btnNewButton_9.addActionListener(e -> {
+    	  int diemTL = Integer.parseInt(textField_32.getText());
+    	  int diemCD = Integer.parseInt(textField_33.getText());
+    	  if (diemCD>diemTL) {
+    		  JOptionPane.showMessageDialog(null, "Điểm tích lũy không đủ");
+    	  } else {
+    		  CardLayout cardLayout = (CardLayout) panelContent.getLayout();
+              cardLayout.show(panelContent, "BanHangPane"); // Chuyển sang trang Bán Hàng
+              textField_4.setText(textField_35.getText());
+              textField_5.setText(textField_36.getText());
+    	  }
+    	 
       });
       
       
@@ -1886,9 +1914,11 @@ public class BanHang_GUI extends JFrame {
               String ngayTaoStr = textField_3.getText();
               DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");  // Định dạng ngày tháng bạn nhập vào
               LocalDate ngayTao = LocalDate.parse(ngayTaoStr, formatter);              
-              Double tongTien = Double.parseDouble(textField_9.getText());
+              Double tongTien = Double.parseDouble(textField_5.getText());
               String selectedValue = (String) comboBox_1.getSelectedItem();
               Double tienThoi = 0.0;
+              String maGG = textField_29.getText();
+              Double giamGia = Double.parseDouble(textField_4.getText());
               if (selectedValue.equals("ATM")) {
             	  tienThoi = 0.0; 
               } else {
@@ -1912,6 +1942,7 @@ public class BanHang_GUI extends JFrame {
               hoaDon.setNgayTao(ngayTao);
               hoaDon.setTienKhachDua(tongTien);
               hoaDon.setTienThoi(tienThoi);
+              hoaDon.setMaGiamGia(maGiamGiaDAO.getMaGiamGiaTheoMa(maGG));
               NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
               hoaDon.setNhanVien(nhanVienDAO .layThongTinNhanVienTheoMa(maNVDangNhap));
               hoaDon.setKhachHang(khachHang);
@@ -1923,7 +1954,7 @@ public class BanHang_GUI extends JFrame {
               //Chuyển trang
               DefaultTableModel model_8 = (DefaultTableModel) table_3.getModel();
               String maKH = khachHang.getMaKhachHang();
-              model_8.addRow(new Object[] {hoaDon.getMaHoaDonXuat(), maNVDangNhap, maKH,LocalDate.now(),0, tongTien });
+              model_8.addRow(new Object[] {hoaDon.getMaHoaDonXuat(), maNVDangNhap, maKH,LocalDate.now(),giamGia, tongTien });
               table_3.setModel(model_8);
               CardLayout cardLayout = (CardLayout) panelContent.getLayout();
               cardLayout.show(panelContent, "DonHoanThanhPane"); // Chuyển sang trang Khuyến Mãi

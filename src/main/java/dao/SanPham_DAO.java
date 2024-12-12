@@ -674,7 +674,6 @@ public class SanPham_DAO {
 
 		    return maSanPham;
 		}
-
     
 }
  

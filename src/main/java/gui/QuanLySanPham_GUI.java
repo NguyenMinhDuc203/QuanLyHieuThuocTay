@@ -115,7 +115,10 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		private JDateChooser dateChooser1;
 		private Date dateChooserHSDSP;
 		
+<<<<<<< HEAD
 		
+=======
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 	/**
 	 * Launch the application.
 	 */

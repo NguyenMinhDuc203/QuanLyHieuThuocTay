@@ -18,9 +18,23 @@ import entity.KhachHang;
 import entity.NhanVien;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+<<<<<<< HEAD
 
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
+=======
+
+import jakarta.persistence.NoResultException;
+
+import jakarta.persistence.EntityTransaction;
+
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
+
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
+
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
@@ -342,6 +356,14 @@ public class NhanVien_DAO {
 
         return nhanVien;
     }
+<<<<<<< HEAD
+=======
+
+ // Hàm lấy tên nhân viên theo mã nhân viên
+    public String layTenNhanVienByMa(String maNhanVien) {
+        EntityManager em = emf.createEntityManager();
+        String tenNhanVien = null;
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 
  // Hàm lấy tên nhân viên theo mã nhân viên
     // Hàm lấy tên nhân viên theo mã nhân viên
@@ -349,6 +371,7 @@ public class NhanVien_DAO {
            EntityManager em = emf.createEntityManager();
            String tenNhanVien = null;
 
+<<<<<<< HEAD
            try {
                // Sử dụng HQL để truy vấn tên nhân viên từ mã nhân viên
                String jpql = "SELECT n.tenNhanVien FROM NhanVien n WHERE n.maNhanVien = :maNhanVien";
@@ -369,6 +392,19 @@ public class NhanVien_DAO {
 
            return tenNhanVien;
        }
+=======
+            // Lấy kết quả
+            tenNhanVien = query.getSingleResult();
+        } catch (NoResultException e) {
+            // Nếu không tìm thấy, trả về null hoặc xử lý lỗi theo cách khác
+            System.out.println("Không tìm thấy nhân viên với mã: " + maNhanVien);
+        } catch (Exception e) {
+            // Xử lý các lỗi khác nếu có
+
+    }
+		return tenNhanVien; 
+        }
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 
     public String layMaNhanVienTheoTenTK(String tenTK) {
 	    EntityManager entityManager = emf.createEntityManager();
@@ -492,15 +528,26 @@ public class NhanVien_DAO {
         } catch (Exception e) {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback(); // Rollback nếu có lỗi
+<<<<<<< HEAD
             }
+=======
+
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
             e.printStackTrace();
+            }
         } finally {
             em.close();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
        
         return isUpdated;
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 }

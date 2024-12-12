@@ -51,8 +51,13 @@ public class ThongKeKhachHang_GUI extends JFrame {
     private JPanel contentPane;
     private JTextField textField_1;
     private JTable table;
+<<<<<<< HEAD
     private KhachHang_DAO dao;
    private TrangChu_GUI trangChuGUI;
+=======
+   private TrangChu_GUI trangChuGUI;
+    private KhachHang_DAO dao;
+>>>>>>> e3702192c2c633eb379f186bc8de965d8ff0cf65
 
     /**
      * Launch the application.
