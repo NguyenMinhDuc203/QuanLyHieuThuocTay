@@ -200,6 +200,65 @@ public class HoaDonXuat_DAO {
 
             return result; // Trả về danh sách các hóa đơn tìm thấy
         }
+        public ArrayList<Object[]> layDanhSachHoaDonTrong3Ngay(String searchTerm, String searchType) { 
+            EntityManager em = emf.createEntityManager();
+            ArrayList<Object[]> result = new ArrayList<>();
+
+            try {
+                // Bắt đầu xây dựng câu truy vấn SQL
+                String sql = "SELECT " +
+                             "hdx.maHoaDonXuat, " +
+                             "hdx.maNhanVien, " +
+                             "hdx.maKhachHang, " +
+                             "hdx.ngayTao, " +
+                             "mg.triGia AS giamGia, " +  // Lấy giá trị giảm giá từ bảng magiamgia
+                             "ROUND(SUM((cthd.soLuong * sp.giaBan) * (1 + sp.thueGTGT * 0.01)), 2) AS tongTien " +
+                             "FROM HoaDonXuat hdx " +
+                             "JOIN chitiethoadon cthd ON hdx.maHoaDonXuat = cthd.maHoaDonXuat " +
+                             "JOIN SanPham sp ON cthd.maSanPham = sp.maSanPham " +
+                             "LEFT JOIN magiamgia mg ON hdx.maGiamGia = mg.maGiamGia " +  // Liên kết với bảng magiamgia
+                             "WHERE hdx.ngayTao >= CURRENT_DATE - INTERVAL 3 DAY "; // Điều kiện 3 ngày qua
+
+                // Xây dựng điều kiện tìm kiếm dựa trên loại tìm kiếm
+                switch (searchType) {
+                    case "Mã nhân viên":
+                        sql += "AND hdx.maNhanVien LIKE :searchTerm ";
+                        break;
+                    case "Mã hóa đơn":
+                        sql += "AND hdx.maHoaDonXuat LIKE :searchTerm ";
+                        break;
+                    case "Mã khách hàng":
+                        sql += "AND hdx.maKhachHang LIKE :searchTerm ";
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Loại tìm kiếm không hợp lệ");
+                }
+
+                sql += "GROUP BY " +
+                       "hdx.maHoaDonXuat, " +
+                       "hdx.maNhanVien, " +
+                       "hdx.maKhachHang, " +
+                       "hdx.ngayTao, " +
+                       "hdx.maGiamGia, " +
+                       "mg.triGia";  // Cần thêm vào nhóm theo giảm giá và trị giá giảm giá
+
+                // Tạo truy vấn
+                Query query = em.createNativeQuery(sql);
+                query.setParameter("searchTerm", "%" + searchTerm + "%");
+
+                // Thực hiện truy vấn và lấy kết quả
+                result = new ArrayList<>(query.getResultList());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                em.close();
+            }
+
+            return result; // Trả về danh sách các hóa đơn tìm thấy
+        }
+
+
         public ArrayList<Object[]> layDanhSachHoaDonTheoNgay(String searchTerm, String searchType, LocalDate date) {
             EntityManager em = emf.createEntityManager();
             ArrayList<Object[]> result = new ArrayList<>();
@@ -337,7 +396,7 @@ public class HoaDonXuat_DAO {
                         "cthd.soLuong, " +
                         "sp.giaBan, " +
                         "sp.thueGTGT, " +
-                        "ROUND(SUM(cthd.soLuong * sp.giaBan), 2) AS thanhTien " +
+                        "ROUND(SUM(cthd.soLuong * sp.giaBan + sp.thueGTGT/100*cthd.soLuong * sp.giaBan), 2) AS thanhTien " +
                         "FROM ChiTietHoaDon cthd " +
                         "JOIN cthd.hoaDonXuat hdx " +
                         "JOIN cthd.sanPham sp " +

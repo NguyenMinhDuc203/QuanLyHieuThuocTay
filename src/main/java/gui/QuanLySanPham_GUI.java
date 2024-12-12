@@ -110,10 +110,14 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		private JTextField txtMLSP;
 		private EntityManager entityManager;
 		private JComboBox<Object> cboDVTSP;
+<<<<<<< HEAD
+		private TrangChu_GUI trangChuGUI;
+=======
 		private JDateChooser dateChooser;
 		private JDateChooser dateChooser1;
 		private Date dateChooserHSDSP;
 		
+>>>>>>> 725cf1c0b390bc31562d8096d73f8d39ad549e99
 		
 	/**
 	 * Launch the application.
@@ -151,11 +155,13 @@ public class QuanLySanPham_GUI extends JFrame implements MouseListener,ActionLis
 		setContentPane(contentPane);
 		contentPane.setLayout(null);		
 		//Menu
-				JMenuBar menuBar = createMenuBar();
+		//Menu
+				trangChuGUI = new TrangChu_GUI();
+				JMenuBar menuBar = trangChuGUI.createMenuBar();
 				menuBar.setBorderPainted(false);
 				menuBar.setOpaque(true);
 				menuBar.setBackground(new Color(26, 133, 94));
-				menuBar.setBounds(0, 0, 1338, 70);
+				menuBar.setBounds(0, 0, 1395, 70);
 				contentPane.add(menuBar);
 				
 				

@@ -78,6 +78,7 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 	private JButton btThoat;
 	
 	private JTextField txtDTL;
+	private TrangChu_GUI trangChuGUI;
 	private KhachHang_DAO dao_kh = new KhachHang_DAO();
 	EntityManagerFactory emf = Persistence.createEntityManagerFactory("Nhom1_QuanLyHieuThuocTay");
 
@@ -115,30 +116,17 @@ public class QuanLyKhachHang_GUI extends JFrame implements MouseListener,ActionL
 		setContentPane(contentPane);
 		contentPane.setLayout(null);		
 		//Menu
-				JMenuBar menuBar = createMenuBar();
+		//Menu
+				trangChuGUI = new TrangChu_GUI();
+				JMenuBar menuBar = trangChuGUI.createMenuBar();
 				menuBar.setBorderPainted(false);
 				menuBar.setOpaque(true);
 				menuBar.setBackground(new Color(26, 133, 94));
-				menuBar.setBounds(0, 0, 1338, 70);
+				menuBar.setBounds(0, 0, 1395, 70);
 				contentPane.add(menuBar);
 				
 				
-				JButton btnNewButton = new JButton("Đăng Xuất");
-				btnNewButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-					}
-				});
-				btnNewButton.setForeground(new Color(255, 255, 255));
-				btnNewButton.setFont(new Font("Leelawadee UI", Font.BOLD, 24));
-				btnNewButton.setBackground(new Color(26, 133, 94));
-				btnNewButton.setOpaque(true);
-				btnNewButton.setBounds(1244, 0, 348, 70);
-				ImageIcon iconBt = new ImageIcon(TrangChu_GUI.class.getResource("/gui/arrow-right-from-bracket-solid.png"));
-				Image scaledImageBt = iconBt.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-				btnNewButton.setIcon(new ImageIcon(scaledImageBt));
-				btnNewButton.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20));
-				btnNewButton.setHorizontalTextPosition(SwingConstants.LEFT);
-				contentPane.add(btnNewButton);
+				
 				JPanel panel = new JPanel();
 				panel.setBackground(new Color(226, 250, 252));
 				panel.setBounds(0, 69, 1550, 866);

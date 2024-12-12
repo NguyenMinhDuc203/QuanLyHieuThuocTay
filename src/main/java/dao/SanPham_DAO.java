@@ -10,6 +10,7 @@ import jakarta.persistence.TypedQuery;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.lang.System.Logger;
 import java.sql.Connection;
 
@@ -252,7 +253,35 @@ public class SanPham_DAO {
 
         return result;
     }
+    // Hàm lấy danh sách sản phẩm theo mã giảm giá từ hóa đơn
+    public ArrayList<Object[]> layDanhSachSanPhamTheoMaGiamGia(String maGiamGia) {
+    	ArrayList<Object[]> sanPhamList = new ArrayList<>();
+        
+        // Câu truy vấn SQL lấy mã sản phẩm và tên sản phẩm dựa trên mã giảm giá
+        String query = "SELECT sp.maSanPham, sp.tenSanPham " +
+                       "FROM SanPham sp " +
+                       "WHERE hdx.maGiamGia = ?";  // Điều kiện tìm sản phẩm theo mã giảm giá
 
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            // Set mã giảm giá vào câu lệnh SQL
+            stmt.setString(1, maGiamGia);
+            
+            // Thực thi truy vấn và nhận kết quả
+            ResultSet rs = stmt.executeQuery();
+
+            // Duyệt qua kết quả trả về và thêm từng sản phẩm vào danh sách
+            while (rs.next()) {
+                String maSanPham = rs.getString("maSanPham");
+                String tenSanPham = rs.getString("tenSanPham");
+                sanPhamList.add(new String[]{maSanPham, tenSanPham});  // Thêm sản phẩm vào danh sách
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();  // In lỗi nếu có
+        }
+
+        // Trả về danh sách các sản phẩm tìm được
+        return sanPhamList;
+    }
     // Tính số lượng đã bán cho sản phẩm
     public int tinhSoLuongDaBan(String maSanPham) {
         EntityManager em = emf.createEntityManager();
